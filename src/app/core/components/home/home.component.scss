@@ -1,0 +1,22 @@
+.accordion-button{
+    padding: 0px 20px;
+    color: #303030;}
+
+    .accordion-button:not(.collapsed)
+ {
+    background: linear-gradient(90deg, #003873, #004a8f);
+    color: #ffffff !important;
+}
+
+.accordion .accordion-item .accordion-button{
+    margin-bottom: 0px !important;
+}
+
+.accordion-header{margin: 0 0 0em !important;}
+
+.faq-title{font-size: 22px;}
+.accordion-button:not(.collapsed)::after {
+  filter: invert(40%) sepia(100%) saturate(500%) hue-rotate(180deg);
+}
+
+.accordion-body, .accordion-body ol li{font-size: 15px;}

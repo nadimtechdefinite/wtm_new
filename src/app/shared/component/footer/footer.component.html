@@ -1,0 +1,17 @@
+<section class="client-logos py-2">
+    <div class="container-fluid">
+        <div class="logo-slider">
+            @for (logo of logos; track $index) {
+            <div>
+                <img [src]="logo" alt="logo" />
+            </div>
+            }
+        </div>
+    </div>
+</section>
+<footer class="footer">
+    <div class="container text-center text-white ">
+        <div class="mb-2">Write to Rural Development Minister — A grievance system for citizens</div>
+        <div>© 2025 Designed & Developed by NIC</div>
+    </div>
+</footer>

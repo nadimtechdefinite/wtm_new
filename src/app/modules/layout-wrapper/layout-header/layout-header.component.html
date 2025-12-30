@@ -1,0 +1,25 @@
+<div class="header">
+ <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-0">
+      <!-- <li class="breadcrumb-item" aria-current="page" class="text-white"><a>STATE</a></li>
+      <li class="breadcrumb-item" aria-current="page" class="text-white"><a>DISTRICT</a></li>
+      <li class="breadcrumb-item" aria-current="page" class="text-white"><a>BLOCK</a></li> -->
+      <!-- <li class="breadcrumb-item active" aria-current="page" class="text-white">{{userName | uppercase}}  <span class="icon">👤</span></li> -->
+    </ol>
+  </nav>
+
+<div class="profile">
+  <div class="profile-info">
+    <div class="avatar">
+      <span>{{ userName?.charAt(0) }}</span>
+    </div>
+    <span class="profile-name" *ngIf="parsedUserInfo?.loginName !== 'Admin'">{{ userName }}</span>
+    <span class="profile-name" *ngIf="parsedUserInfo?.loginName === 'Admin'">{{ parsedUserInfo?.loginName }}</span>
+  </div>
+  <button class="logout-btn" (click)="logOut()" matTooltip="Log Out" title="Log Out">
+    🔒 LOG OUT
+  </button>
+</div>
+
+
+</div>

@@ -1,0 +1,18 @@
+.footer {
+
+  left: 240px;
+  /* Start after sidebar */
+  right: 0;
+  height: 40px;
+  // background: linear-gradient(to right, #0d6efd, #06c2e7);
+  background-image: linear-gradient(to right, #f7f7f7, #f2f6f7);;
+  color: #b60f0f !important;
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 10000;
+}

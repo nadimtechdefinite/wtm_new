@@ -1,0 +1,370 @@
+
+<ng-container>
+    <div class="row">
+    </div>
+    <main class="py-4">
+        <div class="container-fluid">
+            <section class="form-card">
+            <h6 class="title-heading">Grievance Complaint</h6>
+                <h6 class="title-label">Applicant Details</h6>
+                <form [formGroup]="grievanceForm" novalidate>
+                    <div class="row g-3 mb-3">
+
+                        <!-- Name -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Name</mat-label>
+                                <input matInput placeholder="Enter Name" maxlength="100" formControlName="name"
+                                    autocomplete="off">
+                                <mat-error *ngIf="(f['name'].touched || isSubmitted) && f['name'].invalid">
+                                    Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Father/Husband Name -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Father/Husband Name</mat-label>
+                                <input matInput placeholder="Enter Father/Husband Name" maxlength="100"
+                                    formControlName="fatherHusbandName">
+                                <mat-error *ngIf="(f['fatherHusbandName'].touched || isSubmitted) && f['fatherHusbandName'].invalid">
+                                    Father/Husband Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Gender</mat-label>
+                                <mat-select formControlName="gender">
+                                    <mat-option value="">Select Gender</mat-option>
+                                    <mat-option value="M">Male</mat-option>
+                                    <mat-option value="F">Female</mat-option>
+                                    <mat-option value="T">Transgender</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['gender'].touched || isSubmitted) && f['gender'].invalid">
+                                    Gender is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Mobile -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Mobile No.</mat-label>
+                                <input matInput placeholder="Enter Mobile No." maxlength="10" minlength="10"
+                                    formControlName="mobile" appNumberOnly  >
+                                <mat-error *ngIf="(f['mobile'].touched || isSubmitted) && f['mobile'].invalid">
+                                    Enter valid 10-digit mobile number.
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="(f['mobile'].touched || isSubmitted) && f['mobile'].errors?.['pattern']">
+                                    Mobile must be 10 digits and start with 6.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+
+                    <!-- Address Section -->
+                    <h6 class="title-label">Address</h6>
+                    <div class="row g-3 mb-3">
+
+                        <!-- State -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>State</mat-label>
+                                <mat-select formControlName="stateCode" (selectionChange)="onStateChange($event)">
+                                    <mat-option value="">Select State</mat-option>
+                                    <mat-option *ngFor="let s of stateList" [value]="s.stateCode">{{ s.stateName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['stateCode'].touched || isSubmitted) && f['stateCode'].invalid">
+                                    State is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- District -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>District</mat-label>
+                                <mat-select formControlName="districtCode" (selectionChange)="onDistrictChange($event)">
+                                    <mat-option value="">Select District</mat-option>
+                                    <mat-option *ngFor="let d of districtList" [value]="d.districtCode">{{
+                                        d.districtName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(f['districtCode'].touched || isSubmitted) && f['districtCode'].invalid">
+                                    District is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Block -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Block</mat-label>
+                                <mat-select formControlName="blockCode" (selectionChange)="onBlockChange($event)">
+                                    <mat-option value="">Select Block</mat-option>
+                                    <mat-option *ngFor="let b of blockList" [value]="b.blockCode">{{ b.blockName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['blockCode'].touched || isSubmitted) && f['blockCode'].invalid">
+                                    Block is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Gram Panchayat -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Gram Panchayat</mat-label>
+                                <mat-select formControlName="panchayatCode" (selectionChange)="onGpChange($event)">
+                                    <mat-option value="">Select Gram Panchayat</mat-option>
+                                    <mat-option *ngFor="let gp of gpList" [value]="gp.panchayatCode">{{ gp.panchayatName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['panchayatCode'].touched || isSubmitted) && f['panchayatCode'].invalid">
+                                    Gram Panchayat is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+
+                        
+                        <!-- Village -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Village</mat-label>
+                                <mat-select formControlName="villageCode">
+                                    <mat-option value="">Select village Name</mat-option>
+                                    <mat-option *ngFor="let vList of villageList" [value]="vList.villageCode">{{
+                                        vList.villageName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(f['villageCode'].touched || isSubmitted) && f['villageCode'].invalid">
+                                    village Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!--pin code -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Pin Code</mat-label>
+                                <input matInput placeholder="Enter Pin Code" maxlength="6" formControlName="pinCode"
+                                    autocomplete="off">
+                                <mat-error *ngIf="(f['pinCode'].touched || isSubmitted) && f['pinCode'].invalid">
+                                    Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Address -->
+                        <div class="col-md-4">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Address</mat-label>
+                                <input matInput placeholder="Enter Address" formControlName="address"
+                                    autocomplete="off">
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+
+                    <!-- Grievance Section -->
+                    <h6 class="title-label">Registration of Grievance</h6>
+                    <div class="row g-3 mb-3">
+
+                        <!-- Ministry -->
+                        <div class="col-md-6">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Department</mat-label>
+                                <mat-select formControlName="ministry" (selectionChange)="selectedMinister($event)">
+                                    <mat-option value="">Select Department</mat-option>
+                                    <mat-option *ngFor="let m of ministryList" [value]="m.ministryCode">
+                                        {{ m.ministryName }} - {{ m.ministryShortName }}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['ministry'].touched || isSubmitted) && f['ministry'].invalid">
+                                    Ministry is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Scheme -->
+                        <div class="col-md-6">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Scheme</mat-label>
+                                <mat-select formControlName="schemeCode">
+                                    <mat-option value="">Select Scheme</mat-option>
+                                    <mat-option *ngFor="let s of schemeList" [value]="s.schemeCode">{{ s.schemeName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['schemeCode'].touched || isSubmitted) && f['schemeCode'].invalid">
+                                    Scheme is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <!-- Description -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-9">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Description of Grievance</mat-label>
+                                <textarea matInput rows="2" maxlength="250" formControlName="Description"
+                                    (input)="micActive ? null : transliterateOnType($event)"></textarea>
+                                <mat-error
+                                    *ngIf="(f['Description'].touched || isSubmitted) && f['Description'].invalid">
+                                    Description is required (max 250 chars)
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-2">
+                            <mat-form-field appearance="outline" style="width: 180px;">
+                                <mat-label>Language</mat-label>
+                                <mat-select formControlName="Language" (selectionChange)="onLanguageChange($event)">
+                                    <mat-option value="en-IN">English</mat-option>
+                                    <mat-option value="hi-IN">Hindi</mat-option>
+                                    <mat-option value="bn-IN">Bengali</mat-option>
+                                    <mat-option value="ta-IN">Tamil</mat-option>
+                                    <mat-option value="te-IN">Telugu</mat-option>
+                                    <mat-option value="gu-IN">Gujarati</mat-option>
+                                    <mat-option value="ml-IN">Malayalam</mat-option>
+                                    <mat-option value="mr-IN">Marathi</mat-option>
+                                    <mat-option value="kn-IN">Kannada</mat-option>
+                                    <mat-option value="pa-IN">Punjabi</mat-option>
+                                </mat-select>
+
+                                <mat-error *ngIf="f['Language'].touched && f['Language'].invalid">
+                                    Please select a language.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-1 d-flex flex-column">
+                            <button mat-icon-button color="{{ micActive ? 'warn' : 'primary' }}" (click)="toggleMic()"
+                                style="width: 48px; height: 48px;">
+                                <mat-icon>{{ micActive ? 'mic' : 'mic_none' }}</mat-icon>
+                            </button>
+
+                            <span *ngIf="micActive" class="text-danger ms-1">
+                                {{ message }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row g-3 mb-3 align-items-center">
+
+                        <!-- File Upload -->
+                        <div class="col-md-8">
+                            <label>Attachment</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <!-- Hidden file input -->
+                                <input type="file" hidden #fileInput
+                                    (change)="checkUpLoadedAttachmentFormat($event, '1')" />
+
+                                <!-- Material button to trigger file select -->
+                                <button mat-stroked-button color="primary" type="button" (click)="fileInput.click()">
+                                    Choose File
+                                </button>
+
+                                <!-- Display selected file name -->
+                                <span>{{ grievanceForm.get('attachMent1')?.value?.name || 'No file chosen' }}</span>
+                            </div>
+                            <mat-hint>Only JPEG/PNG/PDF files allowed (Max 10MB).</mat-hint>
+                            <mat-error *ngIf="(f['attachMent1'].touched || isSubmitted) && f['attachMent1'].invalid">
+                                File is required
+                            </mat-error>
+                        </div>
+
+                     
+                        <div class="col-md-4 d-flex gap-2">
+                            <div id="image"
+                                class="captcha-box mat-elevation-z1 d-flex align-items-center justify-content-center">
+                          
+                            </div>
+
+                            <div class="captcha-refresh-button">
+                                        <button mat-icon-button (click)="reload()">
+                                            <mat-icon>refresh</mat-icon>
+                                        </button>
+                                    </div>
+                            <mat-form-field appearance="outline" class="flex-grow-1">
+                                <mat-label>Enter Captcha</mat-label>
+                                <input matInput type="text" formControlName="captcha" maxlength="4">
+                                <mat-error *ngIf="(f['captcha'].touched || isSubmitted) && f['captcha'].invalid">
+                                    Captcha is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                </form>
+                <div class="text-center mt-3 d-flex gap-2 justify-content-center align-items-center">
+                    <button mat-raised-button color="primary" class="btn-glow btn-blue" type="submit" (click)="onSubmit()">
+                        Submit
+                    </button>
+                    <button mat-raised-button color="warn" class="btn-glow btn-red" type="reset" (click)="resetForm()">
+                        Reset
+                    </button>
+                </div>
+            </section>
+        </div>
+
+    </main>
+</ng-container>
+<ng-template #pdfDialog>
+    <div #saveAsPdf>
+        <!-- Header -->
+        <div class="d-flex align-items-center header-box mb-3">
+            <img src="assets/images/logo_wtm.png" alt="emblem" class="logo-img me-3" />
+            <div class="text-start">
+                <div class="fw-bold fs-5 text-primary">Write To Rural Development Minister</div>
+                <div class="fw-semibold fs-6 text-secondary">A Grievance System For Citizens</div>
+            </div>
+        </div>
+
+        <mat-dialog-content>
+            <!-- Card Body -->
+            <div #pdfCard class="card pdf-card p-4 shadow-sm border-0 rounded-4">
+                <div class="my-3">
+                    <p class="fs-6 mb-2">
+                        <span class="fw-bold">Dear {{ userName.toUpperCase() }},</span>
+                    </p>
+                    <p class="fs-6 mb-2">
+                        Your grievance <span class="fw-bold">{{ schemeName }}</span> has been successfully registered.
+                        It will be forwarded to the respective nodal officer.
+                    </p>
+                    <p class="fs-6 mb-0">
+                        Kindly note down your grievance number:
+                        <span class="grievance-number">{{ generatedComplaintNo }}</span> for further tracking.
+                    </p>
+                </div>
+
+                <hr class="my-3" />
+
+                <!-- Footer -->
+                <div class="footer-box d-flex justify-content-between align-items-center">
+                    <span class="fs-7 text-muted">
+                        Report generated on: <b>{{ currentDate | date: 'dd-MMM-yyyy' }}</b>
+                    </span>
+                    <a href="https://write2rdminister.dord.gov.in/#/home" target="_blank" class="footer-link">
+                        Visit Portal
+                    </a>
+                </div>
+            </div>
+        </mat-dialog-content>
+
+        <!-- Dialog Actions -->
+        <mat-dialog-actions align="end" class="mt-3">
+            <button mat-flat-button color="primary" (click)="generatePdf()">Download PDF</button>
+            <button mat-stroked-button mat-dialog-close (click)="closeDialog()">Close</button>
+        </mat-dialog-actions>
+    </div>
+</ng-template>

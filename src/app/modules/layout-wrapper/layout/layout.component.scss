@@ -1,0 +1,35 @@
+/* HEADER ALWAYS FULL WIDTH */
+.app-layout-header {
+  position: fixed;
+  top: 0;
+  left: 0;     /* full width */
+  right: 0;
+  height: 64px;
+  background: #1e5dd4;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+/* SIDEBAR WILL START BELOW HEADER */
+.app-layout-sidebar {
+  position: fixed;
+  top: 64px;     
+  left: 0;
+  width: 240px;
+  height: calc(100vh - 64px);
+  background: #003c8f;
+  z-index: 998;
+}
+
+/* MAIN CONTENT */
+.layout-content {
+  margin-left: 240px;   
+//   margin-top: 64px;     
+  padding: 20px;
+  background: #f5f6fa;
+  min-height: calc(100vh - 64px);
+  margin-top: 64px !important;
+}
+

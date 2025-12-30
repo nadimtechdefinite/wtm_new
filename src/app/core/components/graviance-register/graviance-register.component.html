@@ -1,0 +1,212 @@
+<ng-container>
+    <main class="py-4">
+        <div class="container">
+            <section class="form-card">
+                <h6 class="title-heading">Grievance Registration</h6>
+                <p class="title-label">Applicant Details</p>
+
+                <form [formGroup]="grievanceForm" novalidate>
+                    <div class="row g-3 mb-3">
+
+                        <!-- Name -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Name</mat-label>
+                                <input matInput placeholder="Enter Name" maxlength="100" formControlName="name"
+                                    autocomplete="off">
+                                <mat-error *ngIf="(f['name'].touched || isSubmitted) && f['name'].invalid">
+                                    Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Father/Husband Name -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Father/Husband Name</mat-label>
+                                <input matInput placeholder="Enter Father/Husband Name" maxlength="100"
+                                    formControlName="fatherHus">
+                                <mat-error *ngIf="(f['fatherHus'].touched || isSubmitted) && f['fatherHus'].invalid">
+                                    Father/Husband Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Gender</mat-label>
+                                <mat-select formControlName="gender">
+                                    <mat-option value="">Select Gender</mat-option>
+                                    <mat-option value="M">Male</mat-option>
+                                    <mat-option value="F">Female</mat-option>
+                                    <mat-option value="T">Transgender</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['gender'].touched || isSubmitted) && f['gender'].invalid">
+                                    Gender is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Mobile -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Mobile No.</mat-label>
+                                <input matInput placeholder="Enter Mobile No." maxlength="10" minlength="10"
+                                    formControlName="mobile" appNumberOnly (keyup)="onMobileKeyUp()">
+                                <mat-error *ngIf="(f['mobile'].touched || isSubmitted) && f['mobile'].invalid">
+                                    Enter valid 10-digit mobile number.
+                                </mat-error>
+                                <mat-error
+                                    *ngIf="(f['mobile'].touched || isSubmitted) && f['mobile'].errors?.['pattern']">
+                                    Mobile must be 10 digits and start with 6.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+
+                    <!-- Address Section -->
+                    <p class="title-label">Address</p>
+
+                    <div class="row g-3 mb-3">
+
+                        <!-- State -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>State</mat-label>
+                                <mat-select formControlName="stateCode" (selectionChange)="onStateChange($event)">
+                                    <mat-option value="">Select State</mat-option>
+                                    <mat-option *ngFor="let s of masterdata" [value]="s.stateCode">{{ s.stateName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['stateCode'].touched || isSubmitted) && f['stateCode'].invalid">
+                                    State is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- District -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>District</mat-label>
+                                <mat-select formControlName="districtCode" (selectionChange)="onDistrictChange($event)">
+                                    <mat-option value="">Select District</mat-option>
+                                    <mat-option *ngFor="let d of districtList" [value]="d.districtCode">{{
+                                        d.districtName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(f['districtCode'].touched || isSubmitted) && f['districtCode'].invalid">
+                                    District is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Block -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Block</mat-label>
+                                <mat-select formControlName="blockCode" (selectionChange)="onBlockChange($event)">
+                                    <mat-option value="">Select Block</mat-option>
+                                    <mat-option *ngFor="let b of blockList" [value]="b.blockCode">{{ b.blockName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['blockCode'].touched || isSubmitted) && f['blockCode'].invalid">
+                                    Block is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Gram Panchayat -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Gram Panchayat</mat-label>
+                                <mat-select formControlName="gpCode" (selectionChange)="onGpChange($event)">
+                                    <mat-option value="">Select Gram Panchayat</mat-option>
+                                    <mat-option *ngFor="let gp of gpList" [value]="gp.panchayatCode">{{ gp.panchayatName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['gpCode'].touched || isSubmitted) && f['gpCode'].invalid">
+                                    Gram Panchayat is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Village -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Village</mat-label>
+                                <mat-select formControlName="villageCode">
+                                    <mat-option value="">Select village Name</mat-option>
+                                    <mat-option *ngFor="let vList of villageList" [value]="vList.villageCode">{{
+                                        vList.villageName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(f['villageCode'].touched || isSubmitted) && f['villageCode'].invalid">
+                                    village Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!--pin code -->
+                        <div class="col-md-3">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Pin Code</mat-label>
+                                <input matInput placeholder="Enter Pin Code" maxlength="6" formControlName="pinCode"
+                                    autocomplete="off">
+                                <mat-error *ngIf="(f['pinCode'].touched || isSubmitted) && f['pinCode'].invalid">
+                                    Name is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Address -->
+                        <div class="col-md-4">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Address</mat-label>
+                                <input matInput placeholder="Enter Address" formControlName="address"
+                                    autocomplete="off">
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                    <div class="row g-3 mb-3 align-items-center">
+
+                        <div class="col-md-4 d-flex gap-2">
+                            <div id="image"
+                                class="captcha-box mat-elevation-z1 d-flex align-items-center justify-content-center">
+
+                            </div>
+
+                            <div class="captcha-refresh-button">
+                                <button mat-icon-button (click)="reload()">
+                                    <mat-icon>refresh</mat-icon>
+                                </button>
+                            </div>
+                            <mat-form-field appearance="outline" class="flex-grow-1">
+                                <mat-label>Enter Captcha</mat-label>
+                                <input matInput type="text" formControlName="captcha" maxlength="4">
+                                <mat-error *ngIf="(f['captcha'].touched || isSubmitted) && f['captcha'].invalid">
+                                    Captcha is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                    </div>
+                </form>
+                <div class="text-center mt-3 d-flex gap-2 justify-content-center align-items-center">
+                    <button mat-raised-button color="primary" class="btn-glow btn-blue" type="submit"
+                        (click)="GetverifyCaptcha()">
+                        Submit
+                    </button>
+                    <button mat-raised-button class="btn-glow btn-red" type="reset" (click)="resetForm()">
+                        Reset
+                    </button>
+                </div>
+            </section>
+        </div>
+
+    </main>
+</ng-container>
