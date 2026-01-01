@@ -686,10 +686,11 @@ button.mat-icon-button:hover {
 }
 
 .main-title{
-  background: #06417e;
-    font-size: 24px !important;
+    background: linear-gradient(135deg, #1f3c88d9, #3f6ad8) !important;
+    font-size: 23px !important;
     color: #fff;
-    border-radius: 5px; padding: 6px 10px;
+    border-radius: 5px;
+    padding: 2px 10px;
 }
 
 .pdfIcon{

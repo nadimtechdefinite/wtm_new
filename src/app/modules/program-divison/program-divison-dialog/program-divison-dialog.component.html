@@ -164,9 +164,8 @@
                 <td mat-cell *matCellDef="let element">
                     <!-- If file exists -->
                     <ng-container *ngIf="element.fileName; else noPdf">
-                        <a [href]="'https://write2rdminister.dord.gov.in/wtm_new/' + element.fileName" target="_blank"
+                        <a [href]="element.fileName" target="_blank" (click)="openAttachment(element.fileName)"
                             download title="{{ element.fileName }}" matTooltip="View File">
-
                             <i class="bi bi-download pdfIcon"></i>
                         </a>
                     </ng-container>
@@ -287,9 +286,13 @@
 
                             <!-- Clear (cross) button -->
                             <button mat-icon-button color="warn" type="button" aria-label="Remove file"
-                                (click)="clearFile(fileInput)">
+                                (click)="clearFile(fileInput)" matTooltip="Close">
                                 <mat-icon>close</mat-icon>
                             </button>
+                            <button style="background-color: #0d5db940;" mat-icon-button color="primary"
+                                        type="button" aria-label="Preview file" (click)="previewSelectedFile()" matTooltip="Preview">
+                                        <mat-icon>visibility</mat-icon>
+                                    </button>
                         </ng-container>
                     </div>
 
@@ -309,7 +312,7 @@
             <mat-dialog-actions>
                 <button mat-raised-button (click)="submitFeedback()" class=" btn-glow btn-blue "> Submit Feedback
                 </button>
-                <button mat-raised-button color="primary" mat-dialog-close class="btn-glow btn-red">
+                <button mat-raised-button color="primary"  [mat-dialog-close]="'reload'" class="btn-glow btn-red">
                     Close
                 </button>
             </mat-dialog-actions>

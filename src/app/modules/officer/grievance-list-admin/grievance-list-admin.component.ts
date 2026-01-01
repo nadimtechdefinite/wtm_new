@@ -9,6 +9,8 @@ import { MobileService } from '../../../services/mobile.service';
 import { masterService } from '../../../services/master.service';
 import { ProgramDivisonDialogComponent } from '../../program-divison/program-divison-dialog/program-divison-dialog.component';
 import { GravianceDetailDialogComponent } from '../../citzen/graviance-detail-dialog/graviance-detail-dialog.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandlerService } from '../../../shared/error-handler.service';
 
 
 @Component({
@@ -59,11 +61,16 @@ export class GrievanceListAdminComponent {
   userInfo: string | null = null;
   grievanceId: any;
   getCitizenId: any;
+  officeStatusDetails: any;
+  userCode:any;
+  userType:any;
+  loginName:any;
 
   constructor(private dialog: MatDialog,
     private router: Router,
     private mobileService: MobileService,
-    private masterService: masterService) { }
+    private masterService: masterService,
+   private errorHandler: ErrorHandlerService,) { }
 
   ngOnInit() {
     this.displayedColumns = this.columns.map(col => col.column);
@@ -82,18 +89,21 @@ export class GrievanceListAdminComponent {
       this.parsedUserInfo = JSON.parse(this.userInfo);
       this.schemeCode = this.parsedUserInfo.schemeCode
       console.log(this.schemeCode, "this.schemeCode");
-
+    
     }
     this.getGrievanceDetailsForAdmin()
+  
 
+        this.userInfo = sessionStorage.getItem('userInfo');
+    if (this.userInfo) {
+      this.parsedUserInfo = JSON.parse(this.userInfo);
+      this.userCode = this.parsedUserInfo.userCode;
+      this.userType = this.parsedUserInfo.userType;
+      this.loginName = this.parsedUserInfo.loginName
+      console.log(this.userType, "this.userType");
+    }
+   this.officeStatus();
   }
-
-
-
-
-
-
-
   getGrievanceDetailsForAdmin() {
     this.masterService
       .getGrievanceDetailsForAdmin(this.schemeCode)
@@ -146,17 +156,51 @@ export class GrievanceListAdminComponent {
 
 
   openViewDialogAdmin(row: any, citizenDetails: any) {
-  this.dialog.open(ProgramDivisonDialogComponent, {
+  const dialogRef = this.dialog.open(ProgramDivisonDialogComponent, {
     width: '65vw',
     maxWidth: '90vw',
     maxHeight: '90vh',
     panelClass: 'custom-dialog', // 🔥 MUST
+    disableClose:true,
     data: {
       grievance: row,
       citizen: citizenDetails
     }
   });
+    dialogRef.afterClosed().subscribe((result:any) => {
+    if (result === 'reload') {
+      this.getGrievanceDetailsForAdmin(); // 🔁 API reload
+    }
+  });
+}
+
+applyStatusFilter(status: string) {
+  this.admindataSource.filterPredicate = (data: any, filter: string) => {
+    if (!filter) return true;
+    return data.status === filter;
+  };
+
+  this.admindataSource.filter = status;
 }
 
 
+  officeStatus() {
+    debugger
+    const role =
+      this.userType === 1 ? 'ADMIN' :
+        this.userType === 2 ? 'PD' :
+          '';
+    this.masterService.getOfficerStatusDetail(role).subscribe({
+      next: (response: any) => {
+        if (response?.messageCode === 1) {
+          console.log(response.data, "response");
+          this.officeStatusDetails = response.data
+
+        } else {
+          console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
+        }
+      },
+      error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
+    });
+  }
 }

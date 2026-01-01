@@ -3,8 +3,11 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MATERIAL_MODULES } from '../../../shared/material/material';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { A11yModule } from '@angular/cdk/a11y';
+import { masterService } from '../../../services/master.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-graviance-detail-dialog',
@@ -25,61 +28,105 @@ export class GravianceDetailDialogComponent {
   citizenComment: string = '';
   grievanceStatus: any;
     satisfiedStatus: string = '';
+    feedbackForm!: FormGroup;
+  officeStatusDetails: any;
+  getFeebbackSatisfied: any;
+  citizenId: any;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) { 
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
+   private fb: FormBuilder,
+    private masterService:masterService,
+  private toastr: ToastrService,) {
     console.log(data, "data");
     debugger
-   this.citizendetails = data.citizen
-   this.grievancedetails = data.grievance
-   this.grievanceStatus = data.grievance.status
-    this.dataSource = new MatTableDataSource([this.grievancedetails]); 
-}
+    this.citizendetails = data.citizen
+    this.citizenId = data.citizen.citizenId
+    this.grievancedetails = data.grievance
+    this.grievanceStatus = data.grievance.status
+    this.dataSource = new MatTableDataSource([this.grievancedetails]);
+  }
 
-// ngOnInit() {
-//     // Initialize the table data
-//     this.dataSource = new MatTableDataSource(this.data); 
-//     // Assuming your data is like { items: [ {id:1, name:'a', description:'b'} ] }
-//   }
+ngOnInit() {
+    // this.dataSource = new MatTableDataSource(this.data); 
+     this.feedbackForm = this.fb.group({
+      feedback: ['', [Validators.required, Validators.maxLength(1000)]],
+      satisfiedStatus: ['', Validators.required]
+    });
+
+    this.feedbackStatus();
+  }
 
 selectedSatisfied(event:any){ 
- const seti = event.value
+ this.getFeebbackSatisfied = event.value
 }
 
   downloadFile(filePath: string, fileName: string) {
-    debugger
     const link = document.createElement('a');
     link.href = filePath; // full URL if backend hosted separately
     link.download = fileName;
     link.click();
   }
 
-  submitFeedback(){}
+    submitFeedback() {
+      
+    if (this.feedbackForm.invalid) {
+      this.feedbackForm.markAllAsTouched();
+      return;
+    }
+    const payload = {
+      citizenId: this.citizenId,
+      grievanceId: this.grievancedetails?.grievanceId,
+      grievanceNumber: this.grievancedetails?.grievanceNumber,
+      feedbackComments : this.feedbackForm.get('feedback')?.value,
+      feedbackStatus : this.getFeebbackSatisfied,
+    };
 
-  //   submitFeedback() {
-  //   if (!this.citizenSatisfaction) {
-  //     swal('Please select satisfaction status');
-  //     return;
-  //   }
+    this.masterService.submitCitizenFeedback(payload).subscribe({
+        next: (res:any) => {
+         if(res.messageCode === 1){
+          this.toastr.success(res.massage || "OTP resent successfully");
+         }
+        },
+        error: () => {
+        },
+      });
+  }
 
-  //   const payload = {
-  //     citizenComment: this.citizenComment,
-  //     citizenSatisfaction: this.citizenSatisfaction,
-  //   };
 
-  //   this.userDetailService
-  //     .submitCitizenFeedback(this.popupGrievance.grievanceNumber, payload)
-  //     .subscribe({
-  //       next: () => {
-  //         swal('Success', 'Feedback submitted successfully!', 'success');
-  //         this.citizenComment = '';
-  //         this.citizenSatisfaction = '';
-  //         this.showPopup = false;
-  //       },
-  //       error: () => {
-  //         swal('Error', 'Unable to save feedback', 'error');
-  //       },
-  //     });
-  // }
+    feedbackStatus() {
+      const role = 'FEEDBACK'
+      this.masterService.feedbackStatusDetail(role).subscribe({
+        next: (response: any) => {
+          if (response?.messageCode === 1) {
+            console.log(response.data, "response");
+            this.officeStatusDetails = response.data
+
+          } else {
+            console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
+          }
+        },
+        // error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
+      });
+    }
+
+    openAttachment(fileName: string): void {
+  this.masterService.downloadDoc(fileName).subscribe({
+    next: (res: Blob) => {
+      const blob = new Blob([res], { type: res.type });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName; // 
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    },
+    error: () => {
+      alert("File not found or download failed");
+    },
+  });
+}
 
 
 }

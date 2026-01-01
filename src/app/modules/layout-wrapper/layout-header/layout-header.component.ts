@@ -14,6 +14,8 @@ import { filter } from 'rxjs';
 })
 export class LayoutHeaderComponent {
   parsedUserInfo: any;
+  name: any;
+  getUsername: any;
   constructor(private router:Router, private citizenStore: CitizenStoreService,private mobileService: MobileService,){}
   userName:any;
    citizenData: any;
@@ -21,6 +23,7 @@ export class LayoutHeaderComponent {
   getcitizenId: any;
     mobileNo: any;
     showMenu = false;
+   displayName: string = '';
     
 logOut(){
   sessionStorage.clear();
@@ -32,13 +35,39 @@ toggleMenu() {
 }
   ngOnInit() {
   this.loadCitizenDetails();
+  debugger
    const userInfo = sessionStorage.getItem('userInfo');
+   const resdata = sessionStorage.getItem('name');
+   if(resdata){
+     this.getUsername = JSON.parse(resdata);
+   }
+   
+   
 
 if (userInfo) {
   this.parsedUserInfo = JSON.parse(userInfo);
   console.log(this.parsedUserInfo.citizenId, "parsedUserInfo");
   
 }
+
+if (userInfo) {
+    this.parsedUserInfo = JSON.parse(userInfo);
+    if (this.parsedUserInfo.userType === 1 || this.parsedUserInfo.userType === 2) {
+      this.displayName = this.parsedUserInfo.loginName;
+    }
+    else if (this.parsedUserInfo.citizenName) {
+      this.displayName = this.parsedUserInfo.citizenName;
+    }
+  }
+
+    /** -----------------------------
+     *  BHASHINI TRANSLATION PLUGIN
+     * ----------------------------- */
+    const script = document.createElement('script');
+    script.src = 'https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js';
+    script.async = true;
+    document.body.appendChild(script);
+
   }
 
 loadCitizenDetails() {
@@ -50,7 +79,6 @@ loadCitizenDetails() {
 
     // 🔥 Call API only after values are ready
     this.citizenStore.loadCitizenDetails(this.getcitizenId, this.mobileNo);
-
     // Subscribe to citizen data
     this.citizenStore.citizenDetails$
       .pipe(filter((data: any) => data !== null))
@@ -59,6 +87,7 @@ loadCitizenDetails() {
         console.log('Citizen Data:', data);
         this.citizenData = data;
         this.userName = data?.name; // agar aapko name chahiye
+        sessionStorage.setItem('username', this.userName);
         }
       });
   });

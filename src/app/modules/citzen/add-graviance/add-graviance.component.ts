@@ -71,6 +71,9 @@ export class AddGravianceComponent implements OnInit {
   grievanceDetails: any;
   destroy$ = new Subject<void>
   userName: any;
+  isSelectedFile: any;
+   isClearFile: any
+  generatedComplaintId: any;
   constructor(
     private service: CommonService,
     private fb: FormBuilder,
@@ -417,6 +420,7 @@ export class AddGravianceComponent implements OnInit {
     });
   }
   schemeName: any
+  fileName: string | null = null;
   checkUpLoadedAttachmentFormat(e: any, attachNo: any) {
     const allowedExtensions = ["pdf", "jpeg", "jpg", "png"];
     const maxSizeInBytes = 10 * 1024 * 1024; // 1MB in bytes
@@ -448,9 +452,27 @@ export class AddGravianceComponent implements OnInit {
 
     // Valid file
     this.attachement1 = file;
-    this.grievanceForm.get('attachMent1')?.setValue(this.attachement1)
+    this.fileName = file.name
+    console.log(this.attachement1, "filepath");
+
+    // this.grievanceForm.get('attachMent1')?.setValue(this.attachement1)
     return true;
   }
+  clearFile(fileInput: HTMLInputElement) {
+    fileInput.value = '';     // reset input
+    this.fileName = null;     // clear name
+    this.attachement1 = null;
+  }
+
+previewSelectedFile() {
+  if (!this.attachement1) return;
+  const fileURL = URL.createObjectURL(this.attachement1);
+  window.open(fileURL, '_blank');
+
+  setTimeout(() => {
+    URL.revokeObjectURL(fileURL);
+  }, 1000);
+}
 
   isSubmitted = false; // to track submit click
 
@@ -533,7 +555,8 @@ export class AddGravianceComponent implements OnInit {
       next: (response: any) => {
         if (response?.messageCode === 1) {
           this.grievanceDetails = response.data;
-          this.generatedComplaintNo = response.data.grievanceId;
+          this.generatedComplaintNo = response.data.grievanceNumber ;
+           this.generatedComplaintId = response.data.grievanceId;
           // this.name = this.grievanceForm.get('name')?.value
           this.schemeName = this.grievanceForm.get('schemeCode')?.value;
           const selectedScheme = this.schemeList.find(
@@ -545,10 +568,9 @@ export class AddGravianceComponent implements OnInit {
           // this.grievanceForm.updateValueAndValidity({ onlySelf: false, emitEvent: false });
           this.isSubmitted = false;
           this.isComplaintSave = false;
-          this.toastr.success(response?.message || 'Grievance saved successfully!');
-          this.router.navigate(['layout/citizen/graviance-list'])
           this.grievanceForm.reset();
           setTimeout(() => {
+            this.toastr.success(response?.message || 'Grievance saved successfully!');
             this.openPdfModal();
           }, 300);
         } else {
@@ -583,6 +605,7 @@ export class AddGravianceComponent implements OnInit {
   closeDialog() {
     if (this.dialogRef) {
       this.dialogRef.close();
+        this.router.navigate(['/layout/citizen/graviance-list'])
     }
   }
   initSpeech() {
@@ -752,5 +775,6 @@ export class AddGravianceComponent implements OnInit {
   //     error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
   //   });
   // }
+
 
 }

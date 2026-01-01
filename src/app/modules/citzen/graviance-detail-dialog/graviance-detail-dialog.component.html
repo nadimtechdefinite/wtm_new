@@ -8,12 +8,14 @@
   <div class="card-header">
     <h5>Citizen Details</h5>
     <div><span>Grievance Status</span> :
-      <span class="status" [ngClass]="{
-              'completed': grievancedetails.status === 'completed',
-              'pending': grievancedetails.status === 'UnderProcess',
-            }">{{ grievancedetails?.status }}</span>
-            <span  mat-dialog-close class="close">X</span>
-    </div>
+                <span class="status" [ngClass]="{
+              'completed': grievancedetails.status === 'C',
+              'pending': grievancedetails.status === 'U',
+            }">{{ grievancedetails.status === 'U' ? 'Under-Process' : grievancedetails.status === 'C' ? 'Complete' :
+                    grievancedetails.status }}</span>
+                <span mat-dialog-close class="close">X</span>
+
+            </div>
 
   </div>
 
@@ -164,8 +166,8 @@
       <td mat-cell *matCellDef="let element">
         <!-- If file exists -->
         <ng-container *ngIf="element.fileName; else noPdf">
-          <a [href]="'https://write2rdminister.dord.gov.in/wtm_new/' + element.fileName" target="_blank" download
-            title="{{ element.fileName }}" matTooltip="View File">
+          <a [href]="element.fileName" target="_blank" download
+            title="{{ element.fileName }}" (click)="openAttachment(element.fileName)" matTooltip="View File">
            <i class="bi bi-download pdfIcon"></i>
           </a>
         </ng-container>
@@ -180,38 +182,54 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <!-- <div class="m-0 p-0" *ngIf="popupGrievance?.status === 'Completed'"> -->
-  <div class="m-0 p-0 mt-3" *ngIf="grievanceStatus === 'UnderProcess'">
-    <div class="mb-3">
-      <label class="form-label">Your Feedback</label>
-      <textarea class="form-control" rows="3" name="citizenComment"></textarea>
-    </div>
+ <form
+  [formGroup]="feedbackForm"
+  *ngIf="grievanceStatus === 'C'"
+  class="m-0 p-0 mt-3"
+>
 
-    <!-- Dropdown + Submit Button in Two Columns -->
-    <div class="row mb-3 align-items-end">
-      <!-- Left Column: Dropdown -->
-      <div class="col-md-6">
-         <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Are you satisfied?</mat-label>
-                    <mat-select [(ngModel)]="satisfiedStatus" (selectionChange)="selectedSatisfied($event)">
-                        <mat-option [value]="">Select</mat-option>
-                        <mat-option [value]="'S'">Satisfied</mat-option>
-                        <mat-option [value]="'US'">Not Satisfied</mat-option>
-                    </mat-select>
-                </mat-form-field>
-      </div>
+  <!-- Feedback -->
+  <div class="mb-3">
+    <label class="form-label">Your Feedback</label>
+    <textarea
+      class="form-control"
+      rows="3"
+      formControlName="feedback"
+      placeholder="Enter your feedback"
+    ></textarea>
 
+    <small class="text-danger"
+      *ngIf="feedbackForm.get('feedback')?.touched &&
+             feedbackForm.get('feedback')?.invalid">
+      Feedback is required
+    </small>
+  </div>
 
+  <!-- Satisfied Dropdown -->
+  <div class="row mb-3 align-items-end">
+    <div class="col-md-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Are you satisfied?</mat-label>
+        <mat-select formControlName="satisfiedStatus" (selectionChange)="selectedSatisfied($event)">
+          <mat-option *ngFor="let status of officeStatusDetails" [value]="status.statusCode">
+            {{ status.status}}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="feedbackForm.get('satisfiedStatus')?.touched &&
+                                feedbackForm.get('satisfiedStatus')?.invalid">
+          Please select status
+        </mat-error>
+      </mat-form-field>
     </div>
   </div>
 
   <mat-dialog-actions>
-    <!-- <button (click)="downloadFile(data.filePath, data.fileName)">
-    <i class="fa fa-download"></i> Download File
-  </button> -->
+
     <button mat-raised-button (click)="submitFeedback()" class=" btn-glow btn-blue "> Submit Feedback
     </button>
     <button mat-raised-button color="primary" mat-dialog-close class="btn-glow btn-red">
       Close
     </button></mat-dialog-actions>
+
+</form>
+
 </mat-dialog-content>

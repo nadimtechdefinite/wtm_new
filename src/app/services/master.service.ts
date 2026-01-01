@@ -20,6 +20,9 @@ const ministryMaster = environment.apiUrl + "ministryMaster";
 const getcommentsaAttachments = environment.apiUrl + "comments-attachments";
 const getstatusDetail = environment.apiUrl + "statussmaster/statusDetail?key";
 const getadminSummary = environment.apiUrl + "pd-admin/summary";
+const downloadDoc = environment.apiUrl + "file/download/";
+const submitFeedback = environment.apiUrl + "citizen/submitFeedback";
+const getFeedbackDetail = environment.apiUrl + "statussmaster/statusDetail?key";
 
 //auth api
 const generateOtpApi = environment.apiUrl + 'auth/generate-otp';
@@ -113,7 +116,6 @@ export class masterService extends HttpApiService {
 
 
   commentsAttachments(data: any):Observable<any> {
-    debugger;
     return this.http.post(`${COMMENTS_ATTACHMENTS_URL}`, data);
   }
 
@@ -121,9 +123,22 @@ export class masterService extends HttpApiService {
     return this.getApiWithoutToken(`${getstatusDetail}=STATUS_${key}`);
   }
 
+  feedbackStatusDetail(key: any) {
+    return this.getApiWithoutToken(`${getFeedbackDetail}=${key}`);
+  }
+
     adminSummaryDetails(schemeCode: any) {
     return this.getApiWithoutToken(`${getadminSummary}/${schemeCode}`);
   }
+
+  downloadDoc(fileName: any) : Observable<Blob>{
+    return this.http.get(`${downloadDoc}${fileName}`, {responseType: 'blob'} );
+  }
+
+  submitCitizenFeedback(data:any){
+    return this.http.post(`${submitFeedback}`, data);
+  }
+
 
 }
 

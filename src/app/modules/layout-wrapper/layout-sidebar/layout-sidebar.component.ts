@@ -25,9 +25,9 @@ export class LayoutSidebarComponent implements OnInit {
 
   constructor(private router: Router) { }
  citizenLinks: MenuItem[] = [
-    { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },          // Orange
-    { label: 'Complain List', routerLink: '/layout/citizen/graviance-list', icon: 'fas fa-users', color: '#3f51b5' },
-    
+    { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },    
+    { label: 'Register Complaint ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },      // Orange
+    { label: 'Complain List', routerLink: '/layout/citizen/graviance-list', icon: 'fas fa-list', color: '#3f51b5' },
     // {
     //   label: 'Event',
     //   icon: 'fas fa-calendar-alt', // calendar icon

@@ -20,11 +20,11 @@ export class CitizenStoreService {
   if (this.citizenDetailsSubject.value) return;
 
   if (!citizenId || !mobileNo) return;
-
   this.masterService.citizenDetails(citizenId, mobileNo).subscribe({
     next: (res: any) => {
       this.citizenDetailsSubject.next(res?.data ?? null);
-    },
+      sessionStorage.setItem("name",JSON.stringify(res?.data.name))
+    }, 
     error: err => console.error('API Error:', err)
   });
 }

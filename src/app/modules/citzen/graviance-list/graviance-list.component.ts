@@ -23,12 +23,8 @@ export class GravianceListComponent {
   // component.ts
 
   displayedColumns: string[] = [
+    'serialNo',
     'grievanceNumber',
-    // 'stateName',
-    // 'districtName',
-    // 'blockName',
-    // 'panchayatName',
-    // 'villageName',
     'schemeName',
     'description',
     'createdOn',
@@ -37,16 +33,12 @@ export class GravianceListComponent {
   ];
 
   columns = [
+    { column: 'serialNo', header: 'Sr.No' },
     { column: 'grievanceNumber', header: 'Grievance ID' },
-    // { column: 'stateName', header: 'State' },
-    // { column: 'districtName', header: 'District' },
-    // { column: 'blockName', header: 'Block' },
-    // { column: 'panchayatName', header: 'Panchayat' },
-    // { column: 'villageName', header: 'Village' },
     { column: 'schemeName', header: 'Scheme/Division' },
     { column: 'description', header: 'Description' },
-     { column: 'createdOn', header: 'Date' },
-     { column: 'status', header: 'Status' },
+     { column: 'createdOn', header: 'Date', date:true },
+     { column: 'status', type: 'status', header: 'Status' },
     { column: 'action', header: 'Action', type: 'action' }
   ];
 
@@ -90,14 +82,15 @@ getCitizenDetails() {
       .citizenDetails(this.citizenId, this.mobileNo)
       .subscribe((res: any) => {
         if (res) {
-          this.citzenDetails = res.data;
-          this.grievanceList = res.data.grievanceDetails;
-          // this.grievanceList = res.data.grievanceDetails.map((item:any) => {
-          //   return {
-          //     ...item,
-          //     filePath: item.filePath.replace(/\\/g, '/') // replaces all \ with /
-          //   };
-          // });
+          debugger;
+          this.citzenDetails = res.data
+          this.grievanceList = res.data.grievanceDetails.map((item:any,index:any) => {
+            return {
+              ...item,
+              serialNo:index+1
+            };
+          });;
+          // this.grievanceList = res.data.grievanceDetails
           console.log('User List Citizen Details:', this.citzenDetails);
           this.dataSource = new MatTableDataSource(this.grievanceList);
           this.dataSource.paginator = this.paginator;

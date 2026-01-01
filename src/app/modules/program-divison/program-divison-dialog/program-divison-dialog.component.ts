@@ -9,7 +9,7 @@ import { A11yModule } from "@angular/cdk/a11y"; // <-- Add this
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
-
+import swal from 'sweetalert2';
 
 
 @Component({
@@ -46,6 +46,7 @@ export class ProgramDivisonDialogComponent {
   selectedSataus: any;
   selectedscheme: any;
   feedbackForm!: FormGroup;
+  userName: any;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private masterService: masterService,
     private toastr: ToastrService, private errorHandler: ErrorHandlerService, private dialogRef: MatDialogRef<ProgramDivisonDialogComponent>, private fb: FormBuilder) {
@@ -72,6 +73,7 @@ export class ProgramDivisonDialogComponent {
       this.parsedUserInfo = JSON.parse(this.userInfo);
       this.userCode = this.parsedUserInfo.userCode;
       this.userType = this.parsedUserInfo.userType;
+      this.userName = this.parsedUserInfo.userName;
       this.loginName = this.parsedUserInfo.loginName
       console.log(this.userType, "this.userType");
     }
@@ -125,9 +127,10 @@ export class ProgramDivisonDialogComponent {
       grievanceNumber: this.grievancedetails.grievanceNumber,
       comments: this.feedbackForm.get('citizenComment')?.value || '',
       status: this.selectedSataus || '',
-      commentsBy: this.loginName,
-      createdBy: this.loginName,
-      ...(this.userType === 1 &&this.selectedSataus === 'F' && this.selectedscheme && {schemeCode: this.selectedscheme})
+      commentsBy: this.userName,
+      createdBy: this.userCode,
+      userType: this.userType,
+      ...(this.userType === 1 && this.selectedSataus === 'F' && this.selectedscheme && { schemeCode: this.selectedscheme })
     };
 
 
@@ -142,59 +145,40 @@ export class ProgramDivisonDialogComponent {
             this.citizendetails = res.data;
             this.toastr.success(res?.message || 'Comment saved successfully');
           }
+          else {
+            this.toastr.error(res?.message || 'Failed to save comment');
+          }
         },
-        error: (err) => console.error('API Error:', err)
+        error: (err) => {
+          console.error('API Error:', err);
+          if (err?.error?.message) {
+            this.toastr.error(err.error.message);
+          } else {
+            this.toastr.error('Server error. Please try again later');
+          }
+        }
       });
   }
 
+openAttachment(fileName: string): void {
+  this.masterService.downloadDoc(fileName).subscribe({
+    next: (res: Blob) => {
+      const blob = new Blob([res], { type: res.type });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName; // 
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    },
+    error: () => {
+      alert("File not found or download failed");
+    },
+  });
+}
 
-
-  openAttachment(fileName: string): void {
-    // this.reviewUpdateStatusService.viewAttachment(fileName).subscribe({
-    //   next: (res: Blob) => {
-    //     const url = window.URL.createObjectURL(res);
-    //     window.open(url, '_blank'); // Open in a new tab
-    //   },
-    //   error: (err) => {
-    //     swal({
-    //       icon: 'error',
-    //       title: 'File Not Found',
-    //       text:
-    //         err.error?.message ||
-    //         "Document doesn't exist. Please contact administrator.",
-    //     });
-    //   },
-    // });
-  }
-
-
-  // submitFeedback(){}
-
-  //   submitFeedback() {
-  //   if (!this.citizenSatisfaction) {
-  //     swal('Please select satisfaction status');
-  //     return;
-  //   }
-
-  //   const payload = {
-  //     citizenComment: this.citizenComment,
-  //     citizenSatisfaction: this.citizenSatisfaction,
-  //   };
-
-  //   this.userDetailService
-  //     .submitCitizenFeedback(this.popupGrievance.grievanceNumber, payload)
-  //     .subscribe({
-  //       next: () => {
-  //         swal('Success', 'Feedback submitted successfully!', 'success');
-  //         this.citizenComment = '';
-  //         this.citizenSatisfaction = '';
-  //         this.showPopup = false;
-  //       },
-  //       error: () => {
-  //         swal('Error', 'Unable to save feedback', 'error');
-  //       },
-  //     });
-  // }
 
   attachement1: any = File
   fileName: string | null = null;
@@ -241,7 +225,15 @@ export class ProgramDivisonDialogComponent {
     this.attachement1 = null;
   }
 
+previewSelectedFile() {
+  if (!this.attachement1) return;
+  const fileURL = URL.createObjectURL(this.attachement1);
+  window.open(fileURL, '_blank');
 
+  setTimeout(() => {
+    URL.revokeObjectURL(fileURL);
+  }, 1000);
+}
   ////new api for state login////
   schemeMaster() {
     this.masterService.schemeMaster().subscribe({

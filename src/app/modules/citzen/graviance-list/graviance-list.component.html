@@ -1,6 +1,7 @@
 <div class="row">
-    <div class="col-12" >
-        <h3 class="main-title"> Grievances List</h3></div>
+    <div class="col-12">
+        <h3 class="main-title"> Grievances List</h3>
+    </div>
 
 </div>
 <div class="d-flex justify-content-between align-items-center w-100">
@@ -12,7 +13,8 @@
         </mat-form-field>
     </div>
     <div class="ms-3 mb-4">
-        <button mat-raised-button color="primary" class="btn-glow btn-blue" [routerLink]="['/layout/citizen/add-graviance']">
+        <button mat-raised-button color="primary" class="btn-glow btn-blue"
+            [routerLink]="['/layout/citizen/add-graviance']">
             Register Complaint
         </button>
     </div>
@@ -21,8 +23,7 @@
 <!-- DATA TABLE -->
 <div class="card">
     <div class="card-body">
-        <div class="mat-elevation-z8 table-responsive tbl "
-        style="border: 1px solid #dddddd !important; box-shadow: none !important;
+        <div class="mat-elevation-z8 table-responsive tbl " style="border: 1px solid #dddddd !important; box-shadow: none !important;
     border-radius: 10px !important;">
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
                 <ng-container *ngFor="let col of columns" [matColumnDef]="col.column">
@@ -30,7 +31,8 @@
                     <td mat-cell *matCellDef="let row ">
                         <ng-container [ngSwitch]="col.type">
                             <ng-container *ngSwitchCase="'action'">
-                                <button mat-icon-button color="primary" (click)="openViewDialog(row, citzenDetails)"  style="    background-color: #ebf5ff;
+                                <button mat-icon-button color="primary" (click)="openViewDialog(row, citzenDetails)"
+                                    style="    background-color: #ebf5ff;
                                     color: #0d6efd;
                                     font-size: 21px;">
                                     <!-- <mat-icon>visibility</mat-icon> -->
@@ -38,8 +40,12 @@
                                 </button>
                             </ng-container>
                             <ng-container *ngSwitchCase="'status'">
-                                <span class="status" [ngClass]="row.status?.toLowerCase()">
-                                    {{ row.status }}
+                                <span class="status" [ngClass]="{
+                                    'statusgreen': row.status === 'C',
+                                    'statusorange': row.status === 'U'
+                                }">
+                                    {{ row.status === 'U' ? 'Under-Process' : row.status === 'C' ? 'Complete' :
+                                    row.status }}
                                 </span>
                             </ng-container>
                             <ng-container *ngSwitchDefault>

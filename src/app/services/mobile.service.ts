@@ -20,7 +20,6 @@ export class MobileService {
   }
 
   updatelogindata(loginData:any){
-    debugger
      sessionStorage.setItem('loginData', JSON.stringify(loginData));  // save permanently
     this.logindata.next(loginData);   
   }

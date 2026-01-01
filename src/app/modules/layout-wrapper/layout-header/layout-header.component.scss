@@ -13,13 +13,13 @@
   /* Start after sidebar */
   right: 0;
   height: 64px;
-  // background: linear-gradient(to right, #0d6efd, #06c2e7);
-  background-image: linear-gradient(to right, #2365c7, #25889c) ;
+  background:linear-gradient(
+135deg, #125ab1, #4499ff) !important;
   color: #fff;
   display: flex;
   flex-direction: row !important;
   align-items: center;
-  justify-content: space-between;
+  justify-content: end;
   padding: 0 32px;
   z-index: 100;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -90,7 +90,6 @@
   align-items: center;
   gap: 15px;
   padding: 8px 12px;
-  background-color: #f1f1f1;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   font-family: Arial, sans-serif;
@@ -115,21 +114,20 @@
   font-size: 16px;
 }
 
-.profile-name {
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-}
+
 
 .logout-btn {
-  background-color: #3590e5;
-  color: white;
-  border: none;
+      background: linear-gradient(135deg, #1f3c88, #3f6ad8) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 18px rgba(63, 106, 216, 0.35) !important;
+  color: white !important;
+
   padding: 6px 12px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s;
+  border: 1px solid #ffffff;
 }
 
 .profile-wrapper {
@@ -147,7 +145,6 @@
 .profile-name {
   font-size: 14px;
   font-weight: 500;
-  color: #5f6c7b;
 }
 
 .avatar {
@@ -168,7 +165,6 @@
   right: 0;
   top: 45px;
   width: 190px;
-  background: #fff;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   padding: 8px 0;
@@ -206,3 +202,9 @@
   font-weight: 500;
 }
 
+.bhashini-plugin-container {
+  background: #ffffff !important;
+  border-radius: 5px !important;
+  display: inline-flex;
+      padding: 3px;
+}
