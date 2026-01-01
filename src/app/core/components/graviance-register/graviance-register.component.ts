@@ -257,7 +257,7 @@ export class GravianceRegisterComponent implements OnInit {
 
     const formData = {
       name: this.grievanceForm.get('name')?.value,
-      fatherHusband: this.grievanceForm.get('fatherHus')?.value,
+      fatherHusbandName: this.grievanceForm.get('fatherHus')?.value,
       gender: this.grievanceForm.get('gender')?.value,
       mobileNo: this.grievanceForm.get('mobile')?.value,
       stateCode: this.grievanceForm.get('stateCode')?.value,
@@ -277,6 +277,7 @@ export class GravianceRegisterComponent implements OnInit {
           this.grievanceForm.reset();
           this.toastr.success(response?.message || 'Grievance saved successfully!');
           this.isSubmitted = false;
+          this.router.navigate(['/login'])
 
         } else {
           this.toastr.warning(response?.responseDesc || 'Something went wrong, please try again.');

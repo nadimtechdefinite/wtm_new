@@ -18,6 +18,8 @@ const saveGrievance = environment.apiUrl + "citizen/saveGrievance";
 const getCitizenDetails = environment.apiUrl + "citizenregistration/citizen-details";
 const ministryMaster = environment.apiUrl + "ministryMaster";
 const getcommentsaAttachments = environment.apiUrl + "comments-attachments";
+const getstatusDetail = environment.apiUrl + "statussmaster/statusDetail?key";
+const getadminSummary = environment.apiUrl + "pd-admin/summary";
 
 //auth api
 const generateOtpApi = environment.apiUrl + 'auth/generate-otp';
@@ -113,6 +115,14 @@ export class masterService extends HttpApiService {
   commentsAttachments(data: any):Observable<any> {
     debugger;
     return this.http.post(`${COMMENTS_ATTACHMENTS_URL}`, data);
+  }
+
+    getOfficerStatusDetail(key: any) {
+    return this.getApiWithoutToken(`${getstatusDetail}=STATUS_${key}`);
+  }
+
+    adminSummaryDetails(schemeCode: any) {
+    return this.getApiWithoutToken(`${getadminSummary}/${schemeCode}`);
   }
 
 }

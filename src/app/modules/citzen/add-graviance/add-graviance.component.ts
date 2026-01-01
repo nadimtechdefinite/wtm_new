@@ -464,33 +464,33 @@ export class AddGravianceComponent implements OnInit {
     }
     this.grievanceForm.enable()
     const formValue = this.grievanceForm.value;
-    const formData = new FormData();
+    // const formData = new FormData();
+    // // if (formValue.attachMent1 instanceof File) {
+    // //   formData.append('attachMent1', formValue.attachMent1, formValue.attachMent1.name);
+    // // }
+    // let fileName = '';
+    // let filePath = '';
     // if (formValue.attachMent1 instanceof File) {
-    //   formData.append('attachMent1', formValue.attachMent1, formValue.attachMent1.name);
+    //   const file: File = formValue.attachMent1;
+    //   fileName = file.name;                 // actual uploaded file name
+    //   filePath = `/uploads/${file.name}`;   // or whatever path backend expects
+    //   formData.append('attachMent1', file, file.name);
     // }
-    let fileName = '';
-    let filePath = '';
-    if (formValue.attachMent1 instanceof File) {
-      const file: File = formValue.attachMent1;
-      fileName = file.name;                 // actual uploaded file name
-      filePath = `/uploads/${file.name}`;   // or whatever path backend expects
-      formData.append('attachMent1', file, file.name);
-    }
-    const payload = {
-      citizenId: this.citzenDetails?.citizenId,
-      stateCode: this.grievanceForm.get('stateCode')?.value,
-      districtCode: this.grievanceForm.get('districtCode')?.value,
-      blockCode: this.grievanceForm.get('blockCode')?.value,
-      panchayatCode: this.grievanceForm.get('panchayatCode')?.value,
-      villageCode: this.grievanceForm.get('villageCode')?.value,
-      pinCode: this.grievanceForm.get('pinCode')?.value,
-      ministryCode: this.grievanceForm.get('ministry')?.value,
-      schemeCode: this.grievanceForm.get('schemeCode')?.value,
-      description: this.grievanceForm.get('Description')?.value,
-      fileName: fileName,
-      filePath: filePath,
-      createdBy: this.citzenDetails?.citizenId
-    }
+    // const payload = {
+    //   citizenId: this.citzenDetails?.citizenId,
+    //   stateCode: this.grievanceForm.get('stateCode')?.value,
+    //   districtCode: this.grievanceForm.get('districtCode')?.value,
+    //   blockCode: this.grievanceForm.get('blockCode')?.value,
+    //   panchayatCode: this.grievanceForm.get('panchayatCode')?.value,
+    //   villageCode: this.grievanceForm.get('villageCode')?.value,
+    //   pinCode: this.grievanceForm.get('pinCode')?.value,
+    //   ministryCode: this.grievanceForm.get('ministry')?.value,
+    //   schemeCode: this.grievanceForm.get('schemeCode')?.value,
+    //   description: this.grievanceForm.get('Description')?.value,
+    //   fileName: fileName,
+    //   filePath: filePath,
+    //   createdBy: this.citzenDetails?.citizenId
+    // }
     // const formData = new FormData();
     //   formData.append('citizenId', this.citzenDetails?.citizenId);
     //   formData.append('stateCode', this.grievanceForm.get('stateCode')?.value);
@@ -508,9 +508,28 @@ export class AddGravianceComponent implements OnInit {
     //   if (this.attachement1) {
     //     formData.append('attachMent1', this.attachement1, this.attachement1.name);
     //   }
+    const formData = new FormData();
+  // 1️⃣ JSON object exactly like Postman
+  const payload = {
+    citizenId: this.citzenDetails?.citizenId,
+    stateCode: this.grievanceForm.get('stateCode')?.value,
+    districtCode: this.grievanceForm.get('districtCode')?.value,
+    blockCode: this.grievanceForm.get('blockCode')?.value ,
+    panchayatCode: this.grievanceForm.get('panchayatCode')?.value || '',
+    villageCode: this.grievanceForm.get('villageCode')?.value,
+    pinCode: this.grievanceForm.get('pinCode')?.value,
+    ministryCode: this.grievanceForm.get('ministry')?.value,
+    schemeCode: this.grievanceForm.get('schemeCode')?.value,
+    description: this.grievanceForm.get('Description')?.value,
+    createdBy: this.citzenDetails?.citizenId
+    };
+    formData.append('data',new Blob([JSON.stringify(payload)], { type: 'application/json' }));
+    if (this.attachement1) {
+      formData.append('file', this.attachement1);
+    }
 
     // 4️⃣ Call your API
-    this.masterService.saveGrievance(payload).subscribe({
+    this.masterService.saveGrievance(formData).subscribe({
       next: (response: any) => {
         if (response?.messageCode === 1) {
           this.grievanceDetails = response.data;
@@ -527,6 +546,7 @@ export class AddGravianceComponent implements OnInit {
           this.isSubmitted = false;
           this.isComplaintSave = false;
           this.toastr.success(response?.message || 'Grievance saved successfully!');
+          this.router.navigate(['layout/citizen/graviance-list'])
           this.grievanceForm.reset();
           setTimeout(() => {
             this.openPdfModal();

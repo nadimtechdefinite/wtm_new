@@ -61,7 +61,6 @@
 }
 
 .citizen-card .card-header {
-  background: #f5f7fa;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
     align-items: center;
@@ -75,7 +74,7 @@
 }
 
 .detail-row label {
-      font-size: 16px;
+      font-size: 15px;
     font-weight: 500;
     color: #363636;
 }
@@ -119,3 +118,25 @@
   border: 1px solid #ffd8a8;
 }
 
+.detail-row .box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.detail-row .box label {
+  min-width: 73px;      
+  font-weight: 500;
+  color: #333;
+}
+
+.detail-row .box span {
+  margin-right: 6px;
+  font-weight: 500;
+}
+
+.detail-row .box p {
+  margin: 0;
+  color: #555;
+  flex: 1;
+}

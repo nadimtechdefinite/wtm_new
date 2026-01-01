@@ -1,51 +1,4 @@
-<!-- 
-<h2 mat-dialog-title class="dialog-title">
-  Grievance Details
-</h2>
 
-<div class="dialog-content">
-
-  <table class="details-table">
-    <tr>
-      <th>Grievance ID</th>
-      <td>{{ data.grievanceId }}</td>
-    </tr>
-
-    <tr>
-      <th>Mobile</th>
-      <td>{{ data.mobile }}</td>
-    </tr>
-
-    <tr>
-      <th>Date</th>
-      <td>{{ data.date | date:'dd-MM-yyyy' }}</td>
-    </tr>
-
-    <tr>
-      <th>Division</th>
-      <td>{{ data.division }}</td>
-    </tr>
-
-    <tr>
-      <th>Status</th>
-      <td>{{ data.status }}</td>
-    </tr>
-
-    <tr>
-      <th>Description</th>
-      <td class="desc">{{ data.description }}</td>
-    </tr>
-  </table>
-
-</div>
-
-<div class="dialog-actions">
-  <button mat-raised-button color="primary" mat-dialog-close>
-    Close
-  </button>box-shadow: none;
-    border: 1px solid #ccdde1;
-    border-radius: 10px;
-</div> -->
 <div class="card citizen-card" style="width: 96%;
     margin: 0 auto;
     margin-top: 20px;
@@ -59,6 +12,7 @@
               'completed': grievancedetails.status === 'completed',
               'pending': grievancedetails.status === 'UnderProcess',
             }">{{ grievancedetails?.status }}</span>
+            <span  mat-dialog-close class="close">X</span>
     </div>
 
   </div>
@@ -222,17 +176,12 @@
         </ng-template>
       </td>
     </ng-container>
-
-
-
-
-
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
   <!-- <div class="m-0 p-0" *ngIf="popupGrievance?.status === 'Completed'"> -->
-  <div class="m-0 p-0 mt-3">
+  <div class="m-0 p-0 mt-3" *ngIf="grievanceStatus === 'UnderProcess'">
     <div class="mb-3">
       <label class="form-label">Your Feedback</label>
       <textarea class="form-control" rows="3" name="citizenComment"></textarea>
@@ -242,12 +191,14 @@
     <div class="row mb-3 align-items-end">
       <!-- Left Column: Dropdown -->
       <div class="col-md-6">
-        <label class="form-label">Are you satisfied?</label>
-        <select class="form-select">
-          <option value="">Select</option>
-          <option value="Satisfied">Satisfied</option>
-          <option value="Not Satisfied">Not Satisfied</option>
-        </select>
+         <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Are you satisfied?</mat-label>
+                    <mat-select [(ngModel)]="satisfiedStatus" (selectionChange)="selectedSatisfied($event)">
+                        <mat-option [value]="">Select</mat-option>
+                        <mat-option [value]="'S'">Satisfied</mat-option>
+                        <mat-option [value]="'US'">Not Satisfied</mat-option>
+                    </mat-select>
+                </mat-form-field>
       </div>
 
 

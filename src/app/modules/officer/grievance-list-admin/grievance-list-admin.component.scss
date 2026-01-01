@@ -62,3 +62,13 @@
     background: #c9e5fd !important;
     border-bottom-color: #74a6d1 !important;
     color: #000 !important;}
+
+        .custom-dialog .mat-mdc-dialog-container {
+  max-height: 90vh !important;
+  height: auto;
+}
+
+.custom-dialog mat-dialog-content {
+  max-height: calc(90vh - 120px) !important;
+  overflow-y: auto !important;
+}

@@ -20,10 +20,15 @@ export class LayoutHeaderComponent {
      citizenId: any;
   getcitizenId: any;
     mobileNo: any;
+    showMenu = false;
     
 logOut(){
   sessionStorage.clear();
    this.router.navigate(['/login']);
+}
+
+toggleMenu() {
+  this.showMenu = !this.showMenu;
 }
   ngOnInit() {
   this.loadCitizenDetails();
@@ -31,6 +36,8 @@ logOut(){
 
 if (userInfo) {
   this.parsedUserInfo = JSON.parse(userInfo);
+  console.log(this.parsedUserInfo.citizenId, "parsedUserInfo");
+  
 }
   }
 
@@ -48,9 +55,11 @@ loadCitizenDetails() {
     this.citizenStore.citizenDetails$
       .pipe(filter((data: any) => data !== null))
       .subscribe(data => {
+        if(data.messageCode === 1){
         console.log('Citizen Data:', data);
         this.citizenData = data;
         this.userName = data?.name; // agar aapko name chahiye
+        }
       });
   });
 }

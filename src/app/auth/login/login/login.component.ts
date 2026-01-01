@@ -61,16 +61,6 @@ export class LoginComponent implements OnInit {
   users = [
     { value: 'Admin', viewValue: 'Admin' },
     { value: 'MORD', viewValue: 'MORD' },
-    { value: '1', viewValue: 'Deendayal Antyodaya Yojana - NRLM' },
-    { value: '6', viewValue: 'Deen Dayal Upadhyaya Grameen Kaushalya Yojana' },
-    { value: '11', viewValue: 'Gram Panchayat Development Plan Campaign' },
-    { value: '2', viewValue: 'MGNREGA' },
-    { value: '7', viewValue: 'Mission Antyodaya' },
-    { value: '5', viewValue: 'National Social Assistance Programme' },
-    { value: '3', viewValue: 'Pradhan Mantri Awaas Yojana - Gramin' },
-    { value: '4', viewValue: 'Pradhan Mantri Gram Sadak Yojana' },
-    { value: '8', viewValue: 'Saansad Adarsh Gram Yojana' },
-    { value: '9', viewValue: 'Shyama Prasad Mukherjee RURBAN Mission' }
   ];
   mobileVerified: any;
   otpdata: any;
@@ -338,6 +328,7 @@ resendOtp() {
           this.mobileService.updateMobile(mobile)
           this.mobileService.updatelogindata(response)
           this.citizenForm.reset()
+          sessionStorage.setItem("userInfo", JSON.stringify(response.data));
           // this.generateCaptcha()
           this.toastr.success(response.message || "Login successful");
         

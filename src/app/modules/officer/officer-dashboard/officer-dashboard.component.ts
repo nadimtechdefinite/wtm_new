@@ -3,6 +3,10 @@ import Highcharts from 'highcharts';
 import { CommonService } from '../../../services/common.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { masterService } from '../../../services/master.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandlerService } from '../../../shared/error-handler.service';
+
 
 @Component({
   selector: 'app-officer-dashboard',
@@ -14,7 +18,14 @@ import { RouterModule } from '@angular/router';
 export class OfficerDashboardComponent {
  pageTitle: string = '';
   Highcharts: typeof Highcharts = Highcharts;
-  constructor(private commonService: CommonService) { }
+  adminPdsummary: any;
+  userInfo: any;
+  parsedUserInfo: any;
+  userCode: any;
+  loginName: any;
+  userType: any;
+  schemeCode: any;
+  constructor(private commonService: CommonService, private masterService: masterService, private errorHandler: ErrorHandlerService,) { }
   apiResponse = {
     totalRegister: 100,
     completed: 15,
@@ -97,7 +108,16 @@ export class OfficerDashboardComponent {
 
 
   ngOnInit(): void { 
-
+    this.userInfo = sessionStorage.getItem('userInfo');
+    if (this.userInfo) {
+      this.parsedUserInfo = JSON.parse(this.userInfo);
+      this.userCode = this.parsedUserInfo.userCode;
+      this.userType = this.parsedUserInfo.userType;
+      this.schemeCode = this.parsedUserInfo.schemeCode;
+      this.loginName = this.parsedUserInfo.loginName
+      console.log(this.userType, "this.userType");
+      this.adminSummary();
+    }
   }
   ngAfterViewInit(): void {
     // this.createChartGauge();
@@ -106,43 +126,7 @@ export class OfficerDashboardComponent {
     // this.createChartLine();
   }
 
-  // private createChartGauge(): void {
-  //   const chart = Highcharts.chart('chart-gauge', {
-  //     chart: { type: 'solidgauge' },
-  //     title: { text: 'Gauge Chart' },
-  //     credits: { enabled: false },
-  //     pane: {
-  //       startAngle: -90,
-  //       endAngle: 90,
-  //       center: ['50%', '85%'],
-  //       size: '160%',
-  //       background: { innerRadius: '60%', outerRadius: '100%', shape: 'arc' },
-  //     },
-  //     yAxis: {
-  //       min: 0,
-  //       max: this.apiResponse.totalRegister, // dynamic max
-  //       stops: [
-  //         [0.1, '#55BF3B'],
-  //         [0.5, '#DDDF0D'],
-  //         [0.9, '#DF5353'],
-  //       ],
-  //       minorTickInterval: null,
-  //       tickAmount: 2,
-  //       labels: { y: 16 },
-  //     },
-  //     plotOptions: {
-  //       solidgauge: { dataLabels: { y: -25, borderWidth: 0, useHTML: true } },
-  //     },
-  //     tooltip: { enabled: false },
-  //     series: [{
-  //       name: null,
-  //       data: [this.apiResponse.totalRegister], // dynamic value
-  //       dataLabels: {
-  //         format: `<div style="text-align: center"><span style="font-size: 1.25rem">{y}</span></div>`,
-  //       },
-  //     }],
-  //   } as any);
-  // }
+
 
   private createChartPie(): void {
     const chart = Highcharts.chart('chart-pie', {
@@ -184,27 +168,6 @@ export class OfficerDashboardComponent {
     } as any);
   }
 
-  // private createChartLine(): void {
-  //   const chart = Highcharts.chart('chart-line', {
-  //     chart: { type: 'line' },
-  //     title: { text: 'Line Chart' },
-  //     credits: { enabled: false },
-  //     legend: { enabled: false },
-  //     yAxis: { title: { text: null } },
-  //     xAxis: { type: 'category', categories: this.apiResponse.categories },
-  //     tooltip: {
-  //       headerFormat: `<div>Date: {point.key}</div>`,
-  //       pointFormat: `<div>{series.name}: {point.y}</div>`,
-  //       shared: true,
-  //       useHTML: true,
-  //     },
-  //     series: [{
-  //       name: 'Amount',
-  //       data: this.apiResponse.returnDetails, // dynamic
-  //     }],
-  //   } as any);
-  // }
-
   getCardBg(index: number): string {
     const gradients = [
       'linear-gradient(135deg, #6a11cb, #2575fc)',
@@ -214,5 +177,25 @@ export class OfficerDashboardComponent {
     ];
     return gradients[index % gradients.length];
   }
+
+
+  adminSummary() {
+    const role = this.schemeCode 
+    this.masterService.adminSummaryDetails(role).subscribe({
+      next: (response: any) => {
+        if (response?.messageCode === 1) {
+          console.log(response.data, "response");
+          this.adminPdsummary = response.data
+
+        } else {
+          console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
+        }
+      },
+      error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
+    });
+  }
+
+
+  
 
 }

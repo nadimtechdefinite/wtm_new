@@ -1,307 +1,319 @@
-
-<div class="card citizen-card" style="width: 96%;
-    margin: 0 auto;
-    margin-top: 20px;
-        background-color: #f6fbff;
-    border: 1px solid #a6d5fa;
-">
-    <div class="card-header">
-        <h5>Citizen Details</h5>
-        <div><span>Grievance Status</span> :
-            <span class="status" [ngClass]="{
+    <h5 class="dialog-title">Grievance Overview & Action Taken</h5>
+    <mat-dialog-content class="dialog-layout">
+     <!-- user-detail-section -->
+    <div class="card citizen-card section-fixed">
+        <div class="card-header">
+            <h5>Citizen Details</h5>
+            <div><span>Grievance Status</span> :
+                <span class="status" [ngClass]="{
               'completed': grievancedetails.status === 'C',
               'pending': grievancedetails.status === 'U',
-            }">{{ grievancedetails.status === 'U' ? 'Under-Process' : grievancedetails.status === 'C' ? 'Complete' : grievancedetails.status }}</span>
-                <span  mat-dialog-close>X</span>
+            }">{{ grievancedetails.status === 'U' ? 'Under-Process' : grievancedetails.status === 'C' ? 'Complete' :
+                    grievancedetails.status }}</span>
+                <span mat-dialog-close class="close">X</span>
 
-    </div>
-
-
-    </div>
-
-    <div class="card-body">
-        <div class="row detail-row">
-            <div class="col-md-4">
-                <div class="box">
-                    <label>Name</label> <span>:</span>
-                    <p>{{ citizendetails?.name }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>Father / Husband Name</label> <span>:</span>
-                    <p>{{ citizendetails?.fatherHusbandName }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>Gender</label> <span>:</span>
-                    <p>{{ citizendetails?.gender }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>Mobile No</label> <span>:</span>
-                    <p>{{ citizendetails?.mobileNo }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>State</label> <span>:</span>
-                    <p>{{ citizendetails?.stateName }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>District</label> <span>:</span>
-                    <p>{{ citizendetails?.districtName }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>Block</label> <span>:</span>
-                    <p>{{ citizendetails?.blockName }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>Panchayat</label> <span>:</span>
-                    <p>{{ citizendetails?.panchayatName }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>Village</label> <span>:</span>
-                    <p>{{ citizendetails?.villageName }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="box">
-                    <label>Pin Code</label> <span>:</span>
-                    <p>{{ citizendetails?.pinCode }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-8">
-                <div class="box">
-                    <label>Address</label> <span>:</span>
-                    <p>{{ citizendetails?.address }}</p>
-                </div>
             </div>
 
 
         </div>
-    </div>
-</div>
-<mat-dialog-content>
-    <h6>Grievance Details</h6>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-responsive tbl ">
 
-        <ng-container matColumnDef="grievanceId">
-            <th mat-header-cell *matHeaderCellDef> Grievance ID </th>
-            <td mat-cell *matCellDef="let element"> {{element.grievanceNumber}} </td>
-        </ng-container>
-        <ng-container matColumnDef="schemeName">
-            <th mat-header-cell *matHeaderCellDef> Scheme Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.schemeName}} </td>
-        </ng-container>
-        <ng-container matColumnDef="ministryName">
-            <th mat-header-cell *matHeaderCellDef> Ministry Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.ministryName}} </td>
-        </ng-container>
+        <div class="card-body">
+            <div class="row detail-row">
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>Name</label> <span>:</span>
+                        <p>{{ citizendetails?.name }}</p>
+                    </div>
+                </div>
 
-        <ng-container matColumnDef="stateName">
-            <th mat-header-cell *matHeaderCellDef> State </th>
-            <td mat-cell *matCellDef="let element"> {{element.stateName}} </td>
-        </ng-container>
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>Father / Husband Name</label> <span>:</span>
+                        <p>{{ citizendetails?.fatherHusbandName }}</p>
+                    </div>
+                </div>
 
-        <ng-container matColumnDef="districtName">
-            <th mat-header-cell *matHeaderCellDef> District </th>
-            <td mat-cell *matCellDef="let element"> {{element.districtName}} </td>
-        </ng-container>
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>Gender</label> <span>:</span>
+                        <p>{{ citizendetails?.gender }}</p>
+                    </div>
+                </div>
 
-        <ng-container matColumnDef="blockNameName">
-            <th mat-header-cell *matHeaderCellDef> Block Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.blockName}} </td>
-        </ng-container>
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>Mobile No</label> <span>:</span>
+                        <p>{{ citizendetails?.mobileNo }}</p>
+                    </div>
+                </div>
 
-        <ng-container matColumnDef="villageName">
-            <th mat-header-cell *matHeaderCellDef> Village Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.villageName}} </td>
-        </ng-container>
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>State</label> <span>:</span>
+                        <p>{{ citizendetails?.stateName }}</p>
+                    </div>
+                </div>
 
-        <ng-container matColumnDef="panchayatName">
-            <th mat-header-cell *matHeaderCellDef> Panchayat Name </th>
-            <td mat-cell *matCellDef="let element"> {{element.villageName}} </td>
-        </ng-container>
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>District</label> <span>:</span>
+                        <p>{{ citizendetails?.districtName }}</p>
+                    </div>
+                </div>
 
-        <ng-container matColumnDef="pinCode">
-            <th mat-header-cell *matHeaderCellDef> Pin Code </th>
-            <td mat-cell *matCellDef="let element"> {{element.pinCode}} </td>
-        </ng-container>
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>Block</label> <span>:</span>
+                        <p>{{ citizendetails?.blockName }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>Panchayat</label> <span>:</span>
+                        <p>{{ citizendetails?.panchayatName }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>Village</label> <span>:</span>
+                        <p>{{ citizendetails?.villageName }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="box">
+                        <label>Pin Code</label> <span>:</span>
+                        <p>{{ citizendetails?.pinCode }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="box">
+                        <label>Address</label> <span>:</span>
+                        <p>{{ citizendetails?.address }}</p>
+                    </div>
+                </div>
 
 
-        <ng-container matColumnDef="description">
-            <th mat-header-cell *matHeaderCellDef> Description </th>
-            <td mat-cell *matCellDef="let element"> {{element.description}} </td>
-        </ng-container>
-        <ng-container matColumnDef="attachment">
-            <th mat-header-cell *matHeaderCellDef> Attachment </th>
-
-            <td mat-cell *matCellDef="let element">
-                <!-- If file exists -->
-                <ng-container *ngIf="element.fileName; else noPdf">
-                    <a [href]="'https://write2rdminister.dord.gov.in/wtm_new/' + element.fileName" target="_blank"
-                        download title="{{ element.fileName }}" matTooltip="View File">
-
-                        <i class="bi bi-download pdfIcon"></i>
-                    </a>
-                </ng-container>
-
-                <!-- Else part -->
-                <ng-template #noPdf>
-                    <span>No PDF</span>
-                </ng-template>
-            </td>
-        </ng-container>
-
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-
-         <div class="row mt-3">
-  <div class="col-md-12 mx-auto">
-    <div class="chat-card">
-
-      <!-- Header -->
-      <div class="chat-header">
-        <strong> Action taken by Admin / Program Division (PD)</strong>
-      </div>
-
-      <!-- Chat Body -->
-      <div class="chat-body">
-       
-        <div
-          class="chat-message"
-          *ngFor="let item of commentsAttachments"
-          [ngClass]="{
-            'chat-right': item.commentsBy === 'PD',
-            'chat-left': item.commentsBy === 'Admin'
-        }"
-        >     
-
-          <div class="message-bubble">
-        <div class="sender-name">
-                          <div class="send" [ngStyle]="{ 'color': item.commentsBy === 'PD' ? 'green' : 'brown' }">
-                            {{ item.schemeName
-                            }}</div>
-                                        <div class="message-footer">
-              <small>
-                {{ item.createdOn | date:'dd MMM yyyy, hh:mm a' }}
-              </small>
             </div>
-                        </div>
-            <!-- Comment -->
-            <p class="mb-1">{{ item.comments }}</p>
-
-            <!-- File -->
-            <a
-              *ngIf="item.fileName !== 'No File Attached'"
-              href="javascript:void(0)"
-              class="file-link"
-            >
-                 <div class="pdfIcon" (click)="openAttachment(item.fileName)">
-                          <i class="bi bi-download"></i>
-                        </div>
-            </a>
-
-          
-
-            <!-- Footer -->
-
-
-          </div>
         </div>
-
-      </div>
-
     </div>
-  </div>
-</div>
+        <!-- table-section -->
+        <div class="row-table section-fixed">
+        <h6 class="title">Grievance Details</h6>
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-responsive tbl ">
+            <ng-container matColumnDef="serialNo">
+                <th mat-header-cell *matHeaderCellDef>Serial No. </th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                    {{ i + 1 }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="grievanceId">
+                <th mat-header-cell *matHeaderCellDef> Grievance ID </th>
+                <td mat-cell *matCellDef="let element"> {{element.grievanceNumber}} </td>
+            </ng-container>
+            <ng-container matColumnDef="schemeName">
+                <th mat-header-cell *matHeaderCellDef> Scheme Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.schemeName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="ministryName">
+                <th mat-header-cell *matHeaderCellDef> Ministry Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.ministryName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="stateName">
+                <th mat-header-cell *matHeaderCellDef> State </th>
+                <td mat-cell *matCellDef="let element"> {{element.stateName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="districtName">
+                <th mat-header-cell *matHeaderCellDef> District </th>
+                <td mat-cell *matCellDef="let element"> {{element.districtName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="blockNameName">
+                <th mat-header-cell *matHeaderCellDef> Block Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.blockName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="villageName">
+                <th mat-header-cell *matHeaderCellDef> Village Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.villageName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="panchayatName">
+                <th mat-header-cell *matHeaderCellDef> Panchayat Name </th>
+                <td mat-cell *matCellDef="let element"> {{element.villageName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="pinCode">
+                <th mat-header-cell *matHeaderCellDef> Pin Code </th>
+                <td mat-cell *matCellDef="let element"> {{element.pinCode}} </td>
+            </ng-container>
 
 
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+            </ng-container>
+            <ng-container matColumnDef="attachment">
+                <th mat-header-cell *matHeaderCellDef> Attachment </th>
 
-    <!-- <div class="m-0 p-0" *ngIf="popupGrievance?.status === 'Completed'"> -->
-    <div class="m-0 p-0 mt-3">
-        <div class="mb-3">
-            <label class="form-label">Your Feedback</label>
-            <textarea class="form-control" rows="3" [(ngModel)]="pdRemarks" name="citizenComment"></textarea>
-        </div>
+                <td mat-cell *matCellDef="let element">
+                    <!-- If file exists -->
+                    <ng-container *ngIf="element.fileName; else noPdf">
+                        <a [href]="'https://write2rdminister.dord.gov.in/wtm_new/' + element.fileName" target="_blank"
+                            download title="{{ element.fileName }}" matTooltip="View File">
 
-        <!-- Dropdown + Submit Button in Two Columns -->
-        <div class="row mb-3 align-items-end">
-            <!-- Left Column: Dropdown -->
-            <div class="col-md-3">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Status</mat-label>
-                    <mat-select [(ngModel)]="pdStatus">
-                        <mat-option [value]="">Select Satus</mat-option>
-                        <mat-option [value]="'C'">Completed</mat-option>
-                        <mat-option [value]="'F'">Forward</mat-option>
-                    </mat-select>
-
-                </mat-form-field>
-            </div>
-            <div class="col-md-4">
-                <label>Attachment</label>
-
-                <div class="d-flex align-items-center gap-2">
-                    <!-- Hidden file input -->
-                    <input type="file" hidden #fileInput (change)="checkUpLoadedAttachmentFormat($event, '1')"
-                        accept=".jpg,.jpeg,.png,.pdf" />
-
-                    <!-- Choose File button (show only if no file selected) -->
-                    <button *ngIf="!fileName" mat-stroked-button color="primary" type="button"
-                        (click)="fileInput.click()">
-                        Choose File
-                    </button>
-
-                    <!-- File name + clear button -->
-                    <ng-container *ngIf="fileName">
-                        <span class="text-truncate">{{ fileName }}</span>
-
-                        <!-- Clear (cross) button -->
-                        <button mat-icon-button color="warn" type="button" aria-label="Remove file"
-                            (click)="clearFile(fileInput)">
-                            <mat-icon>close</mat-icon>
-                        </button>
+                            <i class="bi bi-download pdfIcon"></i>
+                        </a>
                     </ng-container>
+
+                    <!-- Else part -->
+                    <ng-template #noPdf>
+                        <span>No PDF</span>
+                    </ng-template>
+                </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+       </div>
+       <!-- chat-section -->
+    <div class="row mt-3">
+        <div class="col-md-12 mx-auto">
+            <div class="chat-card chat-wrapper">
+
+                <!-- Header -->
+                <div class="chat-header sticky">
+                    <strong> Action taken by Admin / Program Division (PD)</strong>
                 </div>
 
-                <mat-hint>Only JPEG / PNG / PDF files allowed (Max 10MB).</mat-hint>
+                <!-- Chat Body -->
+                <div class="chat-body chat-body-scroll" *ngIf="commentsAttachments?.length > 0; else noMessages"
+                    [style.height]="commentsAttachments?.length > 1 ? '350px' : 'auto'"
+                    [style.overflowY]="commentsAttachments?.length > 1 ? 'auto' : 'hidden'">
+
+                    <div class="chat-message" *ngFor="let item of commentsAttachments" [ngClass]="{
+                        'chat-right': item.commentsBy === 'Admin',
+                        'chat-left': item.commentsBy !== 'Admin'
+                    }">
+
+                        <div class="message-bubble">
+                            <div class="sender-name">
+                                <div class="send"
+                                    [ngStyle]="{ 'color': item.commentsBy === 'Admin' ? 'green' : 'brown' }">
+                                    {{ item.commentsBy
+                                    }}</div>
+                                <div class="message-footer">
+                                    <small>
+                                        {{ item.createdOn | date:'dd MMM yyyy, hh:mm a' }}
+                                    </small>
+                                </div>
+                            </div>
+                            <!-- Comment -->
+                            <p class="mb-1">{{ item.comments }}</p>
+
+                            <!-- File -->
+                            <a *ngIf="item.fileName !== 'No File Attached'" href="javascript:void(0)" class="file-link">
+                                <div class="pdfIcon" (click)="openAttachment(item.fileName)">
+                                    <i class="bi bi-download"></i>
+                                </div>
+                            </a>
+
+
+
+                            <!-- Footer -->
+
+
+                        </div>
+                    </div>
+
+                </div>
+                <ng-template #noMessages>
+                    <div class="no-message">
+                        No comments yet for this grievance.
+                    </div>
+                </ng-template>
+
+
             </div>
-
-
         </div>
     </div>
 
-    <mat-dialog-actions>
-        <!-- <button (click)="downloadFile(data.filePath, data.fileName)">
-    <i class="fa fa-download"></i> Download File
-  </button> -->
-        <button mat-raised-button (click)="submitFeedback()" class=" btn-glow btn-blue "> Submit Feedback
-        </button>
-        <button mat-raised-button color="primary" mat-dialog-close class="btn-glow btn-red">
-            Close
-        </button></mat-dialog-actions>
+
+<!-- form section -->
+    <div class="m-0 p-0 mt-3 section-fixed">
+        <form [formGroup]="feedbackForm">
+            <div class="row mb-3 align-items-end">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Your Feedback</label>
+                    <textarea class="form-control" maxlength="1000" rows="3" maxlength="1000"
+                        formControlName="citizenComment" name="citizenComment"></textarea>
+                    <small class="text-muted d-block text-end">
+                        {{ feedbackForm.get('citizenComment')?.value?.length || 0 }} / 1000
+                    </small>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Status</mat-label>
+                        <mat-select formControlName="status" (selectionChange)="selectedStatus($event)">
+                            <mat-option *ngFor="let status of officeStatusDetails" [value]="status.statusCode">
+                                {{ status.status}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                    <label>Attachment</label>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Hidden file input -->
+                        <input type="file" hidden #fileInput (change)="checkUpLoadedAttachmentFormat($event, '1')"
+                            accept=".jpg,.jpeg,.png,.pdf" />
+
+                        <!-- Choose File button (show only if no file selected) -->
+                        <button *ngIf="!fileName" mat-stroked-button color="primary" type="button"
+                            (click)="fileInput.click()">
+                            Choose File
+                        </button>
+
+                        <!-- File name + clear button -->
+                        <ng-container *ngIf="fileName">
+                            <span class="text-truncate">{{ fileName }}</span>
+
+                            <!-- Clear (cross) button -->
+                            <button mat-icon-button color="warn" type="button" aria-label="Remove file"
+                                (click)="clearFile(fileInput)">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </ng-container>
+                    </div>
+
+                    <mat-hint>Only JPEG / PNG / PDF files allowed (Max 10MB).</mat-hint>
+                </div>
+                <div class="col-md-5">
+                    <mat-form-field appearance="outline" class="w-100 mb-3" *ngIf="showForwardFields">
+                        <mat-label>Select Scheme Type</mat-label>
+                        <mat-select formControlName="schemeType" (selectionChange)="selectedschemeList($event)">
+                            <mat-option *ngFor="let scheme of getschemeList" [value]="scheme.schemeCode">
+                                {{ scheme.schemeName}}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </div>
+            </div>
+            <mat-dialog-actions>
+                <button mat-raised-button (click)="submitFeedback()" class=" btn-glow btn-blue "> Submit Feedback
+                </button>
+                <button mat-raised-button color="primary" mat-dialog-close class="btn-glow btn-red">
+                    Close
+                </button>
+            </mat-dialog-actions>
+        </form>
+    </div>
+
 </mat-dialog-content>

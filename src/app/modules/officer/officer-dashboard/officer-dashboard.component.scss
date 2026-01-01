@@ -66,3 +66,89 @@
     margin: 1.5rem 0 0.5rem;
   }
 }
+.card-box {
+  border-radius: 14px;
+  padding: 18px 20px;
+  min-height: 120px;
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover effect */
+.card-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.25);
+}
+
+/* Light circle decoration */
+.card-box::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+}
+
+/* Text */
+.card-header {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.card-value {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* ========================= */
+/* Different Card Colors */
+/* ========================= */
+
+
+
+.dord > div:nth-of-type(1) .card-box {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.dord > div:nth-of-type(2) .card-box {
+  background: linear-gradient(135deg, #28a745, #218838);
+}
+
+.dord > div:nth-of-type(3) .card-box {
+  background: linear-gradient(135deg, #ffc107, #e0a800);
+  color: #212529;
+}
+
+.dord > div:nth-of-type(4) .card-box {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+
+.Pending-dord > div:nth-of-type(1) .card-box {
+  background: linear-gradient(135deg, #17a2b8, #138496); /* 1 Week – Cyan */
+}
+
+.Pending-dord > div:nth-of-type(2) .card-box {
+  background: linear-gradient(135deg, #28a745, #218838); /* 15 Days – Green */
+}
+
+.Pending-dord > div:nth-of-type(3) .card-box {
+  background: linear-gradient(135deg, #ffc107, #e0a800); /* 30 Days – Yellow */
+  color: #212529;
+}
+
+.Pending-dord > div:nth-of-type(4) .card-box {
+  background: linear-gradient(135deg, #fd7e14, #e8590c); /* 3 Months – Orange */
+}
+
+.Pending-dord > div:nth-of-type(5) .card-box {
+  background: linear-gradient(135deg, #dc3545, #c82333); /* >3 Months – Red */
+}

@@ -13,8 +13,8 @@
     <div class="avatar">
       <span>{{ userName?.charAt(0) }}</span>
     </div>
-    <span class="profile-name" *ngIf="parsedUserInfo?.loginName !== 'Admin'">{{ userName }}</span>
-    <span class="profile-name" *ngIf="parsedUserInfo?.loginName === 'Admin'">{{ parsedUserInfo?.loginName }}</span>
+    <span class="profile-name" *ngIf="parsedUserInfo?.loginName !== 'ADMIN'">{{ parsedUserInfo?.loginName  }}</span>
+    <span class="profile-name" *ngIf="parsedUserInfo?.loginName === 'ADMIN'">{{ parsedUserInfo?.loginName }}</span>
   </div>
   <button class="logout-btn" (click)="logOut()" matTooltip="Log Out" title="Log Out">
     🔒 LOG OUT
