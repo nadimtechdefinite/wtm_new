@@ -9,6 +9,8 @@ import { GravianceDetailDialogComponent } from '../graviance-detail-dialog/gravi
 import { MobileService } from '../../../services/mobile.service';
 import { masterService } from '../../../services/master.service';
 import { ProgramDivisonDialogComponent } from '../../program-divison/program-divison-dialog/program-divison-dialog.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandlerService } from '../../../shared/error-handler.service';
 
 
 @Component({
@@ -27,6 +29,7 @@ export class GravianceListComponent {
     'grievanceNumber',
     'schemeName',
     'description',
+    'translatedDesc',
     'createdOn',
     'status',
     'action'
@@ -36,11 +39,13 @@ export class GravianceListComponent {
     { column: 'serialNo', header: 'Sr.No' },
     { column: 'grievanceNumber', header: 'Grievance ID' },
     { column: 'schemeName', header: 'Scheme/Division' },
-    { column: 'description', header: 'Description' },
-     { column: 'createdOn', header: 'Date', date:true },
-     { column: 'status', type: 'status', header: 'Status' },
+    { column: 'description', header: 'Description', width: '30%' },
+    { column: 'translatedDesc', header: 'translate Desc', width: '20%' },
+     { column: 'createdOn', header: 'Date', type: 'date',width: '10%' },
+     { column: 'status', type: 'status', header: 'Status',width: '10%' },
     { column: 'action', header: 'Action', type: 'action' }
   ];
+  
 
 citizenId: any;
 mobileNo: any;
@@ -51,27 +56,37 @@ citzenDetails: any;
   GrievanceDetailsForAdmin: any;
   GrievanceContent: any;
   parsedUserInfo: any;
-
+  schemeCode: any;
+  userInfo: string | null = null;
+  grievanceId: any;
+  getCitizenId: any;
+  officeStatusDetails: any;
+  userCode:any;
+  userType:any;
+  loginName:any;
   constructor(private dialog: MatDialog, 
       private router: Router,    
       private mobileService: MobileService,
-      private masterService: masterService) { }
+      private masterService: masterService,
+    private errorHandler: ErrorHandlerService,) { }
 
   ngOnInit() {
-    // this.dataSource.data = this.dummyList;
     this.mobileService.updatelogindata$.subscribe(value => {
     this.citizenId = value.data.citizenId;
     this.mobileNo = value.data.mobileNo;
-    // ✅ API CALL HERE
     this.getCitizenDetails();
   });
-
-
-    const userInfo = sessionStorage.getItem('userInfo');
-    if (userInfo) {
-      this.parsedUserInfo = JSON.parse(userInfo);
+    this.userInfo = sessionStorage.getItem('userInfo');
+    if (this.userInfo) {
+      debugger
+      this.parsedUserInfo = JSON.parse(this.userInfo);
+      this.userCode = this.parsedUserInfo.userCode;
+      this.userType = this.parsedUserInfo.userType;
+      this.schemeCode = this.parsedUserInfo.schemeCode
+      this.loginName = this.parsedUserInfo.loginName
+      console.log(this.userType, "this.userType");
     }
-
+this.officeStatus();
   }
 
 
@@ -82,7 +97,6 @@ getCitizenDetails() {
       .citizenDetails(this.citizenId, this.mobileNo)
       .subscribe((res: any) => {
         if (res) {
-          debugger;
           this.citzenDetails = res.data
           this.grievanceList = res.data.grievanceDetails.map((item:any,index:any) => {
             return {
@@ -116,7 +130,7 @@ getCitizenDetails() {
   }
 
 openViewDialog(row: any, citizenDetails: any) {
-  this.dialog.open(GravianceDetailDialogComponent, {
+  const dialogRef = this.dialog.open(GravianceDetailDialogComponent, {
     width: '65%',
     maxWidth: '90vw',
     data: {
@@ -124,17 +138,38 @@ openViewDialog(row: any, citizenDetails: any) {
       citizen: citizenDetails
     }
   });
+      dialogRef.afterClosed().subscribe((result: any) => {
+      if (result === 'reload') {
+        this.getCitizenDetails(); // 🔁 API reload
+      }
+    });
 }
 
-openViewDialogAdmin(row: any, citizenDetails: any) {
-  this.dialog.open(ProgramDivisonDialogComponent, {
-    width: '65%',
-    maxWidth: '90vw',
-    data: {
-      grievance: row,
-      citizen: citizenDetails
-    }
-  });
-}
 
+
+  officeStatus() {
+    this.masterService.getcitizenStatus().subscribe({
+      next: (response: any) => {
+        if (response?.messageCode === 1) {
+          console.log(response.data, "response");
+          this.officeStatusDetails = response.data
+
+        } else {
+          console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
+        }
+      },
+      error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
+    });
+  }
+
+
+
+applyStatusFilter(status: string) {
+
+  this.dataSource.filterPredicate = (data: any, filter: string) => {
+    if (!filter) return true;
+    return data.status === filter;
+  };
+  this.dataSource.filter = status ? status.trim() : '';
+}
 }

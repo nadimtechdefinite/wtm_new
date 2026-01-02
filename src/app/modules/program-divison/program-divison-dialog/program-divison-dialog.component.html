@@ -1,4 +1,6 @@
-    <h5 class="dialog-title">Grievance Overview & Action Taken</h5>
+    <h5 class="dialog-title">Grievance Overview & Action Taken <span mat-dialog-close class="close">X</span>
+</h5>
+    
     <mat-dialog-content class="dialog-layout">
      <!-- user-detail-section -->
     <div class="card citizen-card section-fixed">
@@ -10,7 +12,6 @@
               'pending': grievancedetails.status === 'U',
             }">{{ grievancedetails.status === 'U' ? 'Under-Process' : grievancedetails.status === 'C' ? 'Complete' :
                     grievancedetails.status }}</span>
-                <span mat-dialog-close class="close">X</span>
 
             </div>
 
@@ -164,7 +165,7 @@
                 <td mat-cell *matCellDef="let element">
                     <!-- If file exists -->
                     <ng-container *ngIf="element.fileName; else noPdf">
-                        <a [href]="element.fileName" target="_blank" (click)="openAttachment(element.fileName)"
+                        <a href="javascript:void(0)"  (click)="openAttachment(element.fileName)"
                             download title="{{ element.fileName }}" matTooltip="View File">
                             <i class="bi bi-download pdfIcon"></i>
                         </a>
@@ -198,14 +199,14 @@
                     [style.overflowY]="commentsAttachments?.length > 1 ? 'auto' : 'hidden'">
 
                     <div class="chat-message" *ngFor="let item of commentsAttachments" [ngClass]="{
-                        'chat-right': item.commentsBy === 'Admin',
-                        'chat-left': item.commentsBy !== 'Admin'
+                        'chat-right': item.commentsBy === 'ADMIN',
+                        'chat-left': item.commentsBy !== 'ADMIN'
                     }">
 
                         <div class="message-bubble">
                             <div class="sender-name">
                                 <div class="send"
-                                    [ngStyle]="{ 'color': item.commentsBy === 'Admin' ? 'green' : 'brown' }">
+                                    [ngStyle]="{ 'color': item.commentsBy === 'ADMIN' ? 'green' : 'brown' }">
                                     {{ item.commentsBy
                                     }}</div>
                                 <div class="message-footer">
@@ -244,18 +245,20 @@
         </div>
     </div>
 
-
 <!-- form section -->
-    <div class="m-0 p-0 mt-3 section-fixed">
+    <div class="m-0 p-0 mt-3 section-fixed" *ngIf="grievanceStatus !== 'C'">
         <form [formGroup]="feedbackForm">
             <div class="row mb-3 align-items-end">
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Your Feedback</label>
+                    <label class="form-label">Your Comments</label>
                     <textarea class="form-control" maxlength="1000" rows="3" maxlength="1000"
                         formControlName="citizenComment" name="citizenComment"></textarea>
                     <small class="text-muted d-block text-end">
                         {{ feedbackForm.get('citizenComment')?.value?.length || 0 }} / 1000
                     </small>
+                      <mat-error *ngIf="(f['citizenComment'].touched || isSubmitted) && f['citizenComment'].invalid">
+                            Comments is required
+                    </mat-error>
                 </div>
                 <div class="col-md-3">
                     <mat-form-field appearance="outline" class="w-100">
@@ -264,6 +267,9 @@
                             <mat-option *ngFor="let status of officeStatusDetails" [value]="status.statusCode">
                                 {{ status.status}}</mat-option>
                         </mat-select>
+                         <mat-error *ngIf="(f['status'].touched || isSubmitted) && f['status'].invalid">
+                            Status is required
+                        </mat-error>
                     </mat-form-field>
                 </div>
                 <div class="col-md-4">
@@ -310,7 +316,7 @@
                 </div>
             </div>
             <mat-dialog-actions>
-                <button mat-raised-button (click)="submitFeedback()" class=" btn-glow btn-blue "> Submit Feedback
+                <button mat-raised-button (click)="submitFeedback()" class=" btn-glow btn-blue "> Submit
                 </button>
                 <button mat-raised-button color="primary"  [mat-dialog-close]="'reload'" class="btn-glow btn-red">
                     Close

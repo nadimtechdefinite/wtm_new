@@ -12,6 +12,15 @@
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
     </div>
+         <div class="col-md-3 ms-3">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Filter</mat-label>
+      <mat-select formControlName="status" (selectionChange)="applyStatusFilter($event.value)">
+        <mat-option *ngFor="let status of officeStatusDetails" [value]="status.statusCode">
+            {{ status.status}}</mat-option>
+       </mat-select>
+    </mat-form-field>
+  </div>
     <div class="ms-3 mb-4">
         <button mat-raised-button color="primary" class="btn-glow btn-blue"
             [routerLink]="['/layout/citizen/add-graviance']">
@@ -21,7 +30,7 @@
 </div>
 
 <!-- DATA TABLE -->
-<div class="card">
+<div class="card mb-5">
     <div class="card-body">
         <div class="mat-elevation-z8 table-responsive tbl " style="border: 1px solid #dddddd !important; box-shadow: none !important;
     border-radius: 10px !important;">
@@ -47,6 +56,10 @@
                                     {{ row.status === 'U' ? 'Under-Process' : row.status === 'C' ? 'Complete' :
                                     row.status }}
                                 </span>
+                            </ng-container>
+                                  <!-- DATE ✅ -->
+                            <ng-container *ngSwitchCase="'date'">
+                                {{ row[col.column] | date:'dd MMM yyyy' }}
                             </ng-container>
                             <ng-container *ngSwitchDefault>
                                 {{ row[col.column] }}

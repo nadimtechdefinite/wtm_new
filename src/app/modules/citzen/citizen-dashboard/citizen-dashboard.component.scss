@@ -113,18 +113,14 @@
 /* ========================= */
 
 .row > div:nth-child(1) .card-box {
-  background: linear-gradient(135deg, #6a11cb, #2575fc); /* Purple-Blue */
+  background: linear-gradient(135deg, #6a11cb61, #2575fc) /* Purple-Blue */
 }
 
 .row > div:nth-child(2) .card-box {
-  background: linear-gradient(135deg, #28a745, #218838); /* Green */
+  background: linear-gradient(135deg, #28a74585, #218838) /* Green */
 }
 
 .row > div:nth-child(3) .card-box {
-  background: linear-gradient(135deg, #ffc107, #e0a800); /* Yellow */
+  background: linear-gradient(135deg, #ffc10778, #e0a800); /* Yellow */
   color: #212529;
-}
-
-.row > div:nth-child(4) .card-box {
-  background: linear-gradient(135deg, #dc3545, #c82333); /* Red */
 }

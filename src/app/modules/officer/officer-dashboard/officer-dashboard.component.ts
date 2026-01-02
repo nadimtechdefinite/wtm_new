@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import Highcharts from 'highcharts';
+import Highcharts, { color } from 'highcharts';
 import { CommonService } from '../../../services/common.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -121,52 +121,62 @@ export class OfficerDashboardComponent {
   }
   ngAfterViewInit(): void {
     // this.createChartGauge();
-    this.createChartPie();
-    this.createChartColumn();
+    // this.createChartPie();
+    // this.createChartColumn();
     // this.createChartLine();
   }
 
 
 
   private createChartPie(): void {
-    const chart = Highcharts.chart('chart-pie', {
-      chart: { type: 'pie' },
-      title: { text: 'Grievance Overview' },
-      credits: { enabled: false },
-      tooltip: {
-        headerFormat: `<span class="mb-2">Date: {point.key}</span><br>`,
-        pointFormat: '<span>Amount: {point.y}</span>',
-        useHTML: true,
-      },
-      series: [{
-        name: null,
-        innerSize: '50%',
-        data: this.apiResponse.completedDetails, // dynamic
-      }],
-    } as any);
-  }
+  Highcharts.chart('chart-pie', {
+    chart: { type: 'pie' },
+    title: { text: 'Grievance Overview' },
+    credits: { enabled: false },
+    series: [{
+      innerSize: '55%',
+      data: [
+         { name: 'Total Registered', y: this.adminPdsummary.totalRegistered, color: '#007bff' },
+        { name: 'Completed', y: this.adminPdsummary.completed, color: '#28a745' },
+        { name: 'Under Process', y: this.adminPdsummary.underProgress, color: '#e0a800' },
+        { name: 'Forwarded', y: this.adminPdsummary.forwarded, color: '#dc3545' }
+      ]
+    }]
+  } as any);
+}
+
 
   private createChartColumn(): void {
-    const chart = Highcharts.chart('chart-column', {
-      chart: { type: 'column' },
-      title: { text: 'Grievance Register' },
-      credits: { enabled: false },
-      legend: { enabled: false },
-      yAxis: { min: 0, title: undefined },
-      xAxis: { type: 'category', categories: this.apiResponse.categories },
-      tooltip: {
-        headerFormat: `<div>Date: {point.key}</div>`,
-        pointFormat: `<div>{series.name}: {point.y}</div>`,
-        shared: true,
-        useHTML: true,
-      },
-      plotOptions: { bar: { dataLabels: { enabled: true } } },
-      series: [{
-        name: 'Amount',
-        data: this.apiResponse.underProcessDetails, // dynamic
-      }],
-    } as any);
-  }
+  Highcharts.chart('chart-column', {
+    chart: { type: 'column' },
+    title: { text: 'Pending Grievance Timeline' },
+    credits: { enabled: false },
+    xAxis: {
+      categories: [
+        '1 Week',
+        '15 Days',
+        '30 Days',
+        '3 Months',
+        '> 3 Months'
+      ]
+    },
+    yAxis: {
+      min: 0,
+      title: { text: 'Count' }
+    },
+    series: [{
+      name: 'Pending',
+      data: [
+        { y: this.adminPdsummary.pending1Week, color: '#007bff' },
+        { y: this.adminPdsummary.pending15Days, color: '#28a745' },
+        { y: this.adminPdsummary.pending30Days, color: '#ffc107' },
+        { y: this.adminPdsummary.pending3Months, color: '#a58627ff' },
+        { y: this.adminPdsummary.pendingMoreThan3Months, color: '#dc3545' }
+      ]
+    }]
+  } as any);
+}
+
 
   getCardBg(index: number): string {
     const gradients = [
@@ -186,7 +196,8 @@ export class OfficerDashboardComponent {
         if (response?.messageCode === 1) {
           console.log(response.data, "response");
           this.adminPdsummary = response.data
-
+        this.createChartPie();
+        this.createChartColumn();
         } else {
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
         }

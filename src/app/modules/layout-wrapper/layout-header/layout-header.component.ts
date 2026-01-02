@@ -35,7 +35,6 @@ toggleMenu() {
 }
   ngOnInit() {
   this.loadCitizenDetails();
-  debugger
    const userInfo = sessionStorage.getItem('userInfo');
    const resdata = sessionStorage.getItem('name');
    if(resdata){

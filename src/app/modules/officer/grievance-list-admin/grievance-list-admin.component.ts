@@ -42,9 +42,9 @@ export class GrievanceListAdminComponent {
     { column: 'grievanceNumber', header: 'Grievance ID' },
     { column: 'schemeName', header: 'Scheme/Division' },
     { column: 'address', header: 'Address', type: 'address', width: '15%' },
-    { column: 'description', header: 'Description', width: '40%' },
-    { column: 'createdOn', header: 'Date' },
-    { column: 'status', type: 'status', header: 'Status' },
+    { column: 'description', header: 'Description', width: '30%' },
+    { column: 'createdOn', header: 'Date', type: 'date', width: '10%' },
+    { column: 'status', type: 'status', header: 'Status', width: '10%' },
     { column: 'action', header: 'Action', type: 'action' }
   ];
 
@@ -62,15 +62,15 @@ export class GrievanceListAdminComponent {
   grievanceId: any;
   getCitizenId: any;
   officeStatusDetails: any;
-  userCode:any;
-  userType:any;
-  loginName:any;
+  userCode: any;
+  userType: any;
+  loginName: any;
 
   constructor(private dialog: MatDialog,
     private router: Router,
     private mobileService: MobileService,
     private masterService: masterService,
-   private errorHandler: ErrorHandlerService,) { }
+    private errorHandler: ErrorHandlerService,) { }
 
   ngOnInit() {
     this.displayedColumns = this.columns.map(col => col.column);
@@ -83,26 +83,19 @@ export class GrievanceListAdminComponent {
     });
 
 
+
     this.userInfo = sessionStorage.getItem('userInfo');
-
     if (this.userInfo) {
-      this.parsedUserInfo = JSON.parse(this.userInfo);
-      this.schemeCode = this.parsedUserInfo.schemeCode
-      console.log(this.schemeCode, "this.schemeCode");
-    
-    }
-    this.getGrievanceDetailsForAdmin()
-  
-
-        this.userInfo = sessionStorage.getItem('userInfo');
-    if (this.userInfo) {
+      debugger
       this.parsedUserInfo = JSON.parse(this.userInfo);
       this.userCode = this.parsedUserInfo.userCode;
       this.userType = this.parsedUserInfo.userType;
+      this.schemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
       console.log(this.userType, "this.userType");
+      this.getGrievanceDetailsForAdmin()
     }
-   this.officeStatus();
+    this.officeStatus();
   }
   getGrievanceDetailsForAdmin() {
     this.masterService
@@ -156,36 +149,35 @@ export class GrievanceListAdminComponent {
 
 
   openViewDialogAdmin(row: any, citizenDetails: any) {
-  const dialogRef = this.dialog.open(ProgramDivisonDialogComponent, {
-    width: '65vw',
-    maxWidth: '90vw',
-    maxHeight: '90vh',
-    panelClass: 'custom-dialog', // 🔥 MUST
-    disableClose:true,
-    data: {
-      grievance: row,
-      citizen: citizenDetails
-    }
-  });
-    dialogRef.afterClosed().subscribe((result:any) => {
-    if (result === 'reload') {
-      this.getGrievanceDetailsForAdmin(); // 🔁 API reload
-    }
-  });
-}
+    const dialogRef = this.dialog.open(ProgramDivisonDialogComponent, {
+      width: '65vw',
+      maxWidth: '90vw',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog', // 🔥 MUST
+      disableClose: true,
+      data: {
+        grievance: row,
+        citizen: citizenDetails
+      }
+    });
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result === 'reload') {
+        this.getGrievanceDetailsForAdmin(); // 🔁 API reload
+      }
+    });
+  }
 
-applyStatusFilter(status: string) {
-  this.admindataSource.filterPredicate = (data: any, filter: string) => {
-    if (!filter) return true;
-    return data.status === filter;
-  };
+  applyStatusFilter(status: string) {
+    this.admindataSource.filterPredicate = (data: any, filter: string) => {
+      if (!filter) return true;
+      return data.status === filter;
+    };
 
-  this.admindataSource.filter = status;
-}
+    this.admindataSource.filter = status;
+  }
 
 
   officeStatus() {
-    debugger
     const role =
       this.userType === 1 ? 'ADMIN' :
         this.userType === 2 ? 'PD' :

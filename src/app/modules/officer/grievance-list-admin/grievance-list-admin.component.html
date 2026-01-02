@@ -20,7 +20,7 @@
        </mat-select>
     </mat-form-field>
   </div>
-    <div class="ms-3 mb-4">
+    <div class="ms-3 mb-4" *ngIf="parsedUserInfo?.userType !== 1 && parsedUserInfo?.userType !== 2">
         <button mat-raised-button color="primary" class="btn-glow btn-blue" [routerLink]="['/layout/citizen/add-graviance']">
             Register Complaint
         </button>
@@ -28,7 +28,7 @@
 </div>
 
 <!-- DATA TABLE -->
-<div class="card">
+<div class="card mb-5">
     <div class="card-body">
         <div class="mat-elevation-z8 table-responsive tbl "
         style="border: 1px solid #dddddd !important; box-shadow: none !important;
@@ -36,7 +36,7 @@
             <table mat-table [dataSource]="admindataSource" class="mat-elevation-z1">
                 <ng-container *ngFor="let col of columns" [matColumnDef]="col.column">
                     <th mat-header-cell *matHeaderCellDef> {{ col.header }} </th>
-                    <td mat-cell *matCellDef="let row " [ngStyle]="{ width: col.width }">
+                    <td mat-cell *matCellDef="let row " [ngStyle]="{ width: col.width }" [ngClass]="{ 'word-break': col.column === 'description' || col.column === 'address' }">
                         <ng-container [ngSwitch]="col.type">
                             <ng-container *ngSwitchCase="'action'">
                                 <button mat-icon-button color="primary" (click)="openViewDialogAdmin(row, citzenDetails)"  style="    background-color: #ebf5ff;
@@ -61,6 +61,10 @@
                             {{row.panchayatName}},
                             {{ row.villageName }},
                             {{ row.pinCode }}
+                            </ng-container>
+                              <!-- DATE ✅ -->
+                            <ng-container *ngSwitchCase="'date'">
+                                {{ row[col.column] | date:'dd MMM yyyy' }}
                             </ng-container>
 
                             <ng-container *ngSwitchDefault>

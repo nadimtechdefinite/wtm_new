@@ -4,7 +4,7 @@
 
         <div class="container-fluid">
             <div class="row" style="padding: 0px 10px;">
-                <h3 class="main-title">Grievance Complaint</h3>
+                <h3 class="main-title">Grievance Registration</h3>
             </div>
             <section class="form-card">
                 <h6 class="title-label">Applicant Details</h6>
@@ -189,8 +189,8 @@
                                 <mat-label>Department</mat-label>
                                 <mat-select formControlName="ministry" (selectionChange)="selectedMinister($event)">
                                     <mat-option value="">Select Department</mat-option>
-                                    <mat-option *ngFor="let m of ministryList" [value]="m.ministryCode">
-                                        {{ m.ministryName }} - {{ m.ministryShortName }}
+                                    <mat-option *ngFor="let m of ministryList" [value]="m.ministryCode" >
+                                        {{ m.ministryName }} {{ m.ministryShortName }}
                                     </mat-option>
                                 </mat-select>
                                 <mat-error *ngIf="(f['ministry'].touched || isSubmitted) && f['ministry'].invalid">

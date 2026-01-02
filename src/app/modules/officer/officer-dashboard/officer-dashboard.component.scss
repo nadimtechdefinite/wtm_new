@@ -115,40 +115,42 @@
 
 
 .dord > div:nth-of-type(1) .card-box {
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  background: linear-gradient(
+135deg, #6a11cb73, #2575fc);
 }
 
 .dord > div:nth-of-type(2) .card-box {
-  background: linear-gradient(135deg, #28a745, #218838);
+  background: linear-gradient(135deg, #28a7455c, #218838);
 }
 
 .dord > div:nth-of-type(3) .card-box {
-  background: linear-gradient(135deg, #ffc107, #e0a800);
+  background: linear-gradient(135deg, #ffc10785, #e0a800);
   color: #212529;
 }
 
 .dord > div:nth-of-type(4) .card-box {
-  background: linear-gradient(135deg, #dc3545, #c82333);
+  background: linear-gradient(135deg, #dc354587, #c82333);
 }
 
 
 .Pending-dord > div:nth-of-type(1) .card-box {
-  background: linear-gradient(135deg, #17a2b8, #138496); /* 1 Week – Cyan */
+  background: linear-gradient(135deg, #1384966e , #17a2b8); /* 1 Week – Cyan */
 }
 
 .Pending-dord > div:nth-of-type(2) .card-box {
-  background: linear-gradient(135deg, #28a745, #218838); /* 15 Days – Green */
+  background: linear-gradient(135deg, #28a7455c, #218838); /* 15 Days – Green */
 }
 
 .Pending-dord > div:nth-of-type(3) .card-box {
-  background: linear-gradient(135deg, #ffc107, #e0a800); /* 30 Days – Yellow */
+  background: linear-gradient(135deg, #e0a80081, #ffc107); /* 30 Days – Yellow */
   color: #212529;
 }
 
 .Pending-dord > div:nth-of-type(4) .card-box {
-  background: linear-gradient(135deg, #fd7e14, #e8590c); /* 3 Months – Orange */
+  background: linear-gradient(135deg, #e8590c79, #fd7e14 ); /* 3 Months – Orange */
 }
 
 .Pending-dord > div:nth-of-type(5) .card-box {
-  background: linear-gradient(135deg, #dc3545, #c82333); /* >3 Months – Red */
+background: linear-gradient(135deg, rgb(47 148 248 / 47%), #0a8cff);/* >3 Months – Red */
 }
+

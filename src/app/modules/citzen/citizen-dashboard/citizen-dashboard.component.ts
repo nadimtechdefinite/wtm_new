@@ -8,8 +8,11 @@ import Accessibility from 'highcharts/modules/accessibility';
 import HighchartsMore from 'highcharts/highcharts-more';
 import HighchartsSolidGauge from 'highcharts/modules/solid-gauge';
 import { MobileService } from '../../../services/mobile.service';
-import { filter } from 'rxjs';
+import { filter, Subject } from 'rxjs';
 import { CitizenStoreService } from '../../../services/citizen-store.service';
+import { MenuReloadService } from '../../../services/citizen-dashboard.component';
+import { NavigationEnd, Router } from '@angular/router';
+import { masterService } from '../../../services/master.service';
 
 
 Accessibility(Highcharts);
@@ -24,21 +27,37 @@ HighchartsSolidGauge(Highcharts);
   styleUrls: ['./citizen-dashboard.component.scss']
 })
 export class CitizenDashboardComponent implements OnInit, AfterViewInit {
+  private destroy$ = new Subject<void>();
   pageTitle: string = '';
-     citizenData: any;
-     chartSummary: any[] = [];
-     citizenId: any;
+  citizenData: any;
+  chartSummary: any[] = [];
+  citizenId: any;
   getcitizenId: any;
-    mobileNo: any;
-     userName:any;
+  mobileNo: any;
+  userName: any;
+  parsedUserInfo: any;
+  schemeCode: any;
+  userInfo: string | null = null;
+  grievanceId: any;
+  getCitizenId: any;
+  officeStatusDetails: any;
+  userCode:any;
+  userType:any;
+  loginName:any;
   Highcharts: typeof Highcharts = Highcharts;
-  constructor(private commonService: CommonService, private route: ActivatedRoute,private mobileService: MobileService, private citizenStore: CitizenStoreService) { }
+  constructor(private commonService: CommonService, private route: ActivatedRoute, private mobileService: MobileService,
+    private citizenStore: CitizenStoreService,
+    private router: Router,
+     private masterService: masterService,
+    private menuReload: MenuReloadService) {
+
+  }
   apiResponse = {
     totalRegister: 100,
     completed: 15,
     underProcess: 20,
     return: 10,
-    
+
 
     underProcessDetails: [
       { y: 150, color: '#007bff' },
@@ -56,19 +75,27 @@ export class CitizenDashboardComponent implements OnInit, AfterViewInit {
     categories: ['5/1', '6/1', '7/1', '8/1', '9/1', '10/1', '11/1', '12/1', '13/1', '14/1']
   };
 
-
-
-
-  ngOnInit(): void { 
-this.loadCitizenDetails();
+  ngOnInit(): void {
+     this.mobileService.updatelogindata$.subscribe(value => {
+    this.citizenId = value.data.citizenId;
+    this.mobileNo = value.data.mobileNo;
+    this.getCitizenDetails();
+  });
+     this.userInfo = sessionStorage.getItem('userInfo');
+    if (this.userInfo) {
+      this.parsedUserInfo = JSON.parse(this.userInfo);
+      this.userCode = this.parsedUserInfo.userCode;
+      this.userType = this.parsedUserInfo.userType;
+      this.schemeCode = this.parsedUserInfo.schemeCode
+      this.loginName = this.parsedUserInfo.loginName
+      console.log(this.userType, "this.userType");
+    }
   }
+
   ngAfterViewInit(): void {
     // this.createChartGauge();
     // this.createChartLine();
   }
-
- 
-
   getCardBg(index: number): string {
     const gradients = [
       'linear-gradient(135deg, #6a11cb, #2575fc)',
@@ -79,81 +106,73 @@ this.loadCitizenDetails();
     return gradients[index % gradients.length];
   }
 
-
-  loadCitizenDetails() {
-    this.mobileService.updatelogindata$.subscribe(value => {
-      if (!value || !value.data) return;
-  
-      this.getcitizenId = value.data.citizenId;
-      this.mobileNo = value.data.mobileNo;
-  
-      // 🔥 Call API only after values are ready
-      this.citizenStore.loadCitizenDetails(this.getcitizenId, this.mobileNo);
-  
-      // Subscribe to citizen data
-      this.citizenStore.citizenDetails$
-        .pipe(filter((data: any) => data !== null))
-        .subscribe(data => {
-          console.log('Citizen Data:', data);
-          this.citizenData = data;
-          this.userName = data?.name; // agar aapko name chahiye
-          this.prepareChartData();
+citzenDetails:any
+grievanceList:any
+  getCitizenDetails() {
+    if (this.citizenId && this.mobileNo) {
+      this.masterService
+        .citizenDetails(this.citizenId, this.mobileNo)
+        .subscribe((res: any) => {
+          if (res) {
+            this.citzenDetails = res.data
+            this.prepareChartData();
+            console.log('User List Citizen Details:', this.citzenDetails);
+          }
         });
-    });
+    }
+  }
+
+  prepareChartData() {
+    if (!this.citzenDetails) return;
+
+    this.chartSummary = [
+      { name: 'Completed', y: this.citzenDetails.completed, color: '#28a745' },
+      { name: 'Under Process', y: this.citzenDetails.underProcess, color: '#e0a800' },
+      { name: 'Returned', y: this.citzenDetails.returned, color: '#dc3545' }
+    ];
+
+    this.loadPieChart();
+    this.loadColumnChart();
+  }
+
+  loadPieChart() {
+    Highcharts.chart('chart-pie', {
+      chart: {
+        type: 'pie'
+      },
+      title: {
+        text: 'Grievance Status'
+      },
+      series: [{
+        name: 'Count',
+        data: this.chartSummary
+      }]
+    } as any);
   }
 
 
-
-  prepareChartData() {
-  if (!this.citizenData) return;
-
-  this.chartSummary = [
-    { name: 'Completed', y: this.citizenData.completed },
-    { name: 'Under Process', y: this.citizenData.underProcess },
-    { name: 'Returned', y: this.citizenData.returned }
-  ];
-
-  this.loadPieChart();
-  this.loadColumnChart();
-}
-
-  loadPieChart() {
-  Highcharts.chart('chart-pie', {
-    chart: {
-      type: 'pie'
-    },
-    title: {
-      text: 'Grievance Status'
-    },
-    series: [{
-      name: 'Count',
-      data: this.chartSummary
-    }]
-  } as any);
-}
-
-
-loadColumnChart() {
-  Highcharts.chart('chart-column', {
-    chart: {
-      type: 'column'
-    },
-    title: {
-      text: 'Total Grievance Overview'
-    },
-    xAxis: {
-      categories: ['Total Registered', 'Completed', 'Under Process', 'Returned']
-    },
-    series: [{
-      name: 'Count',
-      data: [
-        this.citizenData.totalRegistered,
-        this.citizenData.completed,
-        this.citizenData.underProcess,
-        this.citizenData.returned
+  loadColumnChart() {
+    Highcharts.chart('chart-column', {
+      chart: {
+        type: 'column'
+      },
+      title: {
+        text: 'Total Grievance Overview'
+      },
+      xAxis: {
+        categories: ['Total Registered', 'Completed', 'Under Process', ]
+      },
+      series: [{
+        name: 'Count',
+     data: [
+        { y: this.citzenDetails.totalRegistered, color: '#007bff' }, // Blue
+        { y: this.citzenDetails.completed, color: '#28a745' },       // Green
+        { y: this.citzenDetails.underProcess, color: '#e0a800' },    // Yellow
+        // { y: this.citzenDetails.returned, color: '#dc3545' }         // Red
       ]
-    }]
-  } as any);
-}
+      }]
+    } as any);
+  }
+
 
 }

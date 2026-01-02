@@ -20,3 +20,98 @@
 }
 
 .accordion-body, .accordion-body ol li{font-size: 15px;}
+
+
+.grievance-ui {
+  background: radial-gradient(circle at top right, #0d6efd, #031633);
+  border-radius: 30px;
+  padding: 60px 40px;
+  color: #fff;
+}
+
+/* LEFT GLASS CARD */
+.left-glass {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.left-glass h3 {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.left-glass span {
+  color: #ffd43b;
+}
+
+.left-glass p {
+  margin-top: 15px;
+  opacity: 0.9;
+}
+
+/* CIRCLE LAYOUT */
+.circle-wrapper {
+  position: relative;
+  width: 420px;
+  height: 420px;
+  margin: auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d6efd, #003a8f);
+  box-shadow: inset 0 0 40px rgba(255,255,255,0.15),
+              0 30px 60px rgba(0,0,0,0.35);
+}
+
+/* CENTER */
+.circle-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  color: #003a8f;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: 700;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+/* STEPS */
+// .stepnn {
+
+//   color: #003a8f;
+//   position: absolute;
+//     width: 140px;
+//     text-align: center;
+//     background: #e6ebff;
+//     border-radius: 10px;
+//     padding: 10px;
+//     font-size: 13px;
+//     line-height: 1.3;
+//     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1019607843);
+//     transform: translate(-50%, -50%);
+// }
+
+// /* POSITIONING */
+// .step-1  { top: -44px; left: 50%; transform: translateX(-50%); }
+// .step-2  { top: 40px; right: -95px; }
+// .step-3  { top: 112px;
+//     right: -147px; }
+// .step-4  { top: 220px; right: -20px; }
+// .step-5  { bottom: -10px; left: 50%; transform: translateX(-50%); }
+// .step-6  { bottom: 40px; left: -10px; }
+// .step-7  { bottom: 130px; left: -40px; }
+// .step-8  { top: 220px; left: -20px; }
+// .step-9  { top: 130px; left: 10px; }
+// .step-10 { top: 40px; left: 40px; }
+
+
+
+

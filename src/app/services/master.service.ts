@@ -123,6 +123,10 @@ export class masterService extends HttpApiService {
     return this.getApiWithoutToken(`${getstatusDetail}=STATUS_${key}`);
   }
 
+  getcitizenStatus() {
+    return this.getApiWithoutToken(`${getstatusDetail}=STATUS`);
+  }
+
   feedbackStatusDetail(key: any) {
     return this.getApiWithoutToken(`${getFeedbackDetail}=${key}`);
   }

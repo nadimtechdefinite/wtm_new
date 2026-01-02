@@ -82,3 +82,11 @@ background-color: #fff4e5;
   max-height: calc(90vh - 120px) !important;
   overflow-y: auto !important;
 }
+
+
+.word-break {
+  white-space: normal !important;   /* allow multi-line */
+  word-break: break-word;           /* break long words */
+  overflow-wrap: anywhere;          /* modern browsers */
+  line-height: 1.4;
+}

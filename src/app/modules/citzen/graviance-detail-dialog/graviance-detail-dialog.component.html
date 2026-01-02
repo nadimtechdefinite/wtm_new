@@ -1,4 +1,5 @@
-
+    <h5 class="dialog-title">Grievance Overview  <span mat-dialog-close class="close">X</span>
+</h5>
 <div class="card citizen-card" style="width: 96%;
     margin: 0 auto;
     margin-top: 20px;
@@ -13,7 +14,6 @@
               'pending': grievancedetails.status === 'U',
             }">{{ grievancedetails.status === 'U' ? 'Under-Process' : grievancedetails.status === 'C' ? 'Complete' :
                     grievancedetails.status }}</span>
-                <span mat-dialog-close class="close">X</span>
 
             </div>
 
@@ -166,8 +166,7 @@
       <td mat-cell *matCellDef="let element">
         <!-- If file exists -->
         <ng-container *ngIf="element.fileName; else noPdf">
-          <a [href]="element.fileName" target="_blank" download
-            title="{{ element.fileName }}" (click)="openAttachment(element.fileName)" matTooltip="View File">
+          <a href="javascript:void(0)"  title="{{ element.fileName }}" (click)="openAttachment(element.fileName)" matTooltip="View File">
            <i class="bi bi-download pdfIcon"></i>
           </a>
         </ng-container>
@@ -224,9 +223,9 @@
 
   <mat-dialog-actions>
 
-    <button mat-raised-button (click)="submitFeedback()" class=" btn-glow btn-blue "> Submit Feedback
+    <button mat-raised-button (click)="submitFeedback()" class=" btn-glow btn-blue "> Submit
     </button>
-    <button mat-raised-button color="primary" mat-dialog-close class="btn-glow btn-red">
+    <button mat-raised-button color="primary" [mat-dialog-close]="'reload'" class="btn-glow btn-red">
       Close
     </button></mat-dialog-actions>
 

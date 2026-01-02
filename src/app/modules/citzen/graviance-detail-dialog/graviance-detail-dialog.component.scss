@@ -140,3 +140,14 @@
   color: #555;
   flex: 1;
 }
+
+.dialog-title{
+      background: linear-gradient(135deg, #1f3c88, #3f6ad8) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 18px rgba(63, 106, 216, 0.35) !important;
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 22px;
+    font-weight: 500 !important;
+}

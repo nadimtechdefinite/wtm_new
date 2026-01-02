@@ -13,6 +13,7 @@ export class CitizenStoreService {
   constructor(
     private masterService: masterService
   ) {}
+  
 
   /** 🔥 API CALL ONLY HERE */
   loadCitizenDetails(citizenId: number, mobileNo: string) {

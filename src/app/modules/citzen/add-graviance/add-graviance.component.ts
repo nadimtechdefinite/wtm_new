@@ -17,6 +17,8 @@ import { MATERIAL_MODULES } from '../../../shared/material/material';
 import { MobileService } from '../../../services/mobile.service';
 import { masterService } from '../../../services/master.service';
 import { takeUntil } from 'rxjs/operators';
+import { MenuReloadService } from '../../../services/citizen-dashboard.component';
+
 declare var Sanscript: any;
 @Component({
   selector: 'app-add-graviance',
@@ -84,7 +86,8 @@ export class AddGravianceComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private mobileService: MobileService,
-    private masterService: masterService
+    private masterService: masterService,
+    private menuReload: MenuReloadService
   ) {
   }
 
@@ -303,6 +306,10 @@ export class AddGravianceComponent implements OnInit {
           this.ministryList = response.data.filter(
           (item: any) => item.ministryCode === 1
         );
+
+        this.grievanceForm.patchValue({
+      ministry: 1   // backend logic ke liye
+    });
           console.log(this.ministry, "ministry");
         } else {
           console.error('Failed to load ministry list:', response?.errorMsg || 'Unknown error');
@@ -486,53 +493,8 @@ previewSelectedFile() {
     }
     this.grievanceForm.enable()
     const formValue = this.grievanceForm.value;
-    // const formData = new FormData();
-    // // if (formValue.attachMent1 instanceof File) {
-    // //   formData.append('attachMent1', formValue.attachMent1, formValue.attachMent1.name);
-    // // }
-    // let fileName = '';
-    // let filePath = '';
-    // if (formValue.attachMent1 instanceof File) {
-    //   const file: File = formValue.attachMent1;
-    //   fileName = file.name;                 // actual uploaded file name
-    //   filePath = `/uploads/${file.name}`;   // or whatever path backend expects
-    //   formData.append('attachMent1', file, file.name);
-    // }
-    // const payload = {
-    //   citizenId: this.citzenDetails?.citizenId,
-    //   stateCode: this.grievanceForm.get('stateCode')?.value,
-    //   districtCode: this.grievanceForm.get('districtCode')?.value,
-    //   blockCode: this.grievanceForm.get('blockCode')?.value,
-    //   panchayatCode: this.grievanceForm.get('panchayatCode')?.value,
-    //   villageCode: this.grievanceForm.get('villageCode')?.value,
-    //   pinCode: this.grievanceForm.get('pinCode')?.value,
-    //   ministryCode: this.grievanceForm.get('ministry')?.value,
-    //   schemeCode: this.grievanceForm.get('schemeCode')?.value,
-    //   description: this.grievanceForm.get('Description')?.value,
-    //   fileName: fileName,
-    //   filePath: filePath,
-    //   createdBy: this.citzenDetails?.citizenId
-    // }
-    // const formData = new FormData();
-    //   formData.append('citizenId', this.citzenDetails?.citizenId);
-    //   formData.append('stateCode', this.grievanceForm.get('stateCode')?.value);
-    //   formData.append('districtCode', this.grievanceForm.get('districtCode')?.value);
-    //   formData.append('blockCode', this.grievanceForm.get('blockCode')?.value);
-    //   formData.append('panchayatCode', this.grievanceForm.get('panchayatCode')?.value);
-    //   formData.append('villageCode', this.grievanceForm.get('villageCode')?.value);
-    //   formData.append('pinCode', this.grievanceForm.get('pinCode')?.value);
-    //   formData.append('ministryCode', this.grievanceForm.get('ministry')?.value);
-    //   formData.append('schemeCode', this.grievanceForm.get('schemeCode')?.value);
-    //   formData.append('description', this.grievanceForm.get('Description')?.value);
-    //   formData.append('createdBy', this.citzenDetails?.citizenId);
-
-    //   // Append file if selected
-    //   if (this.attachement1) {
-    //     formData.append('attachMent1', this.attachement1, this.attachement1.name);
-    //   }
     const formData = new FormData();
-  // 1️⃣ JSON object exactly like Postman
-  const payload = {
+    const payload = {
     citizenId: this.citzenDetails?.citizenId,
     stateCode: this.grievanceForm.get('stateCode')?.value,
     districtCode: this.grievanceForm.get('districtCode')?.value,
@@ -573,6 +535,7 @@ previewSelectedFile() {
             this.toastr.success(response?.message || 'Grievance saved successfully!');
             this.openPdfModal();
           }, 300);
+            this.menuReload.triggerReload();
         } else {
           this.toastr.warning(response?.message || 'Something went wrong, please try again.');
         }
@@ -586,11 +549,6 @@ previewSelectedFile() {
   }
   resetForm() {
     this.isSubmitted = false;
-    // this.grievanceForm.get('schemeCode')?.setValue('')
-    // this.grievanceForm.get('Description')?.setValue('')
-    // this.grievanceForm.get('captcha')?.setValue('')
-    // this.grievanceForm.get('attachMent1')?.setValue('')
-    //this.reload()
     this.grievanceForm.reset();
     this.grievanceForm.updateValueAndValidity()
   }

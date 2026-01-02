@@ -47,12 +47,17 @@ export class ProgramDivisonDialogComponent {
   selectedscheme: any;
   feedbackForm!: FormGroup;
   userName: any;
+  isSubmitted: boolean = false;
+  grievanceStatus: any;
+  
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private masterService: masterService,
     private toastr: ToastrService, private errorHandler: ErrorHandlerService, private dialogRef: MatDialogRef<ProgramDivisonDialogComponent>, private fb: FormBuilder) {
     console.log(data, "data");
+    debugger
     this.citizendetails = data.citizen
     this.grievancedetails = data.grievance
+    this.grievanceStatus = data.grievance.status
     this.grievanceId = this.grievancedetails.grievanceId
     this.citizenId = this.grievancedetails.citizenId
     // this.grievancedetails = {
@@ -94,6 +99,10 @@ export class ProgramDivisonDialogComponent {
     });
   }
 
+  get f() {
+  return this.feedbackForm.controls;
+}
+
   downloadFile(filePath: string, fileName: string) {
     const link = document.createElement('a');
     link.href = filePath; // full URL if backend hosted separately
@@ -120,7 +129,18 @@ export class ProgramDivisonDialogComponent {
 
 
   submitFeedback() {
-    debugger
+     this.isSubmitted = true;
+
+  if (!this.feedbackForm.get('citizenComment')?.value?.trim()) {
+    this.toastr.error('Comments are mandatory');
+    return;
+  }
+
+  if (!this.selectedSataus) {
+    this.toastr.error('Status is mandatory');
+    return;
+  }
+     this.isSubmitted = true;
     const formData = new FormData();
     let payload: any = {
       grievanceId: this.grievanceId,
@@ -141,13 +161,23 @@ export class ProgramDivisonDialogComponent {
     this.masterService.commentsAttachments(formData)
       .subscribe({
         next: (res: any) => {
-          if (res.messageCode === 1) {
-            this.citizendetails = res.data;
-            this.toastr.success(res?.message || 'Comment saved successfully');
-          }
+           if (res?.messageCode === 1) {
+        this.citizendetails = res.data;
+        this.toastr.success(res.message || 'Comment saved successfully');
+        this.dialogRef.close(true);
+        return;
+      }
+
+        if (res?.messageCode === 0) {
+          debugger
+        this.toastr.error(res.message);
+        return;
+      }
+
           else {
             this.toastr.error(res?.message || 'Failed to save comment');
           }
+          this.toastr.error('Failed to save comment');
         },
         error: (err) => {
           console.error('API Error:', err);

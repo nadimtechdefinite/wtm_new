@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { CitizenStoreService } from '../../../services/citizen-store.service';
+import { MobileService } from '../../../services/mobile.service';
+import { filter } from 'rxjs';
+import { MenuReloadService } from '../../../services/citizen-dashboard.component';
 interface MenuItem {
   label: string;
   icon?: string;
@@ -18,16 +22,23 @@ interface MenuItem {
   styleUrl: './layout-sidebar.component.scss'
 })
 export class LayoutSidebarComponent implements OnInit {
-    selectedRoute: string = '';
+  selectedRoute: string = '';
   parsedUserInfo: any;
   userCode: any;
   userType: any;
+  userName: any;
+  citizenData: any;
+  citizenId: any;
+  getcitizenId: any;
+  mobileNo: any;
+  showMenu = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private citizenStore: CitizenStoreService,private mobileService: MobileService,private menuReload: MenuReloadService) { }
  citizenLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },    
-    { label: 'Register Complaint ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },      // Orange
-    { label: 'Complain List', routerLink: '/layout/citizen/graviance-list', icon: 'fas fa-list', color: '#3f51b5' },
+    { label: 'Register Grievance ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },      // Orange
+    { label: 'Grievance List', routerLink: '/layout/citizen/graviance-list', icon: 'fas fa-list', color: '#3f51b5' },
+
     // {
     //   label: 'Event',
     //   icon: 'fas fa-calendar-alt', // calendar icon
@@ -38,7 +49,6 @@ export class LayoutSidebarComponent implements OnInit {
     //   ]
     // },
   ];
-
 
   // ✅ Empty arrays future ke liye
   adminLinks: MenuItem[] = [
@@ -57,18 +67,7 @@ export class LayoutSidebarComponent implements OnInit {
         
       }
 
-    console.log('User Role:', this.parsedUserInfo);  // ✅ role check karne ke liye
-    // switch (this.userRole) {
-    //   case 'citizen':
-    //     this.menu = this.citizenLinks;
-    //     break;
-    //   case 'this.userType === 1 || this.userType === 2':
-    //     this.menu = this.adminLinks;
-    //     break;
-    //   default:
-    //     this.menu = [];
-    //     break;
-    // }
+    console.log('User Role:', this.parsedUserInfo); 
     if (this.userType === 1 || this.userType === 2) {
         this.menu = this.adminLinks;
       } else if (this.userRole === 'citizen') {
@@ -100,5 +99,9 @@ expandParentMenu(route: string) {
   getId(label: string, index?: number): string {
     return (label ?? '').replace(/\s+/g, '') + (index ?? '');
   }
+
+
+
+
 
 }
