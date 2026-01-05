@@ -116,11 +116,11 @@
                 <td mat-cell *matCellDef="let element"> {{element.grievanceNumber}} </td>
             </ng-container>
             <ng-container matColumnDef="schemeName">
-                <th mat-header-cell *matHeaderCellDef> Scheme Name </th>
+                <th mat-header-cell *matHeaderCellDef> Scheme </th>
                 <td mat-cell *matCellDef="let element"> {{element.schemeName}} </td>
             </ng-container>
             <ng-container matColumnDef="ministryName">
-                <th mat-header-cell *matHeaderCellDef> Ministry Name </th>
+                <th mat-header-cell *matHeaderCellDef> Ministry </th>
                 <td mat-cell *matCellDef="let element"> {{element.ministryName}} </td>
             </ng-container>
 
@@ -135,17 +135,17 @@
             </ng-container>
 
             <ng-container matColumnDef="blockNameName">
-                <th mat-header-cell *matHeaderCellDef> Block Name </th>
+                <th mat-header-cell *matHeaderCellDef> Block  </th>
                 <td mat-cell *matCellDef="let element"> {{element.blockName}} </td>
             </ng-container>
 
             <ng-container matColumnDef="villageName">
-                <th mat-header-cell *matHeaderCellDef> Village Name </th>
+                <th mat-header-cell *matHeaderCellDef> Village  </th>
                 <td mat-cell *matCellDef="let element"> {{element.villageName}} </td>
             </ng-container>
 
             <ng-container matColumnDef="panchayatName">
-                <th mat-header-cell *matHeaderCellDef> Panchayat Name </th>
+                <th mat-header-cell *matHeaderCellDef> Panchayat  </th>
                 <td mat-cell *matCellDef="let element"> {{element.villageName}} </td>
             </ng-container>
 
@@ -156,9 +156,15 @@
 
 
             <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef> Description </th>
+                <th mat-header-cell *matHeaderCellDef> Description (Source language) </th>
                 <td mat-cell *matCellDef="let element"> {{element.description}} </td>
             </ng-container>
+
+        <ng-container matColumnDef="Transcripte">
+                <th mat-header-cell *matHeaderCellDef> Transcripte (In English) </th>
+                <td mat-cell *matCellDef="let element"> {{element.translatedDesc}} </td>
+            </ng-container>
+
             <ng-container matColumnDef="attachment">
                 <th mat-header-cell *matHeaderCellDef> Attachment </th>
 
@@ -250,7 +256,7 @@
         <form [formGroup]="feedbackForm">
             <div class="row mb-3 align-items-end">
                 <div class="col-md-12 mb-3">
-                    <label class="form-label">Your Comments</label>
+                    <label class="form-label">Enter Action Taken by the {{this.userName}}</label>
                     <textarea class="form-control" maxlength="1000" rows="3" maxlength="1000"
                         formControlName="citizenComment" name="citizenComment"></textarea>
                     <small class="text-muted d-block text-end">

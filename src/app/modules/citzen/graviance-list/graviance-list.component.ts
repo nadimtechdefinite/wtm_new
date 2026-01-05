@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute  } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MATERIAL_MODULES } from '../../../shared/material/material';
@@ -11,8 +11,11 @@ import { masterService } from '../../../services/master.service';
 import { ProgramDivisonDialogComponent } from '../../program-divison/program-divison-dialog/program-divison-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
-
-
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { transition } from '@angular/animations';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 @Component({
   selector: 'app-graviance-list',
   standalone: true,
@@ -39,8 +42,8 @@ export class GravianceListComponent {
     { column: 'serialNo', header: 'Sr.No' },
     { column: 'grievanceNumber', header: 'Grievance ID' },
     { column: 'schemeName', header: 'Scheme/Division' },
-    { column: 'description', header: 'Description', width: '30%' },
-    { column: 'translatedDesc', header: 'translate Desc', width: '20%' },
+    { column: 'description', header: 'Description (Source language)', width: '30%' },
+    { column: 'translatedDesc', header: 'Transcripte (In English)', width: '20%' },
      { column: 'createdOn', header: 'Date', type: 'date',width: '10%' },
      { column: 'status', type: 'status', header: 'Status',width: '10%' },
     { column: 'action', header: 'Action', type: 'action' }
@@ -66,6 +69,7 @@ citzenDetails: any;
   loginName:any;
   constructor(private dialog: MatDialog, 
       private router: Router,    
+      private route: ActivatedRoute,
       private mobileService: MobileService,
       private masterService: masterService,
     private errorHandler: ErrorHandlerService,) { }
@@ -78,7 +82,6 @@ citzenDetails: any;
   });
     this.userInfo = sessionStorage.getItem('userInfo');
     if (this.userInfo) {
-      debugger
       this.parsedUserInfo = JSON.parse(this.userInfo);
       this.userCode = this.parsedUserInfo.userCode;
       this.userType = this.parsedUserInfo.userType;
@@ -87,6 +90,13 @@ citzenDetails: any;
       console.log(this.userType, "this.userType");
     }
 this.officeStatus();
+
+  // 🔹 Query param read
+  this.route.queryParams.subscribe((params: { [x: string]: null; }) => {
+    debugger
+    this.selectedStatus = params['status'] || null;
+     this.getCitizenDetails();
+  });
   }
 
 
@@ -103,17 +113,76 @@ getCitizenDetails() {
               ...item,
               serialNo:index+1
             };
-          });;
-          // this.grievanceList = res.data.grievanceDetails
+          });
+          this.applyFilterq();
           console.log('User List Citizen Details:', this.citzenDetails);
-          this.dataSource = new MatTableDataSource(this.grievanceList);
+          const tableData = this.selectedStatus? this.filteredList: this.grievanceList;
+          this.dataSource = new MatTableDataSource(tableData);
           this.dataSource.paginator = this.paginator;
         }
       });
   }
 }
 
+filteredList: any[] = [];
+selectedStatus: string | null = null;
+applyFilterq() {
+  if (this.selectedStatus) {
+    debugger
+    this.filteredList = this.grievanceList.filter(
+      (g:any) => g.status === this.selectedStatus
+    );
+  } else {
+    this.filteredList = this.grievanceList;
+  }
+}
 
+
+exportToExcel() {
+  // 🔹 Same data jo table me dikh raha hai
+  const tableData = this.selectedStatus ? this.filteredList : this.grievanceList;
+
+  if (!tableData || tableData.length === 0) {
+    alert('No data available to export');
+    return;
+  }
+
+  // 🔹 Excel ke liye clean data banao
+  const exportData = tableData.map((item: any) => ({
+    'S.No': item.serialNo,
+    'Grievance No': item.grievanceNumber,
+    'Ministry': item.ministryName,
+    'Scheme/Division': item.schemeName,
+    'Description': item.description,
+    "transitioned Desc": item.translatedDesc,
+    'Created Date': item.createdOn ? new Date(item.createdOn).toLocaleDateString() : '',
+    'Status': item.status === 'U' ? 'Under Process' :
+              item.status === 'C' ? 'Completed' : item.status,
+  }));
+
+  // 🔹 Worksheet & Workbook
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Grievance List': worksheet },
+    SheetNames: ['Grievance List']
+  };
+
+  // 🔹 Excel file generate
+  const excelBuffer: any = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  });
+
+  this.saveExcelFile(excelBuffer, 'Citizen_Grievance_List');
+}
+
+
+saveExcelFile(buffer: any, fileName: string) {
+  const data: Blob = new Blob([buffer], {
+    type: 'application/octet-stream'
+  });
+  saveAs(data, `${fileName}_${new Date().getTime()}.xlsx`);
+}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -172,4 +241,58 @@ applyStatusFilter(status: string) {
   };
   this.dataSource.filter = status ? status.trim() : '';
 }
+exportToPdf() {
+  const tableData = this.selectedStatus ? this.filteredList : this.grievanceList;
+
+  if (!tableData || tableData.length === 0) {
+    alert('No data available');
+    return;
+  }
+
+  const doc = new jsPDF('l', 'mm', 'a4'); // landscape
+
+  // 🔹 Title
+  doc.setFontSize(14);
+  doc.text('Citizen Grievance List', 14, 15);
+
+  // 🔹 Table Header
+  const headers = [[
+    'S.No',
+    'Grievance No',
+    'Status',
+    'Ministry',
+    'Scheme',
+    'Date'
+  ]];
+
+  // 🔹 Table Body
+  const data = tableData.map((item: any) => ([
+    item.serialNo,
+    item.grievanceNumber,
+    item.status === 'U' ? 'Under Process' :
+    item.status === 'C' ? 'Completed' : item.status,
+    item.ministryName || '',
+    item.schemeName || '',
+    item.createdOn ? new Date(item.createdOn).toLocaleDateString('en-GB') : ''
+  ]));
+
+  // 🔹 Auto Table
+  autoTable(doc, {
+    head: headers,
+    body: data,
+    startY: 22,
+    theme: 'grid',
+    styles: {
+      fontSize: 9,
+      cellPadding: 3
+    },
+    headStyles: {
+      fillColor: [22, 92, 173] // blue header
+    }
+  });
+
+  // 🔹 Download
+  doc.save(`Citizen_Grievance_List_${Date.now()}.pdf`);
+}
+
 }

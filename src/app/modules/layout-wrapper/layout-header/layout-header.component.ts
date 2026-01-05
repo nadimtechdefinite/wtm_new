@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CitizenStoreService } from '../../../services/citizen-store.service';
 import { MobileService } from '../../../services/mobile.service';
 import { filter } from 'rxjs';
+import { SidebarToggleService } from '../../../services/sidebar-toggle.service';
 
 @Component({
   selector: 'app-layout-header',
@@ -16,7 +17,7 @@ export class LayoutHeaderComponent {
   parsedUserInfo: any;
   name: any;
   getUsername: any;
-  constructor(private router:Router, private citizenStore: CitizenStoreService,private mobileService: MobileService,){}
+  constructor(private router:Router, private citizenStore: CitizenStoreService,private mobileService: MobileService, private sidebarToggle: SidebarToggleService){}
   userName:any;
    citizenData: any;
      citizenId: any;
@@ -92,5 +93,9 @@ loadCitizenDetails() {
   });
 }
 
+
+toggleSidebar() {
+  this.sidebarToggle.toggle();
+}
 
 }

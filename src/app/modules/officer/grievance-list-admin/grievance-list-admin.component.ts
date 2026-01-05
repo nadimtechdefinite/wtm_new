@@ -11,7 +11,10 @@ import { ProgramDivisonDialogComponent } from '../../program-divison/program-div
 import { GravianceDetailDialogComponent } from '../../citzen/graviance-detail-dialog/graviance-detail-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
-
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-grievance-list-admin',
@@ -42,7 +45,8 @@ export class GrievanceListAdminComponent {
     { column: 'grievanceNumber', header: 'Grievance ID' },
     { column: 'schemeName', header: 'Scheme/Division' },
     { column: 'address', header: 'Address', type: 'address', width: '15%' },
-    { column: 'description', header: 'Description', width: '30%' },
+    { column: 'description', header: 'Description (Source language)', width: '30%' },
+    { column: 'translatedDesc', header: 'Transcripte (In English)', width: '20%' },
     { column: 'createdOn', header: 'Date', type: 'date', width: '10%' },
     { column: 'status', type: 'status', header: 'Status', width: '10%' },
     { column: 'action', header: 'Action', type: 'action' }
@@ -118,7 +122,51 @@ export class GrievanceListAdminComponent {
 
   }
 
+exportToExcel() {
+  // 🔹 Same data jo table me dikh raha hai
+  // const tableData = this.selectedStatus ? this.filteredList : this.grievanceList;
+  const tableData = this.GrievanceContent;
+  if (!tableData || tableData.length === 0) {
+    alert('No data available to export');
+    return;
+  }
 
+  // 🔹 Excel ke liye clean data banao
+  const exportData = tableData.map((item: any) => ({
+    'S.No': item.serialNo,
+    'Grievance No': item.grievanceNumber,
+    'Address': item.ministryName,
+    'Scheme/Division': item.schemeName,
+    'Description': item.stateName,
+    "transitioned Desc": item.translatedDesc,
+    'Created Date': item.createdOn ? new Date(item.createdOn).toLocaleDateString() : '',
+    'Status': item.status === 'U' ? 'Under Process' :
+              item.status === 'C' ? 'Completed' : item.status,
+  }));
+
+  // 🔹 Worksheet & Workbook
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Grievance List': worksheet },
+    SheetNames: ['Grievance List']
+  };
+
+  // 🔹 Excel file generate
+  const excelBuffer: any = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  });
+
+  this.saveExcelFile(excelBuffer, 'Citizen_Grievance_List');
+}
+
+
+saveExcelFile(buffer: any, fileName: string) {
+  const data: Blob = new Blob([buffer], {
+    type: 'application/octet-stream'
+  });
+  saveAs(data, `${fileName}_${new Date().getTime()}.xlsx`);
+}
 
   ngAfterViewInit() {
     this.admindataSource.paginator = this.paginator;
@@ -195,4 +243,66 @@ export class GrievanceListAdminComponent {
       error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
     });
   }
+
+
+exportToPdf() {
+  // const tableData = this.selectedStatus ? this.filteredList : this.grievanceList;
+  const tableData = this.GrievanceContent;
+
+  if (!tableData || tableData.length === 0) {
+    alert('No data available');
+    return;
+  }
+
+  const doc = new jsPDF('l', 'mm', 'a4'); // landscape
+
+  // 🔹 Title
+  doc.setFontSize(14);
+  doc.text('Admin/PD Grievance List', 14, 15);
+
+  // 🔹 Table Header
+  const headers = [[
+    'S.No',
+    'Grievance No',
+    'Status',
+    'Ministry',
+    'Scheme',
+    'Description (Source language)',
+    'Transcripte (In English)',
+    'Date'
+  ]];
+
+  // 🔹 Table Body
+  const data = tableData.map((item: any) => ([
+    item.serialNo,
+    item.grievanceNumber,
+    item.status === 'U' ? 'Under Process' :
+    item.status === 'C' ? 'Completed' : item.status,
+    item.ministryName || '',
+    item.schemeName || '',
+    item.description || '',
+    item.translatedDesc || '',
+    item.createdOn ? new Date(item.createdOn).toLocaleDateString('en-GB') : ''
+  ]));
+
+  // 🔹 Auto Table
+  autoTable(doc, {
+    head: headers,
+    body: data,
+    startY: 22,
+    theme: 'grid',
+    styles: {
+      fontSize: 9,
+      cellPadding: 3
+    },
+    headStyles: {
+      fillColor: [22, 92, 173] // blue header
+    }
+  });
+
+  // 🔹 Download
+  doc.save(`Admin/PD_Grievance_List_${Date.now()}.pdf`);
+}
+
+
 }

@@ -4,15 +4,15 @@
     </div>
 
 </div>
-<div class="d-flex justify-content-between align-items-center w-100">
-    <div class="col-md-4">
+<div class="row ">
+    <div class="col-md-3">
         <mat-form-field appearance="outline" class="w-100 align-items-center">
             <mat-label>Search</mat-label>
             <input matInput (keyup)="applyFilter($event)" placeholder="Search by ID, mobile, division ...">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
     </div>
-         <div class="col-md-3 ms-3">
+         <div class="col-md-3">
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>Filter</mat-label>
       <mat-select formControlName="status" (selectionChange)="applyStatusFilter($event.value)">
@@ -21,17 +21,32 @@
        </mat-select>
     </mat-form-field>
   </div>
-    <div class="ms-3 mb-4">
+    <div class="col-md-3">
         <button mat-raised-button color="primary" class="btn-glow btn-blue"
             [routerLink]="['/layout/citizen/add-graviance']">
             Register Complaint
         </button>
+    </div>
+
+    <div class="col-md-3 text-end">
+      
     </div>
 </div>
 
 <!-- DATA TABLE -->
 <div class="card mb-5">
     <div class="card-body">
+        <div class="row ">
+            <div class="col-md-12 d-flex justify-content-end mb-2 mb-2 gap-1">
+                <button mat-raised-button color="primary" class="btn-glow btn-red" (click)="exportToPdf()">
+                    <i class="fa-solid fa-file-pdf"></i> pdf
+                </button>
+                <button mat-raised-button color="primary" class="btn-glow btn-green" (click)="exportToExcel()">
+                    <i class="fas fa-file-excel"></i> Excel
+                </button>
+            </div>
+        </div>
+     
         <div class="mat-elevation-z8 table-responsive tbl " style="border: 1px solid #dddddd !important; box-shadow: none !important;
     border-radius: 10px !important;">
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
@@ -53,7 +68,7 @@
                                     'statusgreen': row.status === 'C',
                                     'statusorange': row.status === 'U'
                                 }">
-                                    {{ row.status === 'U' ? 'Under-Process' : row.status === 'C' ? 'Complete' :
+                                    {{ row.status === 'U' ? 'Under-Process' : row.status === 'C' ? 'Completed' :
                                     row.status }}
                                 </span>
                             </ng-container>

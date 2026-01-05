@@ -8,7 +8,7 @@
     background: #165cad;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     height: 100vh;
-    width: 240px;
+    width: 260px;
     position: fixed;
     box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
@@ -71,10 +71,10 @@ background-color: #5298e9;
     transition: background 0.3s, color 0.3s;
 }
 
-// .sidebar-menu a:hover {
-//     background: rgba(255, 255, 255, 0.2);
-//     color: #fff;
-// }
+.sidebar-menu a:hover {
+    background: rgb(55 122 248);
+    color: #fff;
+}
 
 .sidebar-menu i {
     margin-right: 12px;
@@ -97,7 +97,7 @@ background-color: #5298e9;
     color: #fff;
     border-radius: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    background-color: rgb(79 151 235);
+    background-color: rgb(55 122 248);
         border-color: #ffffff;
     /* subtle border on active */
 }
@@ -140,3 +140,42 @@ background-color: #5298e9;
 .fa-chevron-down.rotate {
     transform: rotate(180deg);
 }
+.font-18{font-size: 11px; margin: 0px; line-height: 1.2; color: #fff;}
+.font-13{font-size: 11px; margin: 0px; line-height: 1.2; color: #fff;}
+.govt-top-band{background-color: transparent; border:none}
+
+.sidebar {
+  width: 260px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.closed {
+  width: 0;
+  overflow: hidden;
+}
+
+/* 📱 Mobile View */
+// @media (max-width: 768px) {
+//   .sidebar {
+//     position: fixed;
+//     left: 0;
+//     top: 0;
+//     height: 100vh;
+//     z-index: 999;
+//     background: #fff;
+//   }
+
+//   .sidebar.closed {
+//     transform: translateX(-100%);
+//   }
+
+  .sidebar {
+  width: 260px;
+  transition: all 0.3s ease;
+}
+
+.sidebar.closed {
+  width: 0;
+  overflow: hidden;
+}
+

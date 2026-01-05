@@ -20,7 +20,7 @@ import swal from 'sweetalert2';
   styleUrl: './program-divison-dialog.component.scss'
 })
 export class ProgramDivisonDialogComponent {
-  displayedColumns: string[] = ['serialNo', 'grievanceId', 'schemeName', 'ministryName', 'stateName', 'districtName', 'blockNameName', 'pinCode', 'villageName', 'panchayatName', 'description', 'attachment']; // columns you want
+  displayedColumns: string[] = ['serialNo', 'grievanceId', 'schemeName', 'ministryName', 'stateName', 'districtName', 'blockNameName', 'panchayatName', 'villageName', 'pinCode', 'description', 'Transcripte', 'attachment']; // columns you want
   dataSource!: MatTableDataSource<any>;
   grievancedetails: any;
   citizendetails: any;

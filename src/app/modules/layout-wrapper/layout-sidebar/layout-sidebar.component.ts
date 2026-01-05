@@ -5,6 +5,9 @@ import { CitizenStoreService } from '../../../services/citizen-store.service';
 import { MobileService } from '../../../services/mobile.service';
 import { filter } from 'rxjs';
 import { MenuReloadService } from '../../../services/citizen-dashboard.component';
+import { SidebarToggleService } from '../../../services/sidebar-toggle.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 interface MenuItem {
   label: string;
   icon?: string;
@@ -17,7 +20,7 @@ interface MenuItem {
 @Component({
   selector: 'app-layout-sidebar',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule,RouterModule, MatTooltipModule   ],
   templateUrl: './layout-sidebar.component.html',
   styleUrl: './layout-sidebar.component.scss'
 })
@@ -32,8 +35,8 @@ export class LayoutSidebarComponent implements OnInit {
   getcitizenId: any;
   mobileNo: any;
   showMenu = false;
-
-  constructor(private router: Router, private citizenStore: CitizenStoreService,private mobileService: MobileService,private menuReload: MenuReloadService) { }
+isSidebarOpen = true;
+  constructor(private router: Router, private citizenStore: CitizenStoreService,private mobileService: MobileService,private menuReload: MenuReloadService, private sidebarToggle: SidebarToggleService) { }
  citizenLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },    
     { label: 'Register Grievance ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },      // Orange
@@ -59,6 +62,9 @@ export class LayoutSidebarComponent implements OnInit {
   menu: MenuItem[] = [];
   userRole: string = 'citizen' 
   ngOnInit(): void {
+      this.sidebarToggle.sidebarState$.subscribe((state:any) => {
+            this.isSidebarOpen = state;
+          });
        const userInfo = sessionStorage.getItem('userInfo');
       if (userInfo) {
         this.parsedUserInfo = JSON.parse(userInfo);

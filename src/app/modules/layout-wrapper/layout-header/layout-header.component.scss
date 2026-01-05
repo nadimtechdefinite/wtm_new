@@ -9,17 +9,17 @@
 .header {
   position: fixed;
   top: 0;
-  left: 239px;
+  left: 260px;
   /* Start after sidebar */
   right: 0;
-  height: 64px;
+  height: 75px;
   background:linear-gradient(
 135deg, #125ab1, #4499ff) !important;
   color: #fff;
   display: flex;
   flex-direction: row !important;
   align-items: center;
-  justify-content: end;
+  justify-content: space-between;
   padding: 0 32px;
   z-index: 100;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -31,9 +31,13 @@
   padding: 0;
 }
 
+.sidebar-header{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-
-
+.header-text h3{font-size: 24px; margin: 0; line-height: 1.2; color: #fff;}
 
 
 
@@ -207,4 +211,24 @@
   border-radius: 5px !important;
   display: inline-flex;
       padding: 3px;
+}
+
+.right-side{
+      display: flex;
+    align-items: center;
+}
+
+.menu-toggle {
+  font-size: 22px;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 15px;
+  display: none;
+}
+
+/* Mobile me icon dikhe */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: none;
+  }
 }

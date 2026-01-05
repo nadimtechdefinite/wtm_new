@@ -3,7 +3,7 @@
         <h3 class="main-title"> Grievances List</h3></div>
 
 </div>
-<div class="d-flex justify-content-between align-items-center w-100">
+<div class="row">
     <div class="col-md-4">
         <mat-form-field appearance="outline" class="w-100 align-items-center">
             <mat-label>Search</mat-label>
@@ -11,7 +11,7 @@
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
     </div>
-     <div class="col-md-3 ms-3">
+     <div class="col-md-3 ">
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>Filter</mat-label>
       <mat-select formControlName="status" (selectionChange)="applyStatusFilter($event.value)">
@@ -20,7 +20,7 @@
        </mat-select>
     </mat-form-field>
   </div>
-    <div class="ms-3 mb-4" *ngIf="parsedUserInfo?.userType !== 1 && parsedUserInfo?.userType !== 2">
+    <div class="col-md-4" *ngIf="parsedUserInfo?.userType !== 1 && parsedUserInfo?.userType !== 2">
         <button mat-raised-button color="primary" class="btn-glow btn-blue" [routerLink]="['/layout/citizen/add-graviance']">
             Register Complaint
         </button>
@@ -30,6 +30,16 @@
 <!-- DATA TABLE -->
 <div class="card mb-5">
     <div class="card-body">
+        <div class="row ">
+           <div class="col-md-12 d-flex justify-content-end mb-2 mb-2 gap-1">
+                <button mat-raised-button color="primary" class="btn-glow btn-red" (click)="exportToPdf()">
+                    <i class="fa-solid fa-file-pdf"></i> pdf
+                </button>
+                <button mat-raised-button color="primary" class="btn-glow btn-green" (click)="exportToExcel()">
+                    <i class="fas fa-file-excel"></i> Excel
+                </button>
+            </div>
+        </div>
         <div class="mat-elevation-z8 table-responsive tbl "
         style="border: 1px solid #dddddd !important; box-shadow: none !important;
     border-radius: 10px !important;">
@@ -51,7 +61,7 @@
                                     'statusgreen': row.status === 'C',
                                     'statusorange': row.status === 'U'
                                 }">
-                                            {{ row.status === 'U' ? 'Under-Process' : row.status === 'C' ? 'Complete' : row.status }}
+                                            {{ row.status === 'U' ? 'Under-Process' : row.status === 'C' ? 'Completed' : row.status }}
                                     </span>
                             </ng-container>
                             <ng-container *ngSwitchCase="'address'">

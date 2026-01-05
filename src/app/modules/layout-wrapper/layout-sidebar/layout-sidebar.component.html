@@ -1,9 +1,33 @@
-<div class="sidebar shadow-lg">
-  <div class="sidebar-header">
-    <!-- <img src="../../../../assets/images/logo_wtm.png" alt="Logo" class="sidebar-logo" /> -->
-     <img src="assets/images/logo_wtm.png" alt="WTM Logo" class="logo img-thumbnail" />
-    <h3 class="text-white">Write To Minister</h3>
-  </div>
+<div class="sidebar shadow-lg" [class.closed]="!isSidebarOpen">
+    <header class="govt-top-band">
+    <div class="">
+        <div class="d-flex align-items-center govt-left">
+            <img src="../assets/images/national emblem.png" alt="Emblem of India" height="65" class="me-2" />
+            <!-- <span class="govt-text">Government of India</span> -->
+             <div>
+            <p class="font-18">ग्रामीण विकास मंत्रालय</p>
+            <p class="font-13">भारत सरकार</p>
+            <p class="font-18">MINISTRY OF RURAL DEVELOPMENT</p>
+            <p class="font-13">GOVERNMENT OF INDIA</p>
+            </div>
+
+        </div>
+        <!-- <nav aria-label="Utility">
+            <ul class="nav justify-content-lg-end justify-content-center gap-3">
+                <li class="nav-item">
+                    <a class="nav-link p-0" role="link" title="Skip to main content">
+                        <img src="../assets/images/smc.svg" alt="Skip to main content" height="24" />
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link p-0" role="link" title="Screen Reader Guide">
+                        <img src="../assets/images/srg.svg" alt="Screen Reader Guide" height="24" /></a> </li>
+                <li class="nav-item"><a class="nav-link p-0" role="link" title="Accessibility Options">
+                        <img src="../assets/images/accessibility.svg" alt="Accessibility Options" height="24" /></a>
+                </li>
+            </ul>
+        </nav> -->
+    </div>
+</header>
 
   <ul class="sidebar-menu">
     <li *ngFor="let item of menu">
@@ -12,6 +36,7 @@
         <a 
           [routerLink]="[item.routerLink]" 
           routerLinkActive="active" 
+          matTooltip="{{ item.label }}"
           [routerLinkActiveOptions]="{ exact: true }"
           class="flex items-center gap-2"
         >

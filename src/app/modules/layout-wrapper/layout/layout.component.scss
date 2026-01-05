@@ -25,11 +25,13 @@
 
 /* MAIN CONTENT */
 .layout-content {
-  margin-left: 240px;   
+  margin-left: 264px;   
 //   margin-top: 64px;     
   padding: 20px;
   background: #f5f6fa;
   min-height: calc(100vh - 64px);
   margin-top: 64px !important;
+  margin-bottom: 30px;
 }
 
+/* FOOTER ALWAYS FULL WIDTH */

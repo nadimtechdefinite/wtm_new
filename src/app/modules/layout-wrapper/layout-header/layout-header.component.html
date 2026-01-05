@@ -1,5 +1,7 @@
 <div class="header">
- <nav aria-label="breadcrumb">
+   <i class="fa fa-bars menu-toggle"
+     (click)="toggleSidebar()">he</i>
+  <nav aria-label="breadcrumb">
     <ol class="breadcrumb mb-0">
       <!-- <li class="breadcrumb-item" aria-current="page" class="text-white"><a>STATE</a></li>
       <li class="breadcrumb-item" aria-current="page" class="text-white"><a>DISTRICT</a></li>
@@ -8,28 +10,23 @@
     </ol>
   </nav>
 
+  <div class="sidebar-header">
+    <img src="assets/images/logo_wtm.png" alt="WTM Logo" class="logo img-thumbnail" />
+    <div class="header-text">
+      <h3 class="text-white" style="line-height: 28px;">Write To Rural Development Minister</h3>
+      <p>A Grievance Redressel System For Citizens</p>
+    </div>
+  </div>
+  <div class="right-side">
+    <div class="bhashini-plugin-container"></div>
 
-<div  class="bhashini-plugin-container"></div>
-<!-- <div class="profile">
-  <button class="logout-btn" (click)="logOut()" matTooltip="Log Out" title="Log Out">
-    🔒 
-    <span class="profile-name" *ngIf="this.parsedUserInfo.mobileNo">{{ userName  }}</span>
-    <span class="profile-name" *ngIf="parsedUserInfo?.loginName !== 'ADMIN'">{{ parsedUserInfo?.loginName  }}</span>
-    <span class="profile-name" *ngIf="parsedUserInfo?.loginName === 'ADMIN'">{{ parsedUserInfo?.loginName }}</span>
-  </button>
-</div> -->
-<div class="profile">
-  <button
-    class="logout-btn"
-    (click)="logOut()"
-    matTooltip="Log Out"
-    title="Log Out"
-  >
-    🔒
-    <span class="profile-name">
-      {{ displayName }}
-    </span>
-  </button>
-</div>
-
+    <div class="profile">
+      <button class="logout-btn" (click)="logOut()" matTooltip="Log Out" title="Log Out">
+        🔒
+        <span class="profile-name">
+          {{ displayName }}
+        </span>
+      </button>
+    </div>
+  </div>
 </div>

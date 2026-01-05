@@ -49,7 +49,8 @@ export class CitizenDashboardComponent implements OnInit, AfterViewInit {
     private citizenStore: CitizenStoreService,
     private router: Router,
      private masterService: masterService,
-    private menuReload: MenuReloadService) {
+    private menuReload: MenuReloadService,
+  ) {
 
   }
   apiResponse = {
@@ -74,6 +75,14 @@ export class CitizenDashboardComponent implements OnInit, AfterViewInit {
     returnDetails: [900, 950, 970, 500, 900, 850, 600, 500, 700, 950],
     categories: ['5/1', '6/1', '7/1', '8/1', '9/1', '10/1', '11/1', '12/1', '13/1', '14/1']
   };
+
+  goToGrievanceList(status: string) {
+    debugger
+  this.router.navigate(
+    ['/layout/citizen/graviance-list'],
+    { queryParams: { status } }
+  );
+}
 
   ngOnInit(): void {
      this.mobileService.updatelogindata$.subscribe(value => {

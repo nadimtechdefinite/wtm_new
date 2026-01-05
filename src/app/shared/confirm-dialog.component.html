@@ -1,10 +1,23 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
 
-<mat-dialog-content>
-  <p>{{ data.message }}</p>
-</mat-dialog-content>
+<section *ngIf="data.flag !== 'citizenRegister'">
+  <h2 mat-dialog-title>{{ data.title }}</h2>
+  <mat-dialog-content>
+    <p>{{ data.message }}</p>
+  </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>No</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="true">Yes</button>
-</mat-dialog-actions>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>No</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">Yes</button>
+  </mat-dialog-actions>
+</section>
+
+<section *ngIf="data.flag === 'citizenRegister'">
+  <h2 mat-dialog-title style="text-align: center;
+    color: #41ab41;
+    font-size: 18px;
+        margin-bottom: 0px;
+    padding-bottom: 0px;">{{ data.title }}</h2>
+  <mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" [mat-dialog-close]="true">OK</button>
+  </mat-dialog-actions>
+</section>

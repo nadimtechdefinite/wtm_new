@@ -277,8 +277,7 @@ export class GravianceRegisterComponent implements OnInit {
           this.grievanceForm.reset();
           this.toastr.success(response?.message || 'Grievance saved successfully!');
           this.isSubmitted = false;
-          this.router.navigate(['/login'])
-
+          this.openConfirmAfterRegister();
         } else {
           this.toastr.warning(response?.responseDesc || 'Something went wrong, please try again.');
         }
@@ -290,6 +289,34 @@ export class GravianceRegisterComponent implements OnInit {
     });
 
   }
+
+openConfirmAfterRegister() {
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    width: '380px',
+    disableClose: true,
+    data: {
+      title: 'Citizen has been Successfully Registerd',
+      yesText: 'OK',
+      flag: "citizenRegister"
+      // noText: 'Close'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      // this.router.navigate(['/login']) 
+    } else {
+      // NO clicked
+      console.log('User closed dialog');
+    }
+  });
+}
+
+
+
+
+
+
   resetForm() {
     this.isSubmitted = false;
     this.grievanceForm.reset();
