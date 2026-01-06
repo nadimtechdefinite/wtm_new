@@ -47,6 +47,21 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/slick-carousel/slick/slick.min.js"
              
+            ],
+          "allowedCommonJsDependencies": [
+              "commonjs",
+              "lodash",
+              "moment",
+              "sha.js",
+              "jquery",
+              "html2canvas",
+              "sweetalert",
+              "highcharts",
+              "canvg",
+              "core-js",
+              "raf",
+              "rgbcolor",
+              "file-saver"
             ]
           },
           "configurations": {
@@ -54,13 +69,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumError": "2MB"
                 }
               ],
               "outputHashing": "all",

@@ -93,7 +93,6 @@ this.officeStatus();
 
   // 🔹 Query param read
   this.route.queryParams.subscribe((params: { [x: string]: null; }) => {
-    debugger
     this.selectedStatus = params['status'] || null;
      this.getCitizenDetails();
   });
@@ -128,7 +127,10 @@ filteredList: any[] = [];
 selectedStatus: string | null = null;
 applyFilterq() {
   if (this.selectedStatus) {
-    debugger
+      if (!this.selectedStatus || this.selectedStatus === 'T') {
+    this.filteredList = [...this.grievanceList];
+    return;
+  }
     this.filteredList = this.grievanceList.filter(
       (g:any) => g.status === this.selectedStatus
     );

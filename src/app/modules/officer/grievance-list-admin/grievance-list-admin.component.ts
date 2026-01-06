@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MATERIAL_MODULES } from '../../../shared/material/material';
@@ -74,44 +74,53 @@ export class GrievanceListAdminComponent {
     private router: Router,
     private mobileService: MobileService,
     private masterService: masterService,
-    private errorHandler: ErrorHandlerService,) { }
+    private errorHandler: ErrorHandlerService,
+  private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.displayedColumns = this.columns.map(col => col.column);
-    // this.dataSource.data = this.dummyList;
     this.mobileService.updatelogindata$.subscribe(value => {
-      this.citizenId = value.data.citizenId;
-      this.mobileNo = value.data.mobileNo;
-      // ✅ API CALL HERE
-
+      this.citizenId = value?.data?.citizenId;
+      this.mobileNo = value?.data?.mobileNo;
     });
-
-
 
     this.userInfo = sessionStorage.getItem('userInfo');
     if (this.userInfo) {
-      debugger
       this.parsedUserInfo = JSON.parse(this.userInfo);
       this.userCode = this.parsedUserInfo.userCode;
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
       console.log(this.userType, "this.userType");
-      this.getGrievanceDetailsForAdmin()
+    }
+
+    this.route.queryParams.subscribe((params: { [x: string]: null; }) => {
+      this.selectedStatus = params['status'] || null;
+      // this.getGrievanceDetailsForAdmin();
+      this.pendingCount();
+    });
+    if(this.selectedStatus){
+       this.pendingCount();
     }
     this.officeStatus();
+       this.getGrievanceDetailsForAdmin()
   }
-  getGrievanceDetailsForAdmin() {
+
+
+  pendingCount() {
     this.masterService
-      .getGrievanceDetailsForAdmin(this.schemeCode)
+      .pendingCountForAdmin(this.schemeCode, this.selectedStatus)
       .subscribe((res: any) => {
         if (res.messageCode === 1) {
+          debugger
           this.GrievanceContent = res.data.map((item: any, i: any) => ({
             ...item,
             SerialNo: i + 1
           }));
+          //  this.applyFilterq();
           // this.grievanceList = res.data.grievanceDetails;
           console.log('User List Citizen Details:', this.citzenDetails);
+          // const tableData = this.selectedStatus? this.filteredList: this.GrievanceContent;
           this.admindataSource = new MatTableDataSource(this.GrievanceContent);
           this.admindataSource.paginator = this.paginator;
         }
@@ -121,6 +130,46 @@ export class GrievanceListAdminComponent {
       });
 
   }
+
+
+  getGrievanceDetailsForAdmin() {
+    this.masterService
+      .getGrievanceDetailsForAdmin(this.schemeCode)
+      .subscribe((res: any) => {
+        if (res.messageCode === 1) {
+          this.GrievanceContent = res.data.map((item: any, i: any) => ({
+            ...item,
+            SerialNo: i + 1
+          }));
+           this.applyFilterq();
+          // this.grievanceList = res.data.grievanceDetails;
+          console.log('User List Citizen Details:', this.citzenDetails);
+          const tableData = this.selectedStatus? this.filteredList: this.GrievanceContent;
+          this.admindataSource = new MatTableDataSource(tableData);
+          this.admindataSource.paginator = this.paginator;
+        }
+        else {
+
+        }
+      });
+
+  }
+
+filteredList: any[] = [];
+selectedStatus: string | null = null;
+applyFilterq() {
+  if (this.selectedStatus) {
+      if (!this.selectedStatus || this.selectedStatus === 'T') {
+    this.filteredList = [...this.GrievanceContent];
+    return;
+  }
+    this.filteredList = this.GrievanceContent.filter(
+      (g:any) => g.status === this.selectedStatus
+    );
+  } else {
+    this.filteredList = this.GrievanceContent;
+  }
+}
 
 exportToExcel() {
   // 🔹 Same data jo table me dikh raha hai

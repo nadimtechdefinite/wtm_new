@@ -231,36 +231,36 @@ body {
   color: #fff
 }
 .step1 {
-  top: 5%;
+  top: 3%;
   left: 50%
 }
 .step2 {
   top: 15%;
-  left: 80%
+  left: 84%
 }
 .step3 {
-  top: 35%;
-  left: 95%
+    top: 37%;
+    left: 97%;
 }
 .step4 {
-  top: 60%;
-  left: 90%
+ top: 59%;
+    left: 94%;
 }
 .step5 {
   top: 80%;
-  left: 80%
+  left: 85%
 }
 .step6 {
   top: 95%;
   left: 50%
 }
 .step7 {
-  top: 80%;
-  left: 20%
+    top: 80%;
+    left: 13%;
 }
 .step8 {
-  top: 60%;
-  left: 10%
+top: 57%;
+    left: 0%;
 }
 .step9 {
   top: 35%;
@@ -268,7 +268,7 @@ body {
 }
 .step10 {
   top: 15%;
-  left: 20%
+  left: 15%
 }
 @media (max-width: 900px) {
   .container {
@@ -666,7 +666,6 @@ button.mat-icon-button:hover {
 .btn-blue {
   background: linear-gradient(135deg, #1f3c88, #3f6ad8) !important;
   color: #fff !important;
-  box-shadow: 0 8px 18px rgba(63, 106, 216, 0.35) !important;
 }
 
 .btn-blue:hover {
@@ -677,13 +676,23 @@ button.mat-icon-button:hover {
 .btn-red {
   background: linear-gradient(135deg, #e53935, #ff6f60) !important;
   color: #fff !important;
-  box-shadow: 0 8px 18px rgba(229, 57, 53, 0.35) !important;
 }
 
 .btn-red:hover {
 
   box-shadow: 0 12px 22px rgba(229, 57, 53, 0.45) !important;
 }
+
+.btn-green {
+    background: linear-gradient(135deg, #198754, #32b87a) !important;
+    color: #fff !important;
+}
+
+.btn-green:hover {
+
+  box-shadow: 0 12px 22px rgba(25, 135, 84, 0.45) !important;
+}
+
 
 .main-title{
     background: linear-gradient(135deg, #1f3c88d9, #3f6ad8) !important;
@@ -723,8 +732,4 @@ button.mat-icon-button:hover {
     font-size: 22px;
     }
 
-    .btn-green {
-    background: linear-gradient(135deg, #198754, #32b87a) !important;
-    color: #fff !important;
-}
 

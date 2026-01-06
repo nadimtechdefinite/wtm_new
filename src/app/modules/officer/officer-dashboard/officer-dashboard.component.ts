@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import Highcharts, { color } from 'highcharts';
 import { CommonService } from '../../../services/common.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { masterService } from '../../../services/master.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
@@ -25,7 +25,7 @@ export class OfficerDashboardComponent {
   loginName: any;
   userType: any;
   schemeCode: any;
-  constructor(private commonService: CommonService, private masterService: masterService, private errorHandler: ErrorHandlerService,) { }
+  constructor(private commonService: CommonService, private masterService: masterService, private errorHandler: ErrorHandlerService, private router: Router,) { }
   apiResponse = {
     totalRegister: 100,
     completed: 15,
@@ -106,6 +106,12 @@ export class OfficerDashboardComponent {
     }
   ];
 
+    goToGrievanceList(status: string) {
+  this.router.navigate(
+    ['layout/admin/admin-grievance-list'],
+    { queryParams: { status } }
+  );
+}
 
   ngOnInit(): void { 
     this.userInfo = sessionStorage.getItem('userInfo');

@@ -16,6 +16,7 @@ interface MenuItem {
   children?: MenuItem[];
   roles?: string[];
   expanded?: boolean;
+   isLogout?: boolean;
 }
 @Component({
   selector: 'app-layout-sidebar',
@@ -39,8 +40,9 @@ isSidebarOpen = true;
   constructor(private router: Router, private citizenStore: CitizenStoreService,private mobileService: MobileService,private menuReload: MenuReloadService, private sidebarToggle: SidebarToggleService) { }
  citizenLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },    
-    { label: 'Register Grievance ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },      // Orange
+    { label: 'Register Grievance ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },   // Orange
     { label: 'Grievance List', routerLink: '/layout/citizen/graviance-list', icon: 'fas fa-list', color: '#3f51b5' },
+    {label: 'Logout',icon: 'fa fa-sign-out-alt',color: '#f44336',isLogout: true}
 
     // {
     //   label: 'Event',
@@ -57,6 +59,8 @@ isSidebarOpen = true;
   adminLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/admin/dashboard', icon: 'fa fa-home', color: '#ff5722' },
     { label: 'Review/Update Status', routerLink: '/layout/admin/admin-grievance-list', icon: 'fa fa-hand-holding-heart', color: '#e91e63' },
+    {label: 'Logout',icon: 'fa fa-sign-out-alt',color: '#f44336',isLogout: true
+    }
   ];
 
   menu: MenuItem[] = [];
@@ -107,7 +111,13 @@ expandParentMenu(route: string) {
   }
 
 
+logOut() {
+  sessionStorage.clear();
+  localStorage.clear();
+  this.router.navigate(['/login']);
+    this.router.navigateByUrl('/login', { replaceUrl: true });
 
+}
 
 
 }

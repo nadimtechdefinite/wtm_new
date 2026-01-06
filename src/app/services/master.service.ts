@@ -23,6 +23,7 @@ const getadminSummary = environment.apiUrl + "pd-admin/summary";
 const downloadDoc = environment.apiUrl + "file/download/";
 const submitFeedback = environment.apiUrl + "citizen/submitFeedback";
 const getFeedbackDetail = environment.apiUrl + "statussmaster/statusDetail?key";
+const getpendingCountAdmin = environment.apiUrl + "pd-admin/pending?schemeId";
 
 //auth api
 const generateOtpApi = environment.apiUrl + 'auth/generate-otp';
@@ -114,6 +115,9 @@ export class masterService extends HttpApiService {
     return this.getApiWithoutToken(`${getGrievanceDetailsForAdmin}=${stateCode}`);
   }
 
+  pendingCountForAdmin(stateCode: any, bucket: any):Observable<any> {
+    return this.getApiWithoutToken(`${getpendingCountAdmin}=${stateCode}&bucket=${bucket}`);
+  }
 
   commentsAttachments(data: any):Observable<any> {
     return this.http.post(`${COMMENTS_ATTACHMENTS_URL}`, data);

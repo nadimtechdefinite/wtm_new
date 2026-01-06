@@ -77,7 +77,6 @@ export class CitizenDashboardComponent implements OnInit, AfterViewInit {
   };
 
   goToGrievanceList(status: string) {
-    debugger
   this.router.navigate(
     ['/layout/citizen/graviance-list'],
     { queryParams: { status } }

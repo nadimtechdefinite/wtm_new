@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authRoutes } from './auth/auth.routes';
 import { LayoutComponent } from './modules/layout-wrapper/layout/layout.component';
 import { WebsiteWrapperComponent } from './core/components/website-wrapper/website-wrapper.component';
+import { AuthGuard } from './auth/auth.gaurds';
 
 export const routes: Routes = [
   // Public pages + auth pages (WebsiteWrapperComponent)
@@ -31,28 +32,32 @@ export const routes: Routes = [
   },
 
   // Dashboard wrapper
-  {
-    path: 'layout',
-    component: LayoutComponent,
-    children: [
-      {
-        path: 'admin',
-        loadChildren: () =>
-          import('../app/modules/officer/officer.routes').then(r => r.ADMIN_ROUTES)
-      },
-      {
-        path: 'citizen',
-        loadChildren: () =>
-          import('../app/modules/citzen/citzen.routes').then(r => r.CITIZEN_ROUTES)
-      },
-      {
-        path: '',
-        redirectTo: 'citizen/dashboard',
-        pathMatch: 'full'
-      }
-    ]
-  },
-
-  // Wildcard
-  { path: '**', redirectTo: '' }
+{
+  path: 'layout',
+  component: LayoutComponent,
+  children: [
+    {
+      path: 'admin',
+      canLoad: [AuthGuard],
+      data: { role: ['1','2'] },
+      loadChildren: () =>
+        import('../app/modules/officer/officer.routes')
+          .then(r => r.ADMIN_ROUTES)
+    },
+    {
+      path: 'citizen',
+      // canLoad: [AuthGuard],
+      data: { role: ['citizen'] },
+      loadChildren: () =>
+        import('../app/modules/citzen/citzen.routes')
+          .then(r => r.CITIZEN_ROUTES)
+    },
+    {
+      path: '',
+      redirectTo: 'citizen/dashboard',
+      pathMatch: 'full'
+    }
+  ]
+},
+ { path: '**', redirectTo: '' }
 ];
