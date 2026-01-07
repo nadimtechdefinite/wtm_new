@@ -17,5 +17,16 @@ import { LayoutFooterComponent } from '../layout-footer/layout-footer.component'
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
+  isSidebarOpen = true;
 
+
+
+  constructor() {}
+
+  ngonInit() {
+    // Initialization logic can go here
+  }
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
 }

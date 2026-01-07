@@ -46,7 +46,7 @@ export class GrievanceListAdminComponent {
     { column: 'schemeName', header: 'Scheme/Division' },
     { column: 'address', header: 'Address', type: 'address', width: '15%' },
     { column: 'description', header: 'Description (Source language)', width: '30%' },
-    { column: 'translatedDesc', header: 'Transcripte (In English)', width: '20%' },
+    { column: 'translatedDesc', header: 'Transcript (In English)', width: '20%' },
     { column: 'createdOn', header: 'Date', type: 'date', width: '10%' },
     { column: 'status', type: 'status', header: 'Status', width: '10%' },
     { column: 'action', header: 'Action', type: 'action' }
@@ -103,8 +103,9 @@ export class GrievanceListAdminComponent {
        this.pendingCount();
     }
     this.officeStatus();
-       this.getGrievanceDetailsForAdmin()
+    this.getGrievanceDetailsForAdmin()
   }
+
 
 
   pendingCount() {
@@ -112,7 +113,6 @@ export class GrievanceListAdminComponent {
       .pendingCountForAdmin(this.schemeCode, this.selectedStatus)
       .subscribe((res: any) => {
         if (res.messageCode === 1) {
-          debugger
           this.GrievanceContent = res.data.map((item: any, i: any) => ({
             ...item,
             SerialNo: i + 1
@@ -230,19 +230,6 @@ saveExcelFile(buffer: any, fileName: string) {
   registerComplaint() {
     this.router.navigate(['/layout/citizen/add-grievance']);
   }
-
-  openViewDialog(row: any, citizenDetails: any) {
-
-    this.dialog.open(GravianceDetailDialogComponent, {
-      width: '65%',
-      maxWidth: '90vw',
-      data: {
-        grievance: row,
-        citizen: citizenDetails
-      }
-    });
-  }
-
 
 
   openViewDialogAdmin(row: any, citizenDetails: any) {

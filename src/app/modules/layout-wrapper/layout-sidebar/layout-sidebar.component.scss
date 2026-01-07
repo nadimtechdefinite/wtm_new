@@ -4,7 +4,6 @@
     padding: 5px;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    //   background: linear-gradient(to bottom, #2365c7, #25889c);
     background: #165cad;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
     height: 100vh;
@@ -12,15 +11,7 @@
     position: fixed;
     box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
-    margin-top:-64px;
 }
-
-/* Sidebar Header */
-// .sidebar-header {
-//     text-align: center;
-//     padding: 24px 0 16px 0;
-//     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-// }
 
 .sidebar-header .sidebar-logo {
     width: 100px;
@@ -144,38 +135,32 @@ background-color: #5298e9;
 .font-13{font-size: 11px; margin: 0px; line-height: 1.2; color: #fff;}
 .govt-top-band{background-color: transparent; border:none}
 
+
 .sidebar {
   width: 260px;
+  position: fixed;
+  top: 0px;
+  left: 0;
+  height: calc(100vh - 0px);
   transition: all 0.3s ease;
+  overflow-y: auto;
+
 }
 
 .sidebar.closed {
-  width: 0;
-  overflow: hidden;
+  transform: translateX(0);
 }
 
-/* 📱 Mobile View */
-// @media (max-width: 768px) {
-//   .sidebar {
-//     position: fixed;
-//     left: 0;
-//     top: 0;
-//     height: 100vh;
-//     z-index: 999;
-//     background: #fff;
-//   }
-
-//   .sidebar.closed {
-//     transform: translateX(-100%);
-//   }
-
+/* Mobile */
+@media (max-width: 768px) {
   .sidebar {
-  width: 260px;
-  transition: all 0.3s ease;
+    z-index: 1000;
+    top: 75px;
+    background: #165cad;
+    height: calc(100vh - 75px);
+      transform: translateX(-100%);
+  }
+  .sidebar:not(.closed) {
+    transform: translateX(0);
+  }
 }
-
-.sidebar.closed {
-  width: 0;
-  overflow: hidden;
-}
-

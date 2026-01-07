@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CitizenStoreService } from '../../../services/citizen-store.service';
 import { MobileService } from '../../../services/mobile.service';
@@ -14,6 +14,8 @@ import { SidebarToggleService } from '../../../services/sidebar-toggle.service';
   styleUrl: './layout-header.component.scss'
 })
 export class LayoutHeaderComponent {
+    @Output() toggleSidebarEvent = new EventEmitter<void>();
+
   parsedUserInfo: any;
   name: any;
   getUsername: any;
@@ -94,8 +96,9 @@ loadCitizenDetails() {
 }
 
 
-toggleSidebar() {
-  this.sidebarToggle.toggle();
-}
+  toggleSidebar() {
+    this.toggleSidebarEvent.emit();
+  }
 
 }
+

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CitizenStoreService } from '../../../services/citizen-store.service';
 import { MobileService } from '../../../services/mobile.service';
@@ -26,6 +26,7 @@ interface MenuItem {
   styleUrl: './layout-sidebar.component.scss'
 })
 export class LayoutSidebarComponent implements OnInit {
+  @Input() isSidebarOpen = true;
   selectedRoute: string = '';
   parsedUserInfo: any;
   userCode: any;
@@ -36,7 +37,6 @@ export class LayoutSidebarComponent implements OnInit {
   getcitizenId: any;
   mobileNo: any;
   showMenu = false;
-isSidebarOpen = true;
   constructor(private router: Router, private citizenStore: CitizenStoreService,private mobileService: MobileService,private menuReload: MenuReloadService, private sidebarToggle: SidebarToggleService) { }
  citizenLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },    
@@ -66,9 +66,6 @@ isSidebarOpen = true;
   menu: MenuItem[] = [];
   userRole: string = 'citizen' 
   ngOnInit(): void {
-      this.sidebarToggle.sidebarState$.subscribe((state:any) => {
-            this.isSidebarOpen = state;
-          });
        const userInfo = sessionStorage.getItem('userInfo');
       if (userInfo) {
         this.parsedUserInfo = JSON.parse(userInfo);
@@ -76,8 +73,6 @@ isSidebarOpen = true;
         console.log(this.userType, "this.userType");
         
       }
-
-    console.log('User Role:', this.parsedUserInfo); 
     if (this.userType === 1 || this.userType === 2) {
         this.menu = this.adminLinks;
       } else if (this.userRole === 'citizen') {
@@ -115,8 +110,6 @@ logOut() {
   sessionStorage.clear();
   localStorage.clear();
   this.router.navigate(['/login']);
-    this.router.navigateByUrl('/login', { replaceUrl: true });
-
 }
 
 

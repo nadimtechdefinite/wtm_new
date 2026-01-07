@@ -16,24 +16,27 @@
 }
 
 .status {
-padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: inline-block;
-    text-transform: capitalize;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: capitalize;
 
 }
 
-.statusgreen{    background-color: #e6f7ec;
-    color: #1e7e34;
-    border: 1px solid #b7e4c7;}
-
-.statusorange{
-background-color: #fff4e5;
-    color: #b36b00;
-    border: 1px solid #ffd8a8;
+.statusgreen {
+  background-color: #e6f7ec;
+  color: #1e7e34;
+  border: 1px solid #b7e4c7;
 }
+
+.statusorange {
+  background-color: #fff4e5;
+  color: #b36b00;
+  border: 1px solid #ffd8a8;
+}
+
 /* GREEN = Approved / Success */
 .status.approved,
 .status.success,
@@ -66,14 +69,17 @@ background-color: #fff4e5;
   color: #0b62c2;
 }
 
-.tbl table tr td{border-bottom-color: #dfdfdf !important;}
+.tbl table tr td {
+  border-bottom-color: #dfdfdf !important;
+}
 
-.tbl table tr th{
-    background: #c9e5fd !important;
-    border-bottom-color: #74a6d1 !important;
-    color: #000 !important;}
+.tbl table tr th {
+  background: #c9e5fd !important;
+  border-bottom-color: #74a6d1 !important;
+  color: #000 !important;
+}
 
-        .custom-dialog .mat-mdc-dialog-container {
+.custom-dialog .mat-mdc-dialog-container {
   max-height: 90vh !important;
   height: auto;
 }
@@ -83,10 +89,9 @@ background-color: #fff4e5;
   overflow-y: auto !important;
 }
 
-
 .word-break {
-  white-space: normal !important;   /* allow multi-line */
-  word-break: break-word;           /* break long words */
-  overflow-wrap: anywhere;          /* modern browsers */
+  white-space: normal !important;
+  word-break: break-word;
+  overflow-wrap: anywhere;
   line-height: 1.4;
 }

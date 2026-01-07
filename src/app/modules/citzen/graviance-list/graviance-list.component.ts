@@ -43,7 +43,7 @@ export class GravianceListComponent {
     { column: 'grievanceNumber', header: 'Grievance ID' },
     { column: 'schemeName', header: 'Scheme/Division' },
     { column: 'description', header: 'Description (Source language)', width: '30%' },
-    { column: 'translatedDesc', header: 'Transcripte (In English)', width: '20%' },
+    { column: 'translatedDesc', header: 'Transcript (In English)', width: '20%' },
      { column: 'createdOn', header: 'Date', type: 'date',width: '10%' },
      { column: 'status', type: 'status', header: 'Status',width: '10%' },
     { column: 'action', header: 'Action', type: 'action' }
@@ -97,8 +97,6 @@ this.officeStatus();
      this.getCitizenDetails();
   });
   }
-
-
 
 getCitizenDetails() {
   if (this.citizenId && this.mobileNo) {

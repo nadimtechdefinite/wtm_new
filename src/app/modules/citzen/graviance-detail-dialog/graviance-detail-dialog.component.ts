@@ -18,7 +18,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './graviance-detail-dialog.component.scss'
 })
 export class GravianceDetailDialogComponent {
-  displayedColumns: string[] = ['grievanceId', 'schemeName', 'ministryName', 'stateName', 'districtName', 'blockNameName', 'panchayatName',  'villageName', 'pinCode', 'description', 'Transcripte', 'attachment']; // columns you want
+  displayedColumns: string[] = ['grievanceId', 'schemeName', 'ministryName', 'stateName', 'districtName', 'blockNameName', 'panchayatName',  'villageName', 'pinCode', 'description', 'Transcript', 'attachment']; // columns you want
   dataSource!: MatTableDataSource<any>;
   grievancedetails: any;
   citizendetails: any;
@@ -38,7 +38,6 @@ export class GravianceDetailDialogComponent {
     private masterService:masterService,
   private toastr: ToastrService,) {
     console.log(data, "data");
-    debugger
     this.citizendetails = data.citizen
     this.citizenId = data.citizen.citizenId
     this.grievancedetails = data.grievance

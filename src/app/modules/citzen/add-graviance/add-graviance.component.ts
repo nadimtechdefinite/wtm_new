@@ -18,12 +18,13 @@ import { MobileService } from '../../../services/mobile.service';
 import { masterService } from '../../../services/master.service';
 import { takeUntil } from 'rxjs/operators';
 import { MenuReloadService } from '../../../services/citizen-dashboard.component';
+import { NumberOnlyDirective } from '../../../shared/directives/numberonly.directive';
 
 declare var Sanscript: any;
 @Component({
   selector: 'app-add-graviance',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ...MATERIAL_MODULES],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ...MATERIAL_MODULES,NumberOnlyDirective],
   templateUrl: './add-graviance.component.html',
   styleUrl: './add-graviance.component.scss'
 })
@@ -234,11 +235,11 @@ export class AddGravianceComponent implements OnInit {
       blockCode: ['', Validators.required],
       panchayatCode: ['', Validators.required],
       villageCode: [''],
-      pinCode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+      pinCode: ['', [Validators.required, Validators.pattern(/^[1-9][0-9]{5}$/)]],
       address: [''],
       ministry: ['', Validators.required],
       schemeCode: ['', Validators.required],
-      Description: ['', [Validators.required, Validators.maxLength(250)]],
+      Description: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(1000)]],
       Language: ['en-IN', Validators.required],
       captcha: ['', [Validators.required]],
       attachMent1: []
@@ -481,8 +482,55 @@ previewSelectedFile() {
   }, 1000);
 }
 
-  isSubmitted = false; // to track submit click
 
+  GetverifyCaptcha() {
+
+  // 🔐 captcha value
+  if (!this.captchaCode || this.captchaCode.trim() === '') {
+    this.toastr.error('Please enter captcha');
+    return;
+  }
+
+  const sessionId = sessionStorage.getItem('sessionId1');
+  if (!sessionId) {
+    this.toastr.error('Session expired. Please refresh captcha');
+    this.generateCaptcha();
+    return;
+  }
+
+    // 🔐 Captcha value
+  const enteredCaptcha = this.grievanceForm.get('captcha')?.value;
+
+  if (!enteredCaptcha || enteredCaptcha.trim() === '') {
+    this.toastr.error('Please enter captcha');
+    return;
+  }
+
+  this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
+    next: (response: any) => {
+      if (response.messageCode === 1) {
+        // ✅ captcha valid → submit form
+        this.onSubmit();
+      } else {
+        // ❌ captcha invalid (200 response)
+        this.toastr.error(response.message || 'Invalid captcha');
+        this.captchaCode = '';
+        this.generateCaptcha();
+      }
+    },
+    error: (err) => {
+      // ❌ captcha invalid (400/500 response)
+      const msg = err?.error?.message || 'Invalid captcha';
+      this.toastr.error(msg);
+      this.captchaCode = '';
+      this.generateCaptcha();
+    }
+  });
+}
+
+
+
+  isSubmitted = false; // to track submit click
 
   onSubmit() {
     this.isSubmitted = true;
@@ -738,5 +786,25 @@ previewSelectedFile() {
   //   });
   // }
 
+  onPinInput() {
+  const control = this.grievanceForm.get('pinCode');
+  if (!control) return;
 
+  let value = control.value || '';
+
+  // remove non-numbers
+  value = value.replace(/[^0-9]/g, '');
+
+  // remove leading 0
+  if (value.startsWith('0')) {
+    value = value.substring(1);
+  }
+
+  // max 6 digits
+  if (value.length > 6) {
+    value = value.slice(0, 6);
+  }
+
+  control.setValue(value, { emitEvent: false });
+}
 }

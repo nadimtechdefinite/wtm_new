@@ -119,7 +119,11 @@ export class LoginComponent implements OnInit {
     this.citizenForm = this.fb.group({
       // role: ['citizen', Validators.required],
       mobile: ['', Validators.required],
-      captcha: ['', Validators.required]
+      captcha: ['', [
+    Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(6)
+  ]]
     });
   }
   adminForms() {
@@ -127,7 +131,11 @@ export class LoginComponent implements OnInit {
       // role: ['admin', Validators.required],
       user: ['', Validators.required],
       password: ['', Validators.required],
-      captcha: ['', Validators.required]
+      captcha: ['', [
+    Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(6)
+  ]]
     });
   }
 
@@ -136,7 +144,11 @@ export class LoginComponent implements OnInit {
       // role: ['state', Validators.required],
       user: ['', Validators.required],
       password: ['', Validators.required],
-      captcha: ['', Validators.required]
+      captcha: ['', [
+    Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(6)
+  ]]
     });
   }
 
@@ -145,7 +157,11 @@ export class LoginComponent implements OnInit {
       // role: ['pd', Validators.required],
       user: ['', Validators.required],
       password: ['', Validators.required],
-      captcha: ['', Validators.required]
+      captcha: ['', [
+    Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(6)
+  ]]
     });
   }
 
@@ -211,19 +227,64 @@ export class LoginComponent implements OnInit {
   }
 
 
-  GetverifyCaptcha(templateRef: TemplateRef<any>) {
-    const sessionId = sessionStorage.getItem('sessionId1');
+  // GetverifyCaptcha(templateRef: TemplateRef<any>) {
+  //   const sessionId = sessionStorage.getItem('sessionId1');
 
-    if (!sessionId) {
-      console.error('Session ID not found');
-      return;
-    }
-    this.masterService.verifyCaptcha(this.captchaCode).subscribe((response: any) => {
-      if (response.messageCode === 1) {
-        this.getOtp1(templateRef);
-      }
-    });
+  //   if (!sessionId) {
+  //     console.error('Session ID not found');
+  //     return;
+  //   }
+  //   this.masterService.verifyCaptcha(this.captchaCode).subscribe((response: any) => {
+  //     if (response.messageCode === 1) {
+  //       this.getOtp1(templateRef);
+  //     }
+  //   });
+  // }
+
+GetverifyCaptcha(templateRef: TemplateRef<any>) {
+  this.isSubmitted = true;
+
+  if (this.citizenForm.invalid) {
+    this.citizenForm.markAllAsTouched();
+    this.toastr.error('Please fill all required fields');
+    return;
   }
+
+  const enteredCaptcha = this.citizenForm.get('captcha')?.value;
+
+  if (!enteredCaptcha || enteredCaptcha.trim() === '') {
+    this.toastr.error('Please enter captcha');
+    return;
+  }
+
+  const sessionId = sessionStorage.getItem('sessionId1');
+  if (!sessionId) {
+    this.toastr.error('Session expired. Please refresh captcha');
+    this.generateCaptcha();
+    return;
+  }
+
+this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
+  next: (response: any) => {
+    if (response.messageCode === 1) {
+      this.getOtp1(templateRef);
+    } else {
+      this.toastr.error(response.message || 'Invalid Captcha');
+      this.citizenForm.get('captcha')?.reset();
+      this.generateCaptcha();
+    }
+  },
+  error: (err) => {
+    const msg =
+      err?.error?.message ||
+      'Invalid Captcha';
+    this.toastr.error(msg);
+    this.citizenForm.get('captcha')?.reset();
+    this.generateCaptcha();
+  }
+});
+}
+
 
   // citizen login
   cooldown: number = 0;
@@ -256,7 +317,7 @@ export class LoginComponent implements OnInit {
           });
         }
         else {
-          this.toastr.error(response.errorMsg || "Failed to generate OTP");
+          this.toastr.error(response.message || "Failed to generate OTP");
         }
       },
       (error: any) => {
@@ -320,7 +381,6 @@ resendOtp() {
       if (response.messageCode == 1) {
         this.messageResp = response.data;
         console.log();
-        debugger
           this.router.navigate(['/layout/citizen']);
           this.dialog.closeAll();
           this.otpValue = ''
@@ -339,74 +399,217 @@ resendOtp() {
     this.citizenForm.reset({ role: 'citizen' });
     this.isSubmitted = false;
   }
-  onSubmitAdmin() {
-    this.isSubmittedadmin = true;
-    if (this.adminForm.invalid) {
-      this.adminForm.markAllAsTouched()
-      this.adminForm.updateValueAndValidity()
-      this.toastr.error("Admin Form Is Invalid")
-    } else {
-      const logindata = this.adminForm.getRawValue()
-      const postLoginForm = {
-          loginName: logindata.user,
-          password: this.adminForm.value.password,
-        // roleType: logindata.user,
-        // captcha: logindata.captcha.trim(),
-        // password: shajs('sha512').update(this.adminForm.value.password).digest('hex'),
-        // sessionId: this.sessionId
-      };
-      console.log("Login payload:", JSON.stringify(postLoginForm));
-      // this.userId = postLoginForm.loginId;
-      this.officer.loginFormCreate(postLoginForm).subscribe(
-        (response: any) => {
-          if (response.messageCode == 1) {
-            console.log(response, 'loginresponse');
+  // onSubmitAdmin() {
+  //   this.isSubmittedadmin = true;
+  //   if (this.adminForm.invalid) {
+  //     this.adminForm.markAllAsTouched()
+  //     this.adminForm.updateValueAndValidity()
+  //     this.toastr.error("Admin Form Is Invalid")
+  //   } else {
+  //     const logindata = this.adminForm.getRawValue()
+  //     const postLoginForm = {
+  //         loginName: logindata.user,
+  //         password: this.adminForm.value.password,
+  //     };
+  //     console.log("Login payload:", JSON.stringify(postLoginForm));
+  //     this.officer.loginFormCreate(postLoginForm).subscribe(
+  //       (response: any) => {
+  //         if (response.messageCode == 1) {
+  //           console.log(response, 'loginresponse');
             
+  //           sessionStorage.setItem('isLoggedIn', "true");
+  //           sessionStorage.setItem("levels", response.level);
+  //           sessionStorage.setItem("accessToken", response.accessToken);
+  //           sessionStorage.setItem("userInfo", JSON.stringify(response.data));
+  //           this.toastr.success(response.message || "Login successful");
+  //           this.router.navigate(['/layout/admin']);
+  //         }
+  //       })
+  //   }
+  // }
+onSubmitAdmin() {
+  this.isSubmittedadmin = true;
+
+  // ❌ Form invalid
+  if (this.adminForm.invalid) {
+    this.adminForm.markAllAsTouched();
+    this.toastr.error("Admin Form Is Invalid");
+    return;
+  }
+
+  // 🔐 Captcha value
+  const enteredCaptcha = this.adminForm.get('captcha')?.value;
+
+  if (!enteredCaptcha || enteredCaptcha.trim() === '') {
+    this.toastr.error('Please enter captcha');
+    return;
+  }
+
+  // 🧾 Session check
+  const sessionId = sessionStorage.getItem('sessionId1');
+  if (!sessionId) {
+    this.toastr.error('Session expired. Please refresh captcha');
+    this.generateCaptcha();
+    return;
+  }
+
+  // 🔥 Step 1: Verify Captcha
+  this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
+    next: (captchaRes: any) => {
+
+      if (captchaRes.messageCode !== 1) {
+        this.toastr.error(captchaRes.message || 'Invalid Captcha');
+        this.adminForm.get('captcha')?.reset();
+        this.generateCaptcha();
+        return;
+      }
+
+      // 🔐 Step 2: Login API
+      const logindata = this.adminForm.getRawValue();
+      const postLoginForm = {
+        loginName: logindata.user,
+        password: logindata.password
+      };
+
+      this.officer.loginFormCreate(postLoginForm).subscribe({
+        next: (response: any) => {
+          if (response.messageCode === 1) {
+
             sessionStorage.setItem('isLoggedIn', "true");
             sessionStorage.setItem("levels", response.level);
             sessionStorage.setItem("accessToken", response.accessToken);
             sessionStorage.setItem("userInfo", JSON.stringify(response.data));
+
             this.toastr.success(response.message || "Login successful");
             this.router.navigate(['/layout/admin']);
+          } else {
+            this.toastr.error(response.message || 'Login failed');
           }
-        })
+        },
+        error: () => {
+          this.toastr.error('Login API error');
+        }
+      });
+
+    },
+    error: (err) => {
+      const msg = err?.error?.message || 'Invalid Captcha';
+      this.toastr.error(msg);
+      this.adminForm.get('captcha')?.reset();
+      this.generateCaptcha();
     }
+  });
+}
+
+
+  //   onSubmitPD() {
+  //   this.isSubmittedPd = true;
+  //   if (this.pdForm.invalid) {
+  //     this.pdForm.markAllAsTouched()
+  //     this.pdForm.updateValueAndValidity()
+  //     this.toastr.error("Admin Form Is Invalid")
+  //   } else {
+  //     const logindata = this.pdForm.getRawValue()
+  //     const postLoginForm = {
+  //         loginName: this.pdForm.get('user')?.value,
+  //         password: this.pdForm.value.password,
+  //       // roleType: logindata.user,
+  //       // captcha: logindata.captcha.trim(),
+  //       // password: shajs('sha512').update(this.pdForm.value.password).digest('hex'),
+  //       // sessionId: this.sessionId
+  //     };
+  //     console.log("Login payload:", JSON.stringify(postLoginForm));
+  //     // this.userId = postLoginForm.loginId;
+  //     this.officer.loginFormCreate(postLoginForm).subscribe(
+  //       (response: any) => {
+  //         if (response.messageCode == 1) {
+  //           console.log(response, 'loginresponse');
+            
+  //           sessionStorage.setItem('isLoggedIn', "true");
+  //           sessionStorage.setItem("levels", response.level);
+  //           sessionStorage.setItem("accessToken", response.accessToken);
+  //           sessionStorage.setItem("userInfo", JSON.stringify(response.data));
+  //           this.router.navigate(['/layout/admin']);
+  //         }
+  //       })
+  //   }
+  // }
+
+  onSubmitPD() {
+  this.isSubmittedPd = true;
+
+  // ❌ Form invalid
+  if (this.pdForm.invalid) {
+    this.pdForm.markAllAsTouched();
+    this.toastr.error("PD Form Is Invalid");
+    return;
   }
 
+  // 🔐 Captcha value
+  const enteredCaptcha = this.pdForm.get('captcha')?.value;
 
-    onSubmitPD() {
-    this.isSubmittedPd = true;
-    if (this.pdForm.invalid) {
-      this.pdForm.markAllAsTouched()
-      this.pdForm.updateValueAndValidity()
-      this.toastr.error("Admin Form Is Invalid")
-    } else {
-      debugger
-      const logindata = this.pdForm.getRawValue()
+  if (!enteredCaptcha || enteredCaptcha.trim() === '') {
+    this.toastr.error('Please enter captcha');
+    return;
+  }
+
+  // 🧾 Session check
+  const sessionId = sessionStorage.getItem('sessionId1');
+  if (!sessionId) {
+    this.toastr.error('Session expired. Please refresh captcha');
+    this.generateCaptcha();
+    return;
+  }
+
+  // 🔥 Step 1: Verify Captcha
+  this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
+    next: (captchaRes: any) => {
+
+      if (captchaRes.messageCode !== 1) {
+        this.toastr.error(captchaRes.message || 'Invalid Captcha');
+        this.pdForm.get('captcha')?.reset();
+        this.generateCaptcha();
+        return;
+      }
+
+      // 🔐 Step 2: PD Login API
       const postLoginForm = {
-          loginName: this.pdForm.get('user')?.value,
-          password: this.pdForm.value.password,
-        // roleType: logindata.user,
-        // captcha: logindata.captcha.trim(),
-        // password: shajs('sha512').update(this.pdForm.value.password).digest('hex'),
-        // sessionId: this.sessionId
+        loginName: this.pdForm.get('user')?.value,
+        password: this.pdForm.get('password')?.value
       };
+
       console.log("Login payload:", JSON.stringify(postLoginForm));
-      // this.userId = postLoginForm.loginId;
-      this.officer.loginFormCreate(postLoginForm).subscribe(
-        (response: any) => {
-          if (response.messageCode == 1) {
-            console.log(response, 'loginresponse');
-            
+
+      this.officer.loginFormCreate(postLoginForm).subscribe({
+        next: (response: any) => {
+          if (response.messageCode === 1) {
+
             sessionStorage.setItem('isLoggedIn', "true");
             sessionStorage.setItem("levels", response.level);
             sessionStorage.setItem("accessToken", response.accessToken);
             sessionStorage.setItem("userInfo", JSON.stringify(response.data));
+
+            this.toastr.success(response.message || "Login successful");
             this.router.navigate(['/layout/admin']);
+          } else {
+            this.toastr.error(response.message || 'Login failed');
           }
-        })
+        },
+        error: () => {
+          this.toastr.error('Login API error');
+        }
+      });
+    },
+
+    error: (err) => {
+      const msg = err?.error?.message || 'Invalid Captcha';
+      this.toastr.error(msg);
+      this.pdForm.get('captcha')?.reset();
+      this.generateCaptcha();
     }
-  }
+  });
+}
+
 
   resetFormAdmin() {
     this.adminForm.reset({ role: 'admin' });
@@ -459,7 +662,6 @@ resendOtp() {
   }
 
   selectedScheme(event:any){
-    debugger
       const selectedvalue =   event?.value
      
   }

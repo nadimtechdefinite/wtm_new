@@ -20,7 +20,7 @@ import swal from 'sweetalert2';
   styleUrl: './program-divison-dialog.component.scss'
 })
 export class ProgramDivisonDialogComponent {
-  displayedColumns: string[] = ['serialNo', 'grievanceId', 'schemeName', 'ministryName', 'stateName', 'districtName', 'blockNameName', 'panchayatName', 'villageName', 'pinCode', 'description', 'Transcripte', 'attachment']; // columns you want
+  displayedColumns: string[] = ['serialNo', 'grievanceId', 'schemeName', 'ministryName', 'stateName', 'districtName', 'blockNameName', 'panchayatName', 'villageName', 'pinCode', 'description', 'Transcript', 'attachment']; // columns you want
   dataSource!: MatTableDataSource<any>;
   grievancedetails: any;
   citizendetails: any;
@@ -54,7 +54,6 @@ export class ProgramDivisonDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private masterService: masterService,
     private toastr: ToastrService, private errorHandler: ErrorHandlerService, private dialogRef: MatDialogRef<ProgramDivisonDialogComponent>, private fb: FormBuilder) {
     console.log(data, "data");
-    debugger
     this.citizendetails = data.citizen
     this.grievancedetails = data.grievance
     this.grievanceStatus = data.grievance.status
@@ -92,7 +91,7 @@ export class ProgramDivisonDialogComponent {
     this.feedbackForm = this.fb.group({
       citizenComment: [
         '',
-        [Validators.required, Validators.maxLength(1000)]
+        [Validators.required, Validators.minLength(5), Validators.maxLength(1000)]
       ],
       status: ['', Validators.required],
       schemeType: ['']
@@ -169,7 +168,6 @@ export class ProgramDivisonDialogComponent {
       }
 
         if (res?.messageCode === 0) {
-          debugger
         this.toastr.error(res.message);
         return;
       }
@@ -302,7 +300,6 @@ previewSelectedFile() {
 
 
   selectedStatus(event: any) {
-    debugger
     this.selectedSataus = event?.value
 
     this.showForwardFields = this.selectedSataus === 'F';
@@ -316,10 +313,7 @@ previewSelectedFile() {
 
 
   selectedschemeList(event: any) {
-    debugger
     this.selectedscheme = event?.value
-
-
     if (this.showForwardFields) {
       // this.loadAllPDs();
       this.schemeMaster();

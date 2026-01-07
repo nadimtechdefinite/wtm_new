@@ -74,7 +74,7 @@
                                 <div class="col-md-6">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Enter Captcha</mat-label>
-                                        <input matInput type="text" formControlName="captcha" maxlength="4">
+                                        <input matInput type="text" formControlName="captcha" maxlength="6">
                                         <mat-error
                                             *ngIf="(citizenForm.get('captcha')?.touched || isSubmitted) && citizenForm.get('captcha')?.invalid">
                                             Captcha is required
@@ -85,11 +85,11 @@
                             <div class="row mb-3">
                             <div class="col-md-6">
                                 <button mat-flat-button class="w-100 btn-glow btn-blue" type="submit"
-                                    (click)="GetverifyCaptcha(otpDialog)" [disabled]="citizenForm.invalid">Get OTP</button>
+                                    (click)="GetverifyCaptcha(otpDialog)">Get OTP</button>
                             </div>
                             <div class="col-md-6">
                                 <button mat-stroked-button class="w-100 btn-glow btn-red" type="button"
-                                    (click)="resetFormCitizen()" [disabled]="citizenForm.invalid">Reset</button>
+                                    (click)="resetFormCitizen()">Reset</button>
                             </div>
                         </div>
                         </form>
@@ -131,7 +131,7 @@
                                 <div class="col-md-6 col-sm-4">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Enter Captcha</mat-label>
-                                        <input matInput type="text" formControlName="captcha" maxlength="4" autocomplete="off">
+                                        <input matInput type="text" formControlName="captcha" maxlength="6" autocomplete="off">
                                         <mat-error
                                             *ngIf="(adminForm.get('captcha')?.touched || isSubmittedadmin) && adminForm.get('captcha')?.invalid">
                                              Captcha is required
@@ -142,11 +142,11 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <button mat-flat-button class="w-100 btn-glow btn-blue" type="submit"
-                                    (click)="onSubmitAdmin()" [disabled]="adminForm.invalid">Submit By Admin</button>
+                                    (click)="onSubmitAdmin()" >Submit By Admin</button>
                             </div>
                             <div class="col-md-6">
                                 <button mat-stroked-button class="w-100 btn-glow btn-red" type="button"
-                                    (click)="resetFormAdmin()" [disabled]="adminForm.invalid">Reset</button>
+                                    (click)="resetFormAdmin()">Reset</button>
                             </div>
                         </div>
                         </form>
@@ -188,7 +188,7 @@
                                 <div class="col-md-6 col-sm-4">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Enter Captcha</mat-label>
-                                        <input matInput type="text" formControlName="captcha" maxlength="4" autocomplete="off">
+                                        <input matInput type="text" formControlName="captcha" maxlength="6" autocomplete="off">
                                         <mat-error
                                             *ngIf="(pdForm.get('captcha')?.touched || isSubmittedPd) && pdForm.get('captcha')?.invalid">
                                              Captcha is required
@@ -199,11 +199,11 @@
                          <div class="row mb-3" >
                             <div class="col-md-6">
                                 <button mat-flat-button class="w-100 btn-glow btn-blue" type="submit"
-                                    (click)="onSubmitPD()"  [disabled]="pdForm.invalid">Submit By PD</button>
+                                    (click)="onSubmitPD()" >Submit By PD</button>
                             </div>
                             <div class="col-md-6">
                                 <button mat-stroked-button class="w-100 btn-glow btn-red" type="button"
-                                    (click)="resetFormAdmin()" [disabled]="pdForm.invalid">Reset</button>
+                                    (click)="resetFormAdmin()" >Reset</button>
                             </div>
                         </div>
                         </form>
@@ -245,7 +245,7 @@
                                 <div class="col-md-6 col-sm-4">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Enter Captcha</mat-label>
-                                        <input matInput type="text" formControlName="captcha" maxlength="4" autocomplete="off">
+                                        <input matInput type="text" formControlName="captcha" maxlength="6" autocomplete="off">
                                         <mat-error
                                             *ngIf="(adminForm.get('captcha')?.touched || isSubmitted) && adminForm.get('captcha')?.invalid">
                                              Captcha is required

@@ -12,16 +12,16 @@
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
     </div>
-         <div class="col-md-3">
-    <mat-form-field appearance="outline" class="w-100">
-      <mat-label>Filter</mat-label>
-      <mat-select formControlName="status" (selectionChange)="applyStatusFilter($event.value)">
-        <mat-option *ngFor="let status of officeStatusDetails" [value]="status.statusCode">
-            {{ status.status}}</mat-option>
-       </mat-select>
-    </mat-form-field>
-  </div>
-    <div class="col-md-6 d-flex justify-content-end " style="padding-right: 35px;">
+    <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Filter</mat-label>
+            <mat-select formControlName="status" (selectionChange)="applyStatusFilter($event.value)">
+                <mat-option *ngFor="let status of officeStatusDetails" [value]="status.statusCode">
+                    {{ status.status}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="col-md-6 d-flex justify-content-end gap-2" style="padding-right: 35px;">
         <button mat-raised-button color="primary" class="btn-glow btn-blue"
             [routerLink]="['/layout/citizen/add-graviance']">
             Register Complaint
@@ -29,7 +29,7 @@
     </div>
 
     <div class="col-md-3 text-end">
-      
+
     </div>
 </div>
 
@@ -38,15 +38,17 @@
     <div class="card-body">
         <div class="row ">
             <div class="col-md-12 d-flex justify-content-end mb-2 mb-2 gap-1">
-                <button mat-raised-button color="primary" class="btn-glow btn-red" (click)="exportToPdf()" matTooltip="Download to PDF">
-                    <i class="fa-solid fa-file-pdf"></i> pdf
+                <button mat-raised-button color="primary" class="btn-glow btn-red" (click)="exportToPdf()"
+                    matTooltip="Download to PDF">
+                    <i class="bi bi-file-earmark-pdf-fill"></i> pdf
                 </button>
-                <button mat-raised-button color="primary" class="btn-glow btn-green" (click)="exportToExcel()" matTooltip="Download to Excel">
-                    <i class="fas fa-file-excel"></i> Excel
+                <button mat-raised-button color="primary" class="btn-glow btn-green" (click)="exportToExcel()"
+                    matTooltip="Download to Excel">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Excel
                 </button>
             </div>
         </div>
-     
+
         <div class="mat-elevation-z8 table-responsive tbl " style="border: 1px solid #dddddd !important; box-shadow: none !important;
     border-radius: 10px !important;">
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z1">
@@ -72,7 +74,7 @@
                                     row.status }}
                                 </span>
                             </ng-container>
-                                  <!-- DATE ✅ -->
+                            <!-- DATE ✅ -->
                             <ng-container *ngSwitchCase="'date'">
                                 {{ row[col.column] | date:'dd MMM yyyy' }}
                             </ng-container>

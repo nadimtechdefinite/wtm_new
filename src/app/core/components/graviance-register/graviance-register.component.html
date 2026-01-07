@@ -53,7 +53,7 @@
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Mobile No.</mat-label>
                                 <input matInput placeholder="Enter Mobile No." maxlength="10" minlength="10"
-                                    formControlName="mobile" appNumberOnly (keyup)="onMobileKeyUp()">
+                                    formControlName="mobile" appNumberOnly  (keyup)="onMobileKeyUp()">
                                 <mat-error *ngIf="(f['mobile'].touched || isSubmitted) && f['mobile'].invalid">
                                     Enter valid 10-digit mobile number.
                                 </mat-error>
@@ -154,7 +154,7 @@
                         <div class="col-md-3">
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Pin Code</mat-label>
-                                <input matInput placeholder="Enter Pin Code" maxlength="6" formControlName="pinCode"
+                                <input matInput placeholder="Enter Pin Code" (input)="onPinInput()" appNumberOnly maxlength="6" formControlName="pinCode"
                                     autocomplete="off">
                                 <mat-error *ngIf="(f['pinCode'].touched || isSubmitted) && f['pinCode'].invalid">
                                     Name is required
@@ -187,7 +187,7 @@
                             </div>
                             <mat-form-field appearance="outline" class="flex-grow-1">
                                 <mat-label>Enter Captcha</mat-label>
-                                <input matInput type="text" formControlName="captcha" maxlength="4">
+                                <input matInput type="text" formControlName="captcha" maxlength="6">
                                 <mat-error *ngIf="(f['captcha'].touched || isSubmitted) && f['captcha'].invalid">
                                     Captcha is required
                                 </mat-error>
