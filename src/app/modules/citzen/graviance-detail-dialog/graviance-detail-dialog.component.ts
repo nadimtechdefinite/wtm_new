@@ -6,15 +6,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { A11yModule } from '@angular/cdk/a11y';
 import { masterService } from '../../../services/master.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { ɵEmptyOutletComponent } from "@angular/router";
 
 @Component({
   selector: 'app-graviance-detail-dialog',
   standalone: true,
 
-  imports: [CommonModule, MatDialogModule, ...MATERIAL_MODULES, ReactiveFormsModule, FormsModule, A11yModule, ɵEmptyOutletComponent],
+  imports: [CommonModule, MatDialogModule, ...MATERIAL_MODULES, ReactiveFormsModule, FormsModule, A11yModule],
   templateUrl: './graviance-detail-dialog.component.html',
   styleUrl: './graviance-detail-dialog.component.scss'
 })
