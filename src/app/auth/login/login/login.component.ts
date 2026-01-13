@@ -14,11 +14,12 @@ import { MobileService } from '../../../services/mobile.service';
 import { masterService } from '../../../services/master.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
+import { NumberOnlyDirective } from "../../../shared/directives/numberonly.directive";
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [...MATERIAL_MODULES, FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [...MATERIAL_MODULES, FormsModule, ReactiveFormsModule, CommonModule, NumberOnlyDirective, ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA,],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -106,7 +107,6 @@ export class LoginComponent implements OnInit {
           // this.citizenForm.get('mobile')?.reset('', { emitEvent: false });
           // this.citizenForm.get('mobile')?.markAsUntouched()
           // this.citizenForm.get('mobile')?.updateValueAndValidity()
-
         }
 
         else {
@@ -117,8 +117,10 @@ export class LoginComponent implements OnInit {
   
   citizenForms() {
     this.citizenForm = this.fb.group({
-      // role: ['citizen', Validators.required],
-      mobile: ['', Validators.required],
+      mobile: ['', [
+      Validators.required,
+      Validators.pattern(/^[6-9]\d{9}$/)
+    ]], 
       captcha: ['', [
     Validators.required,
     Validators.minLength(1),
@@ -128,7 +130,6 @@ export class LoginComponent implements OnInit {
   }
   adminForms() {
     this.adminForm = this.fb.group({
-      // role: ['admin', Validators.required],
       user: ['', Validators.required],
       password: ['', Validators.required],
       captcha: ['', [
@@ -186,13 +187,15 @@ export class LoginComponent implements OnInit {
   }
   reload() {
     this.generateCaptcha();
+    this.citizenForm.get('captcha')?.reset();
+    this.adminForm.get('captcha')?.reset();
+    this.pdForm.get('captcha')?.reset();
   }
   generateCaptcha() {
     this.masterService.generateCaptcha().subscribe((response: any) => {
       console.log(response, "response captcha");
      this.getCaptchadata = response.data
       this.captcha = this.getCaptchadata.captcha
-      this.captchaCode = this.getCaptchadata.captchaCode
       sessionStorage.setItem('sessionId1', response.data.sessionId);
       this.generateImage(this.captcha)
     });
@@ -201,7 +204,7 @@ export class LoginComponent implements OnInit {
     const imgHtml = `
   <img src="data:image/png;base64,${baseImage}"
        alt="Captcha"
-       style="height: 100%; width: 180px; object-fit: contain; border-radius: 5px;" />
+       style="height: 100%; width: 100%; border-radius: 5px;" />
 `;
     const imageContainer = document.getElementById("image");
     if (imageContainer) {
@@ -226,21 +229,6 @@ export class LoginComponent implements OnInit {
     this.generateCaptcha();
   }
 
-
-  // GetverifyCaptcha(templateRef: TemplateRef<any>) {
-  //   const sessionId = sessionStorage.getItem('sessionId1');
-
-  //   if (!sessionId) {
-  //     console.error('Session ID not found');
-  //     return;
-  //   }
-  //   this.masterService.verifyCaptcha(this.captchaCode).subscribe((response: any) => {
-  //     if (response.messageCode === 1) {
-  //       this.getOtp1(templateRef);
-  //     }
-  //   });
-  // }
-
 GetverifyCaptcha(templateRef: TemplateRef<any>) {
   this.isSubmitted = true;
 
@@ -264,12 +252,16 @@ GetverifyCaptcha(templateRef: TemplateRef<any>) {
     return;
   }
 
-this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
+  const payload = {
+    captcha: enteredCaptcha
+  }
+
+this.masterService.verifyCaptcha(payload).subscribe({
   next: (response: any) => {
     if (response.messageCode === 1) {
       this.getOtp1(templateRef);
     } else {
-      this.toastr.error(response.message || 'Invalid Captcha');
+      this.toastr.error(response.message);
       this.citizenForm.get('captcha')?.reset();
       this.generateCaptcha();
     }
@@ -304,9 +296,9 @@ this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
     this.masterService.generateOtp(payload).subscribe(
       (response: any) => {
         if (response.messageCode == 1) {
-          this.otpdata = response
-         this.getcooldownPeriod =  response.data.cooldownPeriod
-          this.otpNumber = response.data.otp
+          this.otpdata = response;
+         this.getcooldownPeriod =  response.data.cooldownPeriod;
+          this.otpNumber = response.data.otp;
           this.startCooldown( this.getcooldownPeriod);
           console.log(this.otpdata, 'otpdata');
           localStorage.setItem('citizentoken', response.responseDesc);
@@ -367,66 +359,94 @@ resendOtp() {
 }
 
 
-  verifyOtp() {
-    if (!this.otpValue || this.otpValue.length < 4) {
-      this.toastr.error("Please enter valid OTP");
-      return;
-    }
-    const json = {
-      mobileNo: this.citizenForm.get('mobile')?.value,
-      otp: this.otpValue
+  // verifyOtp() {
+  //   if (!this.otpValue || this.otpValue.length < 4) {
+  //     this.toastr.error("Please enter valid OTP");
+  //     return;
+  //   }
+  //   const json = {
+  //     mobileNo: this.citizenForm.get('mobile')?.value,
+  //     otp: this.otpValue
 
-    };
-    this.masterService.verifyOtp(json).subscribe((response: any) => {
-      if (response.messageCode == 1) {
-        this.messageResp = response.data;
-        console.log();
-          this.router.navigate(['/layout/citizen']);
-          this.dialog.closeAll();
-          this.otpValue = ''
-          const mobile = this.citizenForm.get('mobile')?.value
-          this.mobileService.updateMobile(mobile)
-          this.mobileService.updatelogindata(response)
-          this.citizenForm.reset()
-          sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-          // this.generateCaptcha()
-          this.toastr.success(response.message || "Login successful");
+  //   };
+  //   this.masterService.verifyOtp(json).subscribe((response: any) => {
+  //     if (response.messageCode == 1) {
+  //       this.messageResp = response.data;
+  //         this.router.navigate(['/layout/citizen']);
+  //         this.dialog.closeAll();
+  //         this.otpValue = ''
+  //         const mobile = this.citizenForm.get('mobile')?.value
+  //         this.mobileService.updateMobile(mobile)
+  //         this.mobileService.updatelogindata(response)
+  //         this.citizenForm.reset()
+  //         sessionStorage.setItem("userInfo", JSON.stringify(response.data));
+  //         // this.generateCaptcha()
+  //         this.toastr.success(response.message || "Login successful");
         
-      }
-    })
+  //     }
+  //   })
+  // }
+
+verifyOtp() {
+
+  if (!this.otpValue || this.otpValue.length < 4) {
+    this.toastr.error("Please enter valid OTP");
+    return;
   }
+
+  const json = {
+    mobileNo: this.citizenForm.get('mobile')?.value,
+    otp: this.otpValue
+  };
+
+  this.masterService.verifyOtp(json).subscribe((response: any) => {
+      //  if (response.messageCode == 1) {
+      //   this.messageResp = response.data;
+      //   console.log();
+      //     this.router.navigate(['/layout/citizen']);
+      //     this.dialog.closeAll();
+      //     this.otpValue = ''
+      //     const mobile = this.citizenForm.get('mobile')?.value
+      //     this.mobileService.updateMobile(mobile)
+      //     this.mobileService.updatelogindata(response)
+      //     this.citizenForm.reset()
+      //     sessionStorage.setItem("userInfo", JSON.stringify(response.data));
+      //     // this.generateCaptcha()
+      //     this.toastr.success(response.message || "Login successful");
+        
+      // }
+    if (response.messageCode === 1) {
+       this.messageResp = response.data;
+      sessionStorage.setItem('userInfo', JSON.stringify(response.data));
+
+      this.masterService.isLoggingIn = true;
+
+      this.masterService
+        .saveAuditLog('LOGIN', '/login')
+        .subscribe({
+          complete: () => {
+            this.masterService.isLoggingIn = false;
+          }
+        });
+      const mobile = this.citizenForm.get('mobile')?.value
+      this.mobileService.updateMobile(mobile)
+      this.mobileService.updatelogindata(response)
+      this.citizenForm.reset()
+      this.otpValue = ''
+      this.router.navigate(['/layout/citizen']);
+      this.dialog.closeAll();
+      this.toastr.success("Login successful");
+    }
+  });
+}
+
+
+
   resetFormCitizen() {
     this.citizenForm.reset({ role: 'citizen' });
     this.isSubmitted = false;
   }
-  // onSubmitAdmin() {
-  //   this.isSubmittedadmin = true;
-  //   if (this.adminForm.invalid) {
-  //     this.adminForm.markAllAsTouched()
-  //     this.adminForm.updateValueAndValidity()
-  //     this.toastr.error("Admin Form Is Invalid")
-  //   } else {
-  //     const logindata = this.adminForm.getRawValue()
-  //     const postLoginForm = {
-  //         loginName: logindata.user,
-  //         password: this.adminForm.value.password,
-  //     };
-  //     console.log("Login payload:", JSON.stringify(postLoginForm));
-  //     this.officer.loginFormCreate(postLoginForm).subscribe(
-  //       (response: any) => {
-  //         if (response.messageCode == 1) {
-  //           console.log(response, 'loginresponse');
-            
-  //           sessionStorage.setItem('isLoggedIn', "true");
-  //           sessionStorage.setItem("levels", response.level);
-  //           sessionStorage.setItem("accessToken", response.accessToken);
-  //           sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-  //           this.toastr.success(response.message || "Login successful");
-  //           this.router.navigate(['/layout/admin']);
-  //         }
-  //       })
-  //   }
-  // }
+
 onSubmitAdmin() {
   this.isSubmittedadmin = true;
 
@@ -453,8 +473,12 @@ onSubmitAdmin() {
     return;
   }
 
+  const payload = {
+    captcha: enteredCaptcha
+  }
+
   // 🔥 Step 1: Verify Captcha
-  this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
+  this.masterService.verifyCaptcha(payload).subscribe({
     next: (captchaRes: any) => {
 
       if (captchaRes.messageCode !== 1) {
@@ -474,12 +498,17 @@ onSubmitAdmin() {
       this.officer.loginFormCreate(postLoginForm).subscribe({
         next: (response: any) => {
           if (response.messageCode === 1) {
+              sessionStorage.setItem('userInfo', JSON.stringify(response.data));
+              this.masterService.isLoggingIn = true;
 
-            sessionStorage.setItem('isLoggedIn', "true");
-            sessionStorage.setItem("levels", response.level);
+              this.masterService
+                .saveAuditLog('LOGIN', '/layout/admin/dashboard')
+                .subscribe({
+                  complete: () => {
+                    this.masterService.isLoggingIn = false;
+                  }
+                });
             sessionStorage.setItem("accessToken", response.accessToken);
-            sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-
             this.toastr.success(response.message || "Login successful");
             this.router.navigate(['/layout/admin']);
           } else {
@@ -501,59 +530,20 @@ onSubmitAdmin() {
   });
 }
 
-
-  //   onSubmitPD() {
-  //   this.isSubmittedPd = true;
-  //   if (this.pdForm.invalid) {
-  //     this.pdForm.markAllAsTouched()
-  //     this.pdForm.updateValueAndValidity()
-  //     this.toastr.error("Admin Form Is Invalid")
-  //   } else {
-  //     const logindata = this.pdForm.getRawValue()
-  //     const postLoginForm = {
-  //         loginName: this.pdForm.get('user')?.value,
-  //         password: this.pdForm.value.password,
-  //       // roleType: logindata.user,
-  //       // captcha: logindata.captcha.trim(),
-  //       // password: shajs('sha512').update(this.pdForm.value.password).digest('hex'),
-  //       // sessionId: this.sessionId
-  //     };
-  //     console.log("Login payload:", JSON.stringify(postLoginForm));
-  //     // this.userId = postLoginForm.loginId;
-  //     this.officer.loginFormCreate(postLoginForm).subscribe(
-  //       (response: any) => {
-  //         if (response.messageCode == 1) {
-  //           console.log(response, 'loginresponse');
-            
-  //           sessionStorage.setItem('isLoggedIn', "true");
-  //           sessionStorage.setItem("levels", response.level);
-  //           sessionStorage.setItem("accessToken", response.accessToken);
-  //           sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-  //           this.router.navigate(['/layout/admin']);
-  //         }
-  //       })
-  //   }
-  // }
-
   onSubmitPD() {
   this.isSubmittedPd = true;
 
-  // ❌ Form invalid
   if (this.pdForm.invalid) {
     this.pdForm.markAllAsTouched();
     this.toastr.error("PD Form Is Invalid");
     return;
   }
-
-  // 🔐 Captcha value
   const enteredCaptcha = this.pdForm.get('captcha')?.value;
 
   if (!enteredCaptcha || enteredCaptcha.trim() === '') {
     this.toastr.error('Please enter captcha');
     return;
   }
-
-  // 🧾 Session check
   const sessionId = sessionStorage.getItem('sessionId1');
   if (!sessionId) {
     this.toastr.error('Session expired. Please refresh captcha');
@@ -561,8 +551,11 @@ onSubmitAdmin() {
     return;
   }
 
-  // 🔥 Step 1: Verify Captcha
-  this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
+    const payload = {
+    captcha: enteredCaptcha
+  }
+
+  this.masterService.verifyCaptcha(payload).subscribe({
     next: (captchaRes: any) => {
 
       if (captchaRes.messageCode !== 1) {
@@ -571,8 +564,6 @@ onSubmitAdmin() {
         this.generateCaptcha();
         return;
       }
-
-      // 🔐 Step 2: PD Login API
       const postLoginForm = {
         loginName: this.pdForm.get('user')?.value,
         password: this.pdForm.get('password')?.value
@@ -584,11 +575,16 @@ onSubmitAdmin() {
         next: (response: any) => {
           if (response.messageCode === 1) {
 
-            sessionStorage.setItem('isLoggedIn', "true");
-            sessionStorage.setItem("levels", response.level);
+            sessionStorage.setItem('userInfo', JSON.stringify(response.data));
+              this.masterService.isLoggingIn = true;
+              this.masterService
+                .saveAuditLog('LOGIN', '/layout/admin/dashboard')
+                .subscribe({
+                  complete: () => {
+                    this.masterService.isLoggingIn = false;
+                  }
+                });
             sessionStorage.setItem("accessToken", response.accessToken);
-            sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-
             this.toastr.success(response.message || "Login successful");
             this.router.navigate(['/layout/admin']);
           } else {
@@ -685,6 +681,7 @@ onSubmitAdmin() {
   onStateChange(event: any) {
     this.selectedState = event.value;
   }
+
 
 }
 

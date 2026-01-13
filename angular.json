@@ -85,9 +85,9 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": false,
               "extractLicenses": true,
-              "sourceMap": false
+              "sourceMap": true
             },
             "development": {
               "optimization": false,
@@ -95,7 +95,7 @@
               "extractLicenses": false,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
+                  "replace": "src/environments/environment.dev.ts",
                   "with": "src/environments/environment.ts"
                 }
               ]
@@ -138,7 +138,8 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/ngx-spinner/animations/ball-scale-multiple.css"
             ],
             "scripts": []
           }

@@ -221,3 +221,68 @@ button[mat-icon-button] {
 mat-radio-button {
   font-weight: 500;
 }
+.section-authentication-signin{
+    padding: 38px 0px;
+}
+
+.login-card .card-body{
+    padding-right: 3rem !important;
+        padding-left: 3rem !important;
+}
+
+@media (max-width: 1280px){
+.role-box {
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    padding: 5px 5px;
+    min-width: 51px;
+    display: flex;
+    flex-direction: row;
+    gap: 13px;
+    background-color: #fafafa;
+    position: relative;
+}
+
+.role-box2{
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    padding: 5px 10px;
+    min-width: 183px;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    background-color: #fafafa;
+    position: relative;
+}
+
+.captcha-box img{object-fit: contain;}
+
+.login-card .card-body{
+    padding-right: 1rem !important;
+        padding-left: 1rem !important;
+}
+}
+
+@media (max-width: 767px){
+    .m-mt{margin-top: 10px;}
+    .section-authentication-signin{
+    padding: 0px 0px;
+}
+}
+
+.speaker-btn {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+.speaker-btn:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.captcha-img {
+  width: 120px;
+  height: 40px;
+}

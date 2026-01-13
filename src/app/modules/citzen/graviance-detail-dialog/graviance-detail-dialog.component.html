@@ -1,11 +1,7 @@
     <h5 class="dialog-title">Grievance Overview  <span mat-dialog-close class="close">X</span>
 </h5>
-<div class="card citizen-card" style="width: 96%;
-    margin: 0 auto;
-    margin-top: 20px;
-        background-color: #f6fbff;
-    border: 1px solid #a6d5fa;
-">
+   <mat-dialog-content class="dialog-layout">
+<div class="card citizen-card">
   <div class="card-header">
     <h5>Citizen Details</h5>
     <div><span>Grievance Status</span> :
@@ -102,8 +98,9 @@
     </div>
   </div>
 </div>
-<mat-dialog-content>
-  <h6>Grievance Details</h6>
+
+<div class="row-table table-responsive mt-3">
+  <h6 class="title mb-1">Grievance Details</h6>
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-responsive tbl ">
 
     <ng-container matColumnDef="grievanceId">
@@ -150,14 +147,14 @@
     </ng-container>
 
 
-    <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef> Description (Source language) </th>
-      <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+    <ng-container matColumnDef="description" >
+      <th mat-header-cell *matHeaderCellDef class="desc-col"> Description (Source language) </th>
+      <td mat-cell *matCellDef="let element" class="desc-col"> {{element.description}} </td>
     </ng-container>
 
     <ng-container matColumnDef="Transcript">
-    <th mat-header-cell *matHeaderCellDef> Transcript (In English) </th>
-    <td mat-cell *matCellDef="let element"> {{element.translatedDesc}} </td>
+    <th mat-header-cell *matHeaderCellDef class="desc-col"> Transcript (In English) </th>
+    <td mat-cell *matCellDef="let element" class="desc-col"> {{element.translatedDesc}} </td>
   </ng-container> 
 
     <ng-container matColumnDef="attachment">
@@ -180,11 +177,119 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+</div>
+
+
+
+<div class="row-table table-responsive mt-3">
+  <h6 class="title mb-1">Grievance Status</h6>
+
+  <!-- Chat Data Available -->
+  <!-- <ng-container *ngIf="chatData?.length > 0; else noData && chatData?.officerAction?.status ==='C' "> -->
+    <ng-container *ngIf="chatData?.length > 0 && chatData[0]?.officerAction?.status === 'C'; else noData">
+    <div class="chat-container">
+      <ng-container *ngFor="let item of chatData">
+
+        <!-- Officer Message -->
+        <div class="chat-message left">
+          <div class="bubble officer">
+
+            <div class="usename">
+              <strong>{{ item.officerAction?.commentedBy }}</strong>
+
+              <span
+                class="status"
+                [ngClass]="{
+                  'completed': item.officerAction?.status === 'C',
+                  'pending': item.officerAction?.status === 'U'
+                }">
+                {{
+                  item.officerAction?.status === 'U'
+                    ? 'Under-Process'
+                    : item.officerAction?.status === 'C'
+                    ? 'Complete'
+                    : item.officerAction?.status
+                }}
+              </span>
+            </div>
+
+            <p>{{ item.officerAction?.comments }}</p>
+
+            <div
+              class="file"
+              *ngIf="item.officerAction.fileName && item.officerAction.fileName !== 'No File Attached'"
+            >
+              <small>
+                {{ item.officerAction.commentedOn | date:'dd MMM yyyy, hh:mm a' }}
+              </small>
+
+              <a
+                href="javascript:void(0)"
+                title="{{ item.officerAction.fileName }}"
+                (click)="openAttachment(item.officerAction.fileName)"
+                matTooltip="View File"
+              >
+                <i class="bi bi-download pdfIcon"></i>
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Citizen Message -->
+        <div class="chat-message right" *ngIf="item?.citizenFeedback?.comments">
+          <div class="bubble citizen">
+
+            <div class="usename">
+              <strong>{{ citizendetails?.name }}</strong>
+
+              <span
+                class="status"
+                [ngClass]="{
+                  'completed': item.citizenFeedback?.status === 'S',
+                  'pending': item.citizenFeedback?.status === 'US'
+                }">
+                {{
+                  item.citizenFeedback?.status === 'S'
+                    ? 'Satisfied'
+                    : item.citizenFeedback?.status === 'US'
+                    ? 'Unsatisfied'
+                    : item.citizenFeedback?.status
+                }}
+              </span>
+            </div>
+
+            <p>{{ item.citizenFeedback?.comments }}</p>
+
+          </div>
+        </div>
+
+      </ng-container>
+    </div>
+  </ng-container>
+
+  <!-- No Data -->
+  <ng-template #noData>
+    <span class="status in-progress" style="max-width: 100%;
+    margin: auto;
+    padding: 15px;
+    background: #f6fbff;
+    border: 1px solid #ccdde1;
+    border-radius: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;">
+      Your grievance is under process and is being reviewed by the concerned authority.
+    </span>
+  </ng-template>
+
+</div>
+
+
+
 
  <form
-  [formGroup]="feedbackForm"
-  *ngIf="grievanceStatus === 'C'"
-  class="m-0 p-0 mt-3"
+  [formGroup]="feedbackForm" *ngIf="hasSatisfied?.citizenFeedback?.status !== 'S' && hasSatisfied?.officerAction?.status !== 'C' && grievanceStatus === 'C'"class="m-0 p-0 mt-3"
 >
 
   <!-- Feedback -->
@@ -197,11 +302,19 @@
       placeholder="Enter your feedback"
     ></textarea>
 
-    <small class="text-danger"
-      *ngIf="feedbackForm.get('feedback')?.touched &&
-             feedbackForm.get('feedback')?.invalid">
-      Feedback is required
-    </small>
+           <small class="text-muted d-block text-end">
+                              {{ feedbackForm.get('feedback')?.value?.length || 5 }} / 1000
+                            </small>
+                          <mat-error *ngIf="(f['feedback'].touched || isSubmitted) && f['feedback'].invalid">
+                          
+                            <span *ngIf="f['feedback'].errors?.['required']">
+                              Comments are required
+                            </span>
+                          
+                            <span *ngIf="f['feedback'].errors?.['minlength']">
+                              Comments must be at least 5 characters
+                            </span>
+                          </mat-error>
   </div>
 
   <!-- Satisfied Dropdown -->

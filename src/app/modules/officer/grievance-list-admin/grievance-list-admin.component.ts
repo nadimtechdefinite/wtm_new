@@ -119,7 +119,6 @@ export class GrievanceListAdminComponent {
           }));
           //  this.applyFilterq();
           // this.grievanceList = res.data.grievanceDetails;
-          console.log('User List Citizen Details:', this.citzenDetails);
           // const tableData = this.selectedStatus? this.filteredList: this.GrievanceContent;
           this.admindataSource = new MatTableDataSource(this.GrievanceContent);
           this.admindataSource.paginator = this.paginator;

@@ -1,9 +1,9 @@
-<div class="section-authentication-signin d-flex align-items-center justify-content-center my-5 my-lg-0" style="padding: 38px 0px;">
+<div class="section-authentication-signin d-flex align-items-center justify-content-center my-5 my-lg-0">
     <div class="container-fluid">
         <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 my-5">
             <div class="col mx-auto">
-                <div class="card  shadow-lg rounded-4 mb-2">
-                    <div class="card-body px-lg-5 rounded-4">
+                <div class="card login-card shadow-lg rounded-4 mb-2">
+                    <div class="card-body rounded-4">
                         <div class="text-center">
                             <h5 class="webline">{{signInTitle}}</h5>
                         </div>
@@ -53,25 +53,30 @@
                         <form *ngIf="isCitizen" [formGroup]="citizenForm">
                             <mat-form-field appearance="outline" class="w-100 mb-1">
                                 <mat-label>Mobile Number</mat-label>
-                                <input matInput placeholder="Enter Mobile No" formControlName="mobile" maxlength="10" minlength="10" (keyup)="onMobileKeyUp()" />
-                                <mat-error
-                                    *ngIf="(citizenForm.get('mobile')?.touched || isSubmitted) && citizenForm.get('mobile')?.invalid">
-                                    Mobile No Is Required
+                                <input matInput placeholder="Enter Mobile No" formControlName="mobile" appNumberOnly maxlength="10" minlength="10" (keyup)="onMobileKeyUp()" />
+                                <mat-error *ngIf="(citizenForm.get('mobile')?.touched || isSubmitted) && citizenForm.get('mobile')?.errors">
+                                    <ng-container *ngIf="citizenForm.get('mobile')?.errors?.['required']">
+                                    Mobile No is required
+                                    </ng-container>
+                                    <ng-container *ngIf="citizenForm.get('mobile')?.errors?.['pattern']">
+                                    Mobile number must start with 6, 7, 8, or 9 and be 10 digits
+                                    </ng-container>
                                 </mat-error>
                             </mat-form-field>
 
                             <div class="row align-items-center justify-content-center">
-                                <div class="col-md-6 d-flex mb-4 gap-2 justify-content-start align-items-left mt-1">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-12 d-flex mb-4 gap-2 justify-content-start align-items-left mt-1">
                                     <div id="image"
                                         class="captcha-box d-flex align-items-center justify-content-center">
                                     </div>
+                                    
                                     <div class="captcha-refresh-button">
                                         <button mat-icon-button (click)="reload()">
                                             <mat-icon>refresh</mat-icon>
                                         </button>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                                     <mat-form-field appearance="outline" class="w-100">
                                         <mat-label>Enter Captcha</mat-label>
                                         <input matInput type="text" formControlName="captcha" maxlength="6">
@@ -84,11 +89,11 @@
                             </div>
                             <div class="row mb-3">
                             <div class="col-md-6">
-                                <button mat-flat-button class="w-100 btn-glow btn-blue" type="submit"
+                                <button mat-raised-button color="primary" class="btn-glow btn-blue w-100 "  type="submit"
                                     (click)="GetverifyCaptcha(otpDialog)">Get OTP</button>
                             </div>
                             <div class="col-md-6">
-                                <button mat-stroked-button class="w-100 btn-glow btn-red" type="button"
+                                <button mat-raised-button class="w-100 btn-glow btn-red m-mt" type="button"
                                     (click)="resetFormCitizen()">Reset</button>
                             </div>
                         </div>
@@ -117,7 +122,7 @@
                                     Password is required
                                 </mat-error>
                             </mat-form-field>
-                                 <div class="d-flex align-items-center justify-content-center">
+                                 <div class="row align-items-center justify-content-center">
                                 <div class="col-md-6 col-sm-4 d-flex mb-4 gap-2 justify-content-start align-items-left">
                                     <div id="image"
                                         class="captcha-box d-flex align-items-center justify-content-center">
@@ -141,11 +146,11 @@
                             </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <button mat-flat-button class="w-100 btn-glow btn-blue" type="submit"
+                                <button mat-raised-button color="primary" class="btn-glow btn-blue w-100" type="submit"
                                     (click)="onSubmitAdmin()" >Submit By Admin</button>
                             </div>
                             <div class="col-md-6">
-                                <button mat-stroked-button class="w-100 btn-glow btn-red" type="button"
+                                <button mat-raised-button class="w-100 btn-glow btn-red m-mt" type="button"
                                     (click)="resetFormAdmin()">Reset</button>
                             </div>
                         </div>
@@ -174,7 +179,7 @@
                                     Password is required
                                 </mat-error>
                             </mat-form-field>
-                                 <div class="d-flex align-items-center justify-content-center">
+                                 <div class="row align-items-center justify-content-center">
                                 <div class="col-md-6 col-sm-4 d-flex mb-4 gap-2 justify-content-start align-items-left">
                                     <div id="image"
                                         class="captcha-box d-flex align-items-center justify-content-center">
@@ -198,11 +203,11 @@
                             </div>
                          <div class="row mb-3" >
                             <div class="col-md-6">
-                                <button mat-flat-button class="w-100 btn-glow btn-blue" type="submit"
+                                <button mat-raised-button class="w-100 btn-glow btn-blue" type="submit"
                                     (click)="onSubmitPD()" >Submit By PD</button>
                             </div>
                             <div class="col-md-6">
-                                <button mat-stroked-button class="w-100 btn-glow btn-red" type="button"
+                                <button mat-raised-button class="w-100 btn-glow btn-red m-mt" type="button"
                                     (click)="resetFormAdmin()" >Reset</button>
                             </div>
                         </div>

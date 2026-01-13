@@ -15,6 +15,7 @@ import { debounceTime, filter, of, Subject, switchMap } from 'rxjs';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component';
 import { masterService } from '../../../services/master.service';
 import { NumberOnlyDirective } from '../../../shared/directives/numberonly.directive';
+import { error } from 'highcharts';
 
 declare var Sanscript: any;
 
@@ -189,6 +190,7 @@ export class GravianceRegisterComponent implements OnInit {
 
   reload() {
     this.generateCaptcha();
+    this.grievanceForm.get('captcha')?.reset();
   }
   generateCaptcha() {
     this.masterService.generateCaptcha().subscribe((response: any) => {
@@ -204,7 +206,7 @@ export class GravianceRegisterComponent implements OnInit {
     const imgHtml = `
   <img src="data:image/png;base64,${baseImage}"
        alt="Captcha"
-       style="height: 100%; width: 180px; object-fit: contain; border-radius: 5px;" />
+       style="height: 100%; width: 100%; contain; border-radius: 5px;" />
 `;
     const imageContainer = document.getElementById("image");
     if (imageContainer) {
@@ -254,9 +256,7 @@ export class GravianceRegisterComponent implements OnInit {
 
 
   GetverifyCaptcha() {
-
-  // 🔐 captcha value
-  if (!this.captchaCode || this.captchaCode.trim() === '') {
+  if (!this.captcha || this.captcha.trim() === '') {
     this.toastr.error('Please enter captcha');
     return;
   }
@@ -268,7 +268,6 @@ export class GravianceRegisterComponent implements OnInit {
     return;
   }
 
-    // 🔐 Captcha value
   const enteredCaptcha = this.grievanceForm.get('captcha')?.value;
 
   if (!enteredCaptcha || enteredCaptcha.trim() === '') {
@@ -276,25 +275,26 @@ export class GravianceRegisterComponent implements OnInit {
     return;
   }
 
-  this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
-    next: (response: any) => {
-      if (response.messageCode === 1) {
-        // ✅ captcha valid → submit form
-        this.onSubmit();
-      } else {
-        // ❌ captcha invalid (200 response)
-        this.toastr.error(response.message || 'Invalid captcha');
-        this.captchaCode = '';
-        this.generateCaptcha();
-      }
-    },
-    error: (err) => {
-      // ❌ captcha invalid (400/500 response)
-      const msg = err?.error?.message || 'Invalid captcha';
-      this.toastr.error(msg);
+  const payload = {
+    captcha: enteredCaptcha
+  }
+
+  this.masterService.verifyCaptcha(payload).subscribe({
+     next: (response: any) => {
+    if (response.messageCode === 1) {
+      this.onSubmit();
+    } 
+  },
+  error: (err) => {
+    console.log('Full error:', err);
+    const message =
+      err?.error?.message ||   // backend message
+      err?.message ||          // angular message
+      'Captcha verification failed';
+      this.toastr.error(message);
       this.captchaCode = '';
       this.generateCaptcha();
-    }
+  }
   });
 }
 isSubmitted = false;

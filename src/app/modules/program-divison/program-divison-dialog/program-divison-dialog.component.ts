@@ -163,7 +163,6 @@ export class ProgramDivisonDialogComponent {
            if (res?.messageCode === 1) {
         this.citizendetails = res.data;
         this.toastr.success(res.message || 'Comment saved successfully');
-        this.dialogRef.close(true);
         return;
       }
 

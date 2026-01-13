@@ -102,7 +102,7 @@
         </div>
     </div>
         <!-- table-section -->
-        <div class="row-table section-fixed">
+        <div class="row-table table-responsive section-fixed">
         <h6 class="title">Grievance Details</h6>
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-responsive tbl ">
             <ng-container matColumnDef="serialNo">
@@ -156,13 +156,13 @@
 
 
             <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef> Description (Source language) </th>
-                <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                <th mat-header-cell *matHeaderCellDef class="desc-col"> Description (Source language) </th>
+                <td mat-cell *matCellDef="let element" class="desc-col"> {{element.description}} </td>
             </ng-container>
 
         <ng-container matColumnDef="Transcript">
-                <th mat-header-cell *matHeaderCellDef> Transcript (In English) </th>
-                <td mat-cell *matCellDef="let element"> {{element.translatedDesc}} </td>
+                <th mat-header-cell *matHeaderCellDef class="desc-col"> Transcript (In English) </th>
+                <td mat-cell *matCellDef="let element" class="desc-col"> {{element.translatedDesc}} </td>
             </ng-container>
 
             <ng-container matColumnDef="attachment">
@@ -205,14 +205,14 @@
                     [style.overflowY]="commentsAttachments?.length > 1 ? 'auto' : 'hidden'">
 
                     <div class="chat-message" *ngFor="let item of commentsAttachments" [ngClass]="{
-                        'chat-right': item.commentsBy === 'ADMIN',
-                        'chat-left': item.commentsBy !== 'ADMIN'
+                        'chat-right': item.commentsBy === 'ADMIN' || item.commentsBy === 'Admin',
+                        'chat-left': item.commentsBy !== 'ADMIN' || item.commentsBy !== 'Admin'
                     }">
 
                         <div class="message-bubble">
                             <div class="sender-name">
                                 <div class="send"
-                                    [ngStyle]="{ 'color': item.commentsBy === 'ADMIN' ? 'green' : 'brown' }">
+                                    [ngStyle]="{ color: item.commentsBy?.toUpperCase() === 'ADMIN' ? 'green' : 'brown' }">
                                     {{ item.commentsBy
                                     }}</div>
                                 <div class="message-footer">
@@ -260,11 +260,19 @@
                     <textarea class="form-control" maxlength="1000" rows="3" maxlength="1000"
                         formControlName="citizenComment" name="citizenComment"></textarea>
                     <small class="text-muted d-block text-end">
-                        {{ feedbackForm.get('citizenComment')?.value?.length || 0 }} / 1000
+                        {{ feedbackForm.get('citizenComment')?.value?.length || 5 }} / 1000
                     </small>
-                      <mat-error *ngIf="(f['citizenComment'].touched || isSubmitted) && f['citizenComment'].invalid">
-                            Comments is required
-                    </mat-error>
+                            <mat-error *ngIf="(f['citizenComment'].touched || isSubmitted) && f['citizenComment'].invalid">
+    
+                            <span *ngIf="f['citizenComment'].errors?.['required']">
+                              Comments are required
+                            </span>
+                          
+                            <span *ngIf="f['citizenComment'].errors?.['minlength']">
+                              Comments must be at least 5 characters
+                            </span>
+                        
+                          </mat-error>
                 </div>
                 <div class="col-md-3">
                     <mat-form-field appearance="outline" class="w-100">

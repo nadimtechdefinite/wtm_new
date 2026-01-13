@@ -16,5 +16,6 @@ footer p{margin-bottom: 5px; color: #165cad;}
 @media (max-width: 768px) {
 .footer {
     left: 0;
+    flex-direction: column;
   }
 }

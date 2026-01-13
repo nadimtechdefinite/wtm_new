@@ -47,7 +47,7 @@ export const routes: Routes = [
     {
       path: 'citizen',
       // canLoad: [AuthGuard],
-      data: { role: ['citizen'] },
+      data: { role: ['0'] },
       loadChildren: () =>
         import('../app/modules/citzen/citzen.routes')
           .then(r => r.CITIZEN_ROUTES)

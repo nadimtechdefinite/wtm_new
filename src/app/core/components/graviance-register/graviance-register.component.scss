@@ -144,3 +144,8 @@ mat-dialog-actions button {
 .captcha-refresh-button 
 .mat-icon{   color: #ffffff;
   }
+
+  @media (max-width: 767px){
+    .captcha-box img{object-fit: contain;}
+    .captcha-area{flex-direction: column;}
+}

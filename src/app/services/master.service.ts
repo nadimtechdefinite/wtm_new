@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpApiService } from '../services/http-api.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 
 //master api
@@ -24,6 +24,8 @@ const downloadDoc = environment.apiUrl + "file/download/";
 const submitFeedback = environment.apiUrl + "citizen/submitFeedback";
 const getFeedbackDetail = environment.apiUrl + "statussmaster/statusDetail?key";
 const getpendingCountAdmin = environment.apiUrl + "pd-admin/pending?schemeId";
+const auditTrailSave = environment.apiUrl + 'audit-trail/save';
+const getCitizenhistory = environment.apiUrl + "citizen/history";
 
 //auth api
 const generateOtpApi = environment.apiUrl + 'auth/generate-otp';
@@ -36,8 +38,8 @@ const COMMENTS_ATTACHMENTS_URL = environment.apiUrl + "comments-attachments/save
   providedIn: 'root'
 })
 export class masterService extends HttpApiService {
-
-
+isLoggingOut = false;
+isLoggingIn = false;
   ///master api///
   getStateMaster() {
     return this.getApiWithoutToken(`${getStateMaster}`);
@@ -90,8 +92,10 @@ export class masterService extends HttpApiService {
     });
   }
 
-    verifyCaptcha(key: any) {
-    return this.getApiWithSession(`${verifyCaptchaApi}=${key}`);
+  verifyCaptcha(data: any):Observable<any> {
+      return this.http.post(verifyCaptchaApi, data,{
+      withCredentials: true // important to preserve session
+    });
   }
 
   schemeMaster() {
@@ -123,6 +127,7 @@ export class masterService extends HttpApiService {
     return this.http.post(`${COMMENTS_ATTACHMENTS_URL}`, data);
   }
 
+
     getOfficerStatusDetail(key: any) {
     return this.getApiWithoutToken(`${getstatusDetail}=STATUS_${key}`);
   }
@@ -146,6 +151,28 @@ export class masterService extends HttpApiService {
   submitCitizenFeedback(data:any){
     return this.http.post(`${submitFeedback}`, data);
   }
+
+    Citizenhistory(key: any) {
+    return this.getApiWithoutToken(`${getCitizenhistory}/${key}`);
+  }
+
+   private auditActionSubject = new Subject<{ type: string; page: string }>();
+  auditAction$ = this.auditActionSubject.asObservable();
+
+  triggerAudit(type: string, page: string) {
+    this.auditActionSubject.next({ type, page });
+  }
+saveAuditLog( type: 'LOGIN' | 'LOGOUT' | 'VISIT'| 'ADD_GRIEVANCE',page: string): Observable<any> {
+ const user = JSON.parse(sessionStorage.getItem('userInfo') || '{}');
+  const payload = {
+    loginName: user?.mobileNo || user?.loginName,
+    loginLogout: type,
+    visitPage: page
+  };
+
+  return this.http.post(auditTrailSave, payload);
+}
+  
 
 
 }

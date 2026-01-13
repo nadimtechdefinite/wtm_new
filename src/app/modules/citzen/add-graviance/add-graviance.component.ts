@@ -16,9 +16,10 @@ import jsPDF from 'jspdf';
 import { MATERIAL_MODULES } from '../../../shared/material/material';
 import { MobileService } from '../../../services/mobile.service';
 import { masterService } from '../../../services/master.service';
-import { takeUntil } from 'rxjs/operators';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { MenuReloadService } from '../../../services/citizen-dashboard.component';
 import { NumberOnlyDirective } from '../../../shared/directives/numberonly.directive';
+import { LoaderService } from '../../../services/loader.service';
 
 declare var Sanscript: any;
 @Component({
@@ -88,12 +89,14 @@ export class AddGravianceComponent implements OnInit {
     private route: ActivatedRoute,
     private mobileService: MobileService,
     private masterService: masterService,
-    private menuReload: MenuReloadService
+    private menuReload: MenuReloadService,
+    private loader: LoaderService,
   ) {
   }
 
   ngOnInit() {
-    this.createForm()
+
+    this.createForm();
     this.isComplaintSave = true;
     this.getStateList();
     this.getSchemeList();
@@ -203,7 +206,6 @@ export class AddGravianceComponent implements OnInit {
 
   }
 
-
   async generateUUID() { // Public Domain/MIT
     let sessionIdPromise = new Promise((resolve, reject) => {
       var d = new Date().getTime();//Timestamp
@@ -241,7 +243,10 @@ export class AddGravianceComponent implements OnInit {
       schemeCode: ['', Validators.required],
       Description: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(1000)]],
       Language: ['en-IN', Validators.required],
-      captcha: ['', [Validators.required]],
+      captcha: ['', [    
+        Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(6)]],
       attachMent1: []
     });
   }
@@ -268,6 +273,7 @@ export class AddGravianceComponent implements OnInit {
 
   reload() {
     this.generateCaptcha();
+    this.grievanceForm.get('captcha')?.reset();
   }
 
   getCaptchadata: any;
@@ -286,7 +292,7 @@ export class AddGravianceComponent implements OnInit {
     const imgHtml = `
   <img src="data:image/png;base64,${baseImage}"
        alt="Captcha"
-       style="height: 100%; width: 180px; object-fit: contain; border-radius: 5px;" />
+       style="height: 100%; width: 100%; contain; border-radius: 5px;" />
 `;
     const imageContainer = document.getElementById("image");
     if (imageContainer) {
@@ -485,8 +491,9 @@ previewSelectedFile() {
 
   GetverifyCaptcha() {
 
+
   // 🔐 captcha value
-  if (!this.captchaCode || this.captchaCode.trim() === '') {
+  if (!this.captcha || this.captcha.trim() === '') {
     this.toastr.error('Please enter captcha');
     return;
   }
@@ -506,47 +513,50 @@ previewSelectedFile() {
     return;
   }
 
-  this.masterService.verifyCaptcha(enteredCaptcha).subscribe({
+  const payload = {
+    captcha: enteredCaptcha
+  }
+
+  this.masterService.verifyCaptcha(payload).subscribe({
     next: (response: any) => {
       if (response.messageCode === 1) {
-        // ✅ captcha valid → submit form
         this.onSubmit();
       } else {
-        // ❌ captcha invalid (200 response)
         this.toastr.error(response.message || 'Invalid captcha');
         this.captchaCode = '';
         this.generateCaptcha();
       }
     },
     error: (err) => {
-      // ❌ captcha invalid (400/500 response)
-      const msg = err?.error?.message || 'Invalid captcha';
-      this.toastr.error(msg);
+    console.log('Full error:', err);
+    const message =
+      err?.error?.message ||   // backend message
+      err?.message ||          // angular message
+      'Captcha verification failed';
+      this.toastr.error(message);
       this.captchaCode = '';
       this.generateCaptcha();
-    }
+  }
   });
 }
 
 
 
-  isSubmitted = false; // to track submit click
-
-  onSubmit() {
-    this.isSubmitted = true;
-    if (this.grievanceForm.invalid) {
-      this.grievanceForm.markAllAsTouched();
-      return;
-
-    }
-    this.grievanceForm.enable()
-    const formValue = this.grievanceForm.value;
-    const formData = new FormData();
-    const payload = {
+isSubmitted = false; 
+onSubmit() {
+  
+  this.isSubmitted = true;
+  if (this.grievanceForm.invalid) {
+    this.grievanceForm.markAllAsTouched();
+    return;
+  }
+  this.loader.show();
+  this.grievanceForm.enable();
+  const payload = {
     citizenId: this.citzenDetails?.citizenId,
     stateCode: this.grievanceForm.get('stateCode')?.value,
     districtCode: this.grievanceForm.get('districtCode')?.value,
-    blockCode: this.grievanceForm.get('blockCode')?.value ,
+    blockCode: this.grievanceForm.get('blockCode')?.value,
     panchayatCode: this.grievanceForm.get('panchayatCode')?.value || '',
     villageCode: this.grievanceForm.get('villageCode')?.value,
     pinCode: this.grievanceForm.get('pinCode')?.value,
@@ -554,38 +564,46 @@ previewSelectedFile() {
     schemeCode: this.grievanceForm.get('schemeCode')?.value,
     description: this.grievanceForm.get('Description')?.value,
     createdBy: this.citzenDetails?.citizenId
-    };
-    formData.append('data',new Blob([JSON.stringify(payload)], { type: 'application/json' }));
-    if (this.attachement1) {
-      formData.append('file', this.attachement1);
-    }
-
-    // 4️⃣ Call your API
-    this.masterService.saveGrievance(formData).subscribe({
+  };
+  const formData = new FormData();
+  formData.append(
+    'data',
+    new Blob([JSON.stringify(payload)], { type: 'application/json' })
+  );
+  if (this.attachement1) {
+    formData.append('file', this.attachement1);
+  }
+  this.masterService.saveGrievance(formData).pipe(finalize(() => {this.loader.hide();}))
+    .subscribe({
       next: (response: any) => {
         if (response?.messageCode === 1) {
+
           this.grievanceDetails = response.data;
-          this.generatedComplaintNo = response.data.grievanceNumber ;
-           this.generatedComplaintId = response.data.grievanceId;
-          // this.name = this.grievanceForm.get('name')?.value
-          this.schemeName = this.grievanceForm.get('schemeCode')?.value;
+          this.generatedComplaintNo = response.data.grievanceNumber;
+          this.generatedComplaintId = response.data.grievanceId;
+
+          const schemeCode = this.grievanceForm.get('schemeCode')?.value;
           const selectedScheme = this.schemeList.find(
-            item => item.schemeCode === this.schemeName
+            item => item.schemeCode === schemeCode
           );
           if (selectedScheme) {
-            this.schemeName = selectedScheme.schemeName;   // <-- Get the name
+            this.schemeName = selectedScheme.schemeName;
           }
-          // this.grievanceForm.updateValueAndValidity({ onlySelf: false, emitEvent: false });
           this.isSubmitted = false;
           this.isComplaintSave = false;
           this.grievanceForm.reset();
+
           setTimeout(() => {
             this.toastr.success(response?.message || 'Grievance saved successfully!');
             this.openPdfModal();
           }, 300);
-            this.menuReload.triggerReload();
+
+          this.menuReload.triggerReload();
+
         } else {
-          this.toastr.warning(response?.message || 'Something went wrong, please try again.');
+          this.toastr.warning(
+            response?.message || 'Something went wrong, please try again.'
+          );
         }
       },
       error: (err: HttpErrorResponse) => {
@@ -593,8 +611,9 @@ previewSelectedFile() {
         this.toastr.error('Unable to save grievance. Please try again later.');
       }
     });
+}
 
-  }
+
   resetForm() {
     this.isSubmitted = false;
     this.grievanceForm.reset();
@@ -654,25 +673,94 @@ previewSelectedFile() {
 
   message: any = ""
 
-  toggleMic() {
+  // toggleMic() {
+
+  //   if (!this.recognition) return;
+  //   if (this.micActive) {
+  //     try { this.recognition.stop(); } catch { }
+  //     this.micActive = false;
+  //     return;
+  //   }
+
+  //   // Start
+  //   const lang = this.grievanceForm.get("Language")?.value;
+  //   this.recognition.lang = lang;
+  //   try {
+  //     this.recognition.start();
+  //     this.micActive = true;
+  //   } catch { }
+  // }
+
+
+    toggleMic() {
+    this.message = "Speak...";
 
     if (!this.recognition) return;
+
+    // AUTO RESTART LOGIC
+    this.recognition.onend = () => {
+      console.log("Recognition ended");
+
+      if (this.micActive) {
+        console.log("Restarting mic...");
+        this.recognition.start();
+      }
+    };
+
+    this.recognition.onerror = (e: any) => {
+      console.log("Speech recognition error", e);
+
+      if (this.micActive) {
+        console.log("Restarting due to error...");
+        this.recognition.start();
+      }
+    };
+
     if (this.micActive) {
+      // USER STOPPED
       try { this.recognition.stop(); } catch { }
       this.micActive = false;
-      return;
-    }
+    } else {
+      // USER STARTED
+      const lang = this.grievanceForm.get('Language')?.value;
+      this.recognition.lang = lang;
 
-    // Start
-    const lang = this.grievanceForm.get("Language")?.value;
-    this.recognition.lang = lang;
-    try {
-      this.recognition.start();
-      this.micActive = true;
-    } catch { }
+      try {
+        this.recognition.start();
+        this.micActive = true;
+      } catch (e) {
+        console.warn("Mic already started", e);
+      }
+    }
   }
 
   // ---------------- TRANSLITERATION ----------------
+  // private getScript(langCode: string): string {
+  //   return {
+  //     'en-IN': 'english',
+  //     'hi-IN': 'devanagari',
+  //     'bn-IN': 'bengali',
+  //     'ta-IN': 'tamil',
+  //     'te-IN': 'telugu',
+  //     'gu-IN': 'gujarati',
+  //     'ml-IN': 'malayalam',
+  //     'mr-IN': 'devanagari',
+  //     'kn-IN': 'kannada',
+  //     'pa-IN': 'gurmukhi',
+  //   }[langCode] || 'english';
+  // }
+
+  // transliterateOnType(event: Event) {
+  //   if (this.micActive) return;  // 🎤 mic mode = No transliteratio
+  //   const raw = (event.target as HTMLTextAreaElement).value;
+  //   const lang = this.grievanceForm.get('Language')?.value;
+  //   const script = this.getScript(lang);
+  //   if (!Sanscript?.schemes?.[script]) return;
+  //   const converted = Sanscript.t(raw, "itrans", script);
+  //   this.grievanceForm.patchValue({ Description: converted });
+  // }
+
+    // ---------------- TRANSLITERATION ----------------
   private getScript(langCode: string): string {
     return {
       'en-IN': 'english',
@@ -688,14 +776,23 @@ previewSelectedFile() {
     }[langCode] || 'english';
   }
 
+
   transliterateOnType(event: Event) {
-    if (this.micActive) return;  // 🎤 mic mode = No transliteratio
     const raw = (event.target as HTMLTextAreaElement).value;
     const lang = this.grievanceForm.get('Language')?.value;
     const script = this.getScript(lang);
+
     if (!Sanscript?.schemes?.[script]) return;
-    const converted = Sanscript.t(raw, "itrans", script);
-    this.grievanceForm.patchValue({ Description: converted });
+
+    const converted = Sanscript.t(raw, 'itrans', script);
+    this.grievanceForm.get('Description')?.setValue(converted, { emitEvent: false });
+  }
+  ngOnDestroy(): void {
+    try { this.recognition?.stop(); } catch { }
+    if (this.recognition) {
+      try { this.recognition.stop(); } catch { }
+    }
+    this.micActive = false;
   }
 
   previousRaw = "";
@@ -741,15 +838,15 @@ previewSelectedFile() {
       pdf.save(`Grievance_${this.generatedComplaintNo}.pdf`);
     });
   }
-  ngOnDestroy(): void {
-    try { this.recognition?.stop(); } catch { }
-    if (this.recognition) {
-      try { this.recognition.stop(); } catch { }
-    }
-    this.micActive = false;
-    this.destroy$.complete()
+  // ngOnDestroy(): void {
+  //   try { this.recognition?.stop(); } catch { }
+  //   if (this.recognition) {
+  //     try { this.recognition.stop(); } catch { }
+  //   }
+  //   this.micActive = false;
+  //   this.destroy$.complete()
 
-  }
+  // }
   openConfirm() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
