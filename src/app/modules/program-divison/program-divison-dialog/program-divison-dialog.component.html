@@ -250,7 +250,7 @@
                                     <div class="send"
                                         [ngStyle]="{ color: item.commentsBy?.toUpperCase() === 'ADMIN' ? 'green' : 'brown' }">
                                         {{ item.commentsBy }}
-                                        <small class="badge bg-success" *ngIf="item?.status === 'C'">
+                                        <!-- <small class="badge bg-success" *ngIf="item?.status === 'C'">
                                             completed
                                         </small>
                                            <small class="badge bg-warning"
@@ -258,7 +258,16 @@
         color: #b36b00;
         border: 1px solid #ffd8a8;">
                                                         UNSatisfied
-                                                    </small>
+                                                    </small> -->
+
+                                                    <span>
+                                                    <span class="status" [ngClass]="{
+                                            'completed': item?.status === 'C',
+                                            'pending': item?.status === 'U',
+                                            }">{{ item?.status === 'U' ? 'Under-Process' : item?.status === 'C' ? 'Complete' :
+                                                        item?.status }}</span>
+
+                                        </span>
 
                                     </div>
 
