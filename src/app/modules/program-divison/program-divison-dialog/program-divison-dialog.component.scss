@@ -139,7 +139,8 @@
 }
 
 .chat-body {
-  height: auto;
+   min-height: 150px;
+  max-height: 300px;
   overflow-y: auto;
   padding: 15px;
 }
@@ -227,6 +228,25 @@
 .user-bubble {
   background-color: #f1f1f1;
   border-top-left-radius: 0;
+}
+.citizen-reply {
+background: #f1f7ff;
+    box-shadow: none;
+    border: 1px solid #9dd2ff;
+    border-radius: 12px;
+}
+.citizen-reply .send span{
+  font-size: 12px;
+}
+
+.citizen-reply .send{
+ display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.citizen-reply small{
+font-size: 10px;
 }
 
 .detail-row .box {
@@ -332,6 +352,7 @@
     border-radius: 4px;
     font-size: 22px;
     font-weight: 500 !important;
+    margin-bottom: 0px;
 }
 
 .desc-col {

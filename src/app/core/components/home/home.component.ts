@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import {  Component, ElementRef, HostListener } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { MatAccordion, MatExpansionPanel, MatExpansionModule } from "@angular/material/expansion";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule, MatAccordion, MatExpansionPanel, MatExpansionModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

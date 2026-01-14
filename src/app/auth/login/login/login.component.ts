@@ -400,21 +400,6 @@ verifyOtp() {
   };
 
   this.masterService.verifyOtp(json).subscribe((response: any) => {
-      //  if (response.messageCode == 1) {
-      //   this.messageResp = response.data;
-      //   console.log();
-      //     this.router.navigate(['/layout/citizen']);
-      //     this.dialog.closeAll();
-      //     this.otpValue = ''
-      //     const mobile = this.citizenForm.get('mobile')?.value
-      //     this.mobileService.updateMobile(mobile)
-      //     this.mobileService.updatelogindata(response)
-      //     this.citizenForm.reset()
-      //     sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-      //     // this.generateCaptcha()
-      //     this.toastr.success(response.message || "Login successful");
-        
-      // }
     if (response.messageCode === 1) {
        this.messageResp = response.data;
       sessionStorage.setItem('userInfo', JSON.stringify(response.data));

@@ -20,6 +20,7 @@ import { finalize, takeUntil } from 'rxjs/operators';
 import { MenuReloadService } from '../../../services/citizen-dashboard.component';
 import { NumberOnlyDirective } from '../../../shared/directives/numberonly.directive';
 import { LoaderService } from '../../../services/loader.service';
+import { AlertService } from '../../../services/alert.service';
 
 declare var Sanscript: any;
 @Component({
@@ -91,6 +92,7 @@ export class AddGravianceComponent implements OnInit {
     private masterService: masterService,
     private menuReload: MenuReloadService,
     private loader: LoaderService,
+    private alertService: AlertService
   ) {
   }
 
@@ -116,23 +118,8 @@ export class AddGravianceComponent implements OnInit {
           this.citzenDetails = res.data
           this.userName = res.data.name
           const data = this.citzenDetails
-          // this.grievanceForm.patchValue({
-          //   name: data?.name ? data?.name : '',
-          //   fatherHus: data?.fatherHusbandName,
-          //   stateCode: data[0]?.stateCode ? data[0]?.stateCode : '',
-          //   districtCode: data[0]?.districtCode ? data[0]?.districtCode : '',
-          //   blockCode: data[0]?.blockCode ? data[0]?.blockCode : '',
-          //   gpCode: data[0]?.panchayatCode ? data[0]?.panchayatCode : '',
-          //   villageCode: data[0]?.villageCode ? data[0]?.villageCode : '',
-          //   gender: data[0]?.gender === "undefined" ? "null" : data[0]?.gender,
-          //   pinCode: data[0]?.pincode,
-          //   ministry: data[0]?.ministry ? data[0]?.ministry : this.ministry
-          // })
           this.grievanceForm.patchValue(data)
-
-
           const disableFields = ['name', 'fatherHusbandName', 'gender', 'mobile'];
-
           disableFields.forEach(field => {
             const control = this.grievanceForm.get(field);
             const value = control?.value;
@@ -592,16 +579,21 @@ onSubmit() {
           this.isSubmitted = false;
           this.isComplaintSave = false;
           this.grievanceForm.reset();
-
-          setTimeout(() => {
-            this.toastr.success(response?.message || 'Grievance saved successfully!');
-            this.openPdfModal();
-          }, 300);
-
+          //   this.alertService.success(response?.message || 'Grievance saved successfully!');
+          // setTimeout(() => {
+          //   this.openPdfModal();
+          // }, 300);
+          this.alertService
+            .success(response?.message || 'Grievance saved successfully!')
+            .afterClosed()
+            .subscribe(() => {
+              // ✅ OK click ke baad hi chalega
+              this.openPdfModal();
+            });
           this.menuReload.triggerReload();
 
         } else {
-          this.toastr.warning(
+          this.alertService.warning(
             response?.message || 'Something went wrong, please try again.'
           );
         }

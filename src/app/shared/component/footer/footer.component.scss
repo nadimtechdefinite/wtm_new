@@ -1,0 +1,49 @@
+.logo-carousel {
+  overflow: hidden;
+  background: #fff;
+}
+
+.logo-track {
+  display: flex;
+  width: max-content;
+
+  animation-name: scroll;
+  animation-duration: 60s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+
+  animation-play-state: running;
+  animation-delay: 0.1s;          // ✅ KEY FIX
+  animation-fill-mode: both;      // ✅ prevent snap
+
+  will-change: transform;
+}
+
+.logo-carousel:hover .logo-track {
+  animation-play-state: paused;  // ✅ smooth pause (no reset)
+}
+
+.logo-item {
+  flex: 0 0 auto;
+  padding: 0 30px;
+}
+
+.logo-item img {
+  height: 60px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.logo-item img:hover {
+  transform: scale(1.05);
+}
+
+/* ⚠️ Keyframe remains same */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

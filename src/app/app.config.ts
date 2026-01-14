@@ -5,7 +5,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideToastr } from 'ngx-toastr';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth/interceptor';
-import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 export const appConfig: ApplicationConfig = {
@@ -15,10 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(
       withInterceptors([authInterceptor])
-    ),
-
-    importProvidersFrom(
-      NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' })
     ),
 
     provideToastr({

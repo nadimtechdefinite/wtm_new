@@ -1,6 +1,9 @@
     <h5 class="dialog-title">Grievance Overview  <span mat-dialog-close class="close">X</span>
 </h5>
    <mat-dialog-content class="dialog-layout">
+         <div class="d-flex justify-content-end"><button mat-raised-button color="primary" (click)="printDialog()">
+                            Print
+                        </button></div>
 <div class="card citizen-card">
   <div class="card-header">
     <h5>Citizen Details</h5>
@@ -180,9 +183,9 @@
 </div>
 
 
+  <h6 class="title mt-3 mb-1">Grievance Status</h6>
 
-<div class="row-table table-responsive mt-3">
-  <h6 class="title mb-1">Grievance Status</h6>
+<div class="">
 
   <!-- Chat Data Available -->
   <!-- <ng-container *ngIf="chatData?.length > 0; else noData && chatData?.officerAction?.status ==='C' "> -->
@@ -214,14 +217,14 @@
             </div>
 
             <p>{{ item.officerAction?.comments }}</p>
-
+              <small>
+                {{ item.officerAction?.commentedOn | date:'dd MMM yyyy, hh:mm a' }}
+              </small>
             <div
               class="file"
               *ngIf="item.officerAction.fileName && item.officerAction.fileName !== 'No File Attached'"
             >
-              <small>
-                {{ item.officerAction.commentedOn | date:'dd MMM yyyy, hh:mm a' }}
-              </small>
+
 
               <a
                 href="javascript:void(0)"
@@ -258,9 +261,8 @@
                 }}
               </span>
             </div>
-
             <p>{{ item.citizenFeedback?.comments }}</p>
-
+            <small>{{item.citizenFeedback?.feddbackSubmittedOn | date:'dd MMM yyyy, hh:mm a'}}</small>
           </div>
         </div>
 

@@ -209,7 +209,7 @@ openViewDialog(row: any, citizenDetails: any) {
   });
       dialogRef.afterClosed().subscribe((result: any) => {
       if (result === 'reload') {
-        this.getCitizenDetails(); // 🔁 API reload
+        this.getCitizenDetails(); 
       }
     });
 }

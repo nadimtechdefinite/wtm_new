@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
 import swal from 'sweetalert2';
+import { AlertService } from '../../../services/alert.service';
 
 
 @Component({
@@ -51,7 +52,7 @@ export class ProgramDivisonDialogComponent {
   grievanceStatus: any;
   
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private masterService: masterService,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private masterService: masterService, private alertService: AlertService,
     private toastr: ToastrService, private errorHandler: ErrorHandlerService, private dialogRef: MatDialogRef<ProgramDivisonDialogComponent>, private fb: FormBuilder) {
     console.log(data, "data");
     this.citizendetails = data.citizen
@@ -110,21 +111,42 @@ export class ProgramDivisonDialogComponent {
   }
 
 
-  getCitizenDetails() {
-    if (this.citizenId && this.grievanceId) {
-      this.masterService
-        .getcommentsaAttachments(this.citizenId, this.grievanceId)
-        .subscribe((res: any) => {
-          if (res.messageCode === 1) {
-            this.citizendetails = res.data;
-            this.commentsAttachments = res.data.grievanceDetails.commentsAttachments;
-            console.log(this.commentsAttachments, "commentsAttachments");
+  // getCitizenDetails() {
+  //   if (this.citizenId && this.grievanceId) {
+  //     this.masterService
+  //       .getcommentsaAttachments(this.citizenId, this.grievanceId)
+  //       .subscribe((res: any) => {
+  //         if (res.messageCode === 1) {
+  //           this.citizendetails = res.data;
+  //           this.commentsAttachments = res.data.grievanceDetails.commentsAttachments;
+  //           console.log(this.commentsAttachments, "commentsAttachments");
 
-          }
-        });
-    }
+  //         }
+  //       });
+  //   }
+  // }
+
+getCitizenDetails() {
+  if (this.citizenId && this.grievanceId) {
+    this.masterService
+      .getcommentsaAttachments(this.citizenId, this.grievanceId)
+      .subscribe((res: any) => {
+        if (res.messageCode === 1) {
+          this.citizendetails = res.data;
+
+          this.commentsAttachments =
+            res.data.grievanceDetails.commentsAttachments
+              .sort(
+                (a: any, b: any) =>
+                  new Date(a.createdOn).getTime() -
+                  new Date(b.createdOn).getTime()
+              );
+
+          console.log(this.commentsAttachments, 'Sorted comments (ASC)');
+        }
+      });
   }
-
+}
 
 
   submitFeedback() {
@@ -162,7 +184,12 @@ export class ProgramDivisonDialogComponent {
         next: (res: any) => {
            if (res?.messageCode === 1) {
         this.citizendetails = res.data;
-        this.toastr.success(res.message || 'Comment saved successfully');
+          this.alertService
+          .success(res?.message || 'Comment saved successfully')
+          .afterClosed()
+          .subscribe(() => {
+            this.dialogRef.close('reload');
+          });
         return;
       }
 
@@ -172,16 +199,16 @@ export class ProgramDivisonDialogComponent {
       }
 
           else {
-            this.toastr.error(res?.message || 'Failed to save comment');
+            this.alertService.error(res?.message || 'Failed to save comment');
           }
           this.toastr.error('Failed to save comment');
         },
         error: (err) => {
           console.error('API Error:', err);
           if (err?.error?.message) {
-            this.toastr.error(err.error.message);
+            this.alertService.error(err.error.message);
           } else {
-            this.toastr.error('Server error. Please try again later');
+            this.alertService.error('Server error. Please try again later');
           }
         }
       });
@@ -320,6 +347,79 @@ previewSelectedFile() {
 
   }
 
+printDialog() {
+  const printContents = document.getElementById('print-section')?.innerHTML;
+  if (!printContents) return;
+
+  const printWindow = window.open('', '', 'height=800,width=1200');
+
+  printWindow!.document.write(`
+    <html>
+      <head>
+        <title>Grievance Print</title>
+
+        <!-- Bootstrap (optional but recommended) -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+          }
+
+          .card, table {
+            page-break-inside: avoid;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+
+          table, th, td {
+            border: 1px solid #000;
+          }
+
+          th, td {
+            padding: 6px;
+            font-size: 12px;
+          }
+
+          .chat-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+          }
+
+          .chat-message {
+            margin-bottom: 10px;
+          }
+
+          .message-bubble {
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 6px;
+          }
+
+          /* ❌ Hide buttons */
+          button, .pdfIcon {
+            display: none !important;
+          }
+        </style>
+      </head>
+      <body>
+        ${printContents}
+      </body>
+    </html>
+  `);
+
+  printWindow!.document.close();
+  printWindow!.focus();
+
+  setTimeout(() => {
+    printWindow!.print();
+    printWindow!.close();
+  }, 500);
+}
 
 
 

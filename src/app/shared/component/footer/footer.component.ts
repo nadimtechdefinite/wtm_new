@@ -51,23 +51,24 @@ constructor(private eRef:ElementRef){}
     }
   }
   ngAfterViewInit(): void {
-    $('.logo-slider').slick({
-      slidesToShow: 7,
-      slidesToScroll: 1,
-      autoplay: true,
-      autoplaySpeed: 0,
-      speed: 4000,
-      cssEase: 'linear',
-      infinite: true,
-      arrows: false,
-      dots: false,
-      pauseOnHover: false,
-      responsive: [
-        { breakpoint: 1200, settings: { slidesToShow: 5 } },
-        { breakpoint: 992, settings: { slidesToShow: 4 } },
-        { breakpoint: 768, settings: { slidesToShow: 3 } },
-        { breakpoint: 576, settings: { slidesToShow: 2 } }
-      ]
-    });
+    // $('.logo-slider').slick({
+    //   slidesToShow: 7,
+    //   slidesToScroll: 1,
+    //   autoplay: true,
+    //   autoplaySpeed: 0,
+    //   speed: 4000,
+    //   cssEase: 'linear',
+    //   infinite: true,
+    //   arrows: false,
+    //   dots: false,
+    //   pauseOnHover: true,
+    //   pauseOnFocus: true,
+    //   responsive: [
+    //     { breakpoint: 1200, settings: { slidesToShow: 5 } },
+    //     { breakpoint: 992, settings: { slidesToShow: 4 } },
+    //     { breakpoint: 768, settings: { slidesToShow: 3 } },
+    //     { breakpoint: 576, settings: { slidesToShow: 2 } }
+    //   ]
+    // });
   }
 }

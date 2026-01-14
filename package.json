@@ -33,7 +33,6 @@
     "jquery": "^3.7.1",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.7",
-    "ngx-spinner": "^21.0.0",
     "ngx-toastr": "^19.1.0",
     "rxjs": "~7.8.0",
     "sha.js": "^2.4.11",

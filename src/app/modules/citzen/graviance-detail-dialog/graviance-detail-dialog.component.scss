@@ -5,6 +5,7 @@
   font-weight: 600;
   padding-bottom: 10px;
   border-bottom: 1px solid #ddd;
+  margin-bottom: 0px;
 }
 
 .dialog-content {
@@ -252,9 +253,12 @@
   max-width: 100%;
   margin: auto;
   padding: 15px;
- background: #f6fbff;
-    border: 1px solid #ccdde1;
-    border-radius: 10px;
+  background: #f6fbff;
+  border: 1px solid #a7d5f9;
+  border-radius: 10px;
+  min-height: 150px;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .chat-message {

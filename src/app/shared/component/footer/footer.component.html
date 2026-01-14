@@ -1,12 +1,32 @@
 <section class="client-logos py-2">
     <div class="container-fluid">
-        <div class="logo-slider">
+        <!-- <div class="logo-slider">
             @for (logo of logos; track $index) {
             <div>
                 <img [src]="logo" alt="logo" />
             </div>
             }
+        </div> -->
+
+        <div class="container-fluid py-3">
+            <div class="logo-carousel">
+                <div class="logo-track">
+                    @for (logo of logos; track $index) {
+                    <div class="logo-item">
+                        <img [src]="logo" alt="logo">
+                    </div>
+                    }
+        
+                    <!-- duplicate for infinite effect -->
+                    @for (logo of logos; track 'dup-' + $index) {
+                    <div class="logo-item">
+                        <img [src]="logo" alt="logo">
+                    </div>
+                    }
+                </div>
+            </div>
         </div>
+
     </div>
 </section>
 <footer class="footer ">

@@ -7,7 +7,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { A11yModule } from '@angular/cdk/a11y';
 import { masterService } from '../../../services/master.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { MatDialogRef } from '@angular/material/dialog';
+import { AlertService } from '../../../services/alert.service';
 @Component({
   selector: 'app-graviance-detail-dialog',
   standalone: true,
@@ -57,12 +58,14 @@ export class GravianceDetailDialogComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
+    private alertService: AlertService,
     private masterService: masterService,
+    private dialogRef: MatDialogRef<GravianceDetailDialogComponent>,
     private toastr: ToastrService,) {
     this.citizendetails = data.citizen
     this.citizenId = data.citizen.citizenId
     this.grievancedetails = data.grievance
-    this.grievanceStatus = data.grievance.status
+    this.grievanceStatus = data.grievance.status,
     this.dataSource = new MatTableDataSource([this.grievancedetails]);
   }
 
@@ -108,7 +111,14 @@ export class GravianceDetailDialogComponent {
     this.masterService.submitCitizenFeedback(payload).subscribe({
       next: (res: any) => {
         if (res.messageCode === 1) {
-          this.toastr.success(res.message);
+            this.alertService
+          .success(res?.message)
+          .afterClosed()
+          .subscribe(() => {
+            this.dialogRef.close('reload');
+          });
+          // this.dialogRef.close('reload');
+          // this.toastr.success(res.message);
         }
       },
       error: () => {
@@ -177,5 +187,77 @@ export class GravianceDetailDialogComponent {
     });
   }
 
+printDialog() {
+  const printContents = document.getElementById('print-section')?.innerHTML;
+  if (!printContents) return;
 
+  const printWindow = window.open('', '', 'height=800,width=1200');
+
+  printWindow!.document.write(`
+    <html>
+      <head>
+        <title>Grievance Print</title>
+
+        <!-- Bootstrap (optional but recommended) -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+          }
+
+          .card, table {
+            page-break-inside: avoid;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+
+          table, th, td {
+            border: 1px solid #000;
+          }
+
+          th, td {
+            padding: 6px;
+            font-size: 12px;
+          }
+
+          .chat-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+          }
+
+          .chat-message {
+            margin-bottom: 10px;
+          }
+
+          .message-bubble {
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 6px;
+          }
+
+          /* ❌ Hide buttons */
+          button, .pdfIcon {
+            display: none !important;
+          }
+        </style>
+      </head>
+      <body>
+        ${printContents}
+      </body>
+    </html>
+  `);
+
+  printWindow!.document.close();
+  printWindow!.focus();
+
+  setTimeout(() => {
+    printWindow!.print();
+    printWindow!.close();
+  }, 500);
+}
 }

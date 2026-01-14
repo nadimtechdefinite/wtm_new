@@ -1,0 +1,12 @@
+<h2 mat-dialog-title class="d-flex align-items-center gap-2">
+      <mat-icon [color]="data.type">{{ data.icon }}</mat-icon>
+      {{ data.title }}
+    </h2>
+
+    <mat-dialog-content>
+      <p>{{ data.message }}</p>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-raised-button color="primary" (click)="close()">OK</button>
+    </mat-dialog-actions> 

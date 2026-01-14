@@ -2,6 +2,11 @@
 </h5>
     
     <mat-dialog-content class="dialog-layout">
+        <div class="d-flex justify-content-end"><button mat-raised-button color="primary" (click)="printDialog()">
+                            Print
+                        </button></div>
+                        
+        <div id="print-section">
      <!-- user-detail-section -->
     <div class="card citizen-card section-fixed">
         <div class="card-header">
@@ -200,8 +205,8 @@
                 </div>
 
                 <!-- Chat Body -->
-                <div class="chat-body chat-body-scroll" *ngIf="commentsAttachments?.length > 0; else noMessages"
-                    [style.height]="commentsAttachments?.length > 1 ? '350px' : 'auto'"
+                <!-- <div class="chat-body chat-body-scroll" *ngIf="commentsAttachments?.length > 0; else noMessages"
+                    [style.min-height]="commentsAttachments?.length > 1 ? '250px' : 'auto'"
                     [style.overflowY]="commentsAttachments?.length > 1 ? 'auto' : 'hidden'">
 
                     <div class="chat-message" *ngFor="let item of commentsAttachments" [ngClass]="{
@@ -221,25 +226,90 @@
                                     </small>
                                 </div>
                             </div>
-                            <!-- Comment -->
                             <p class="mb-1">{{ item.comments }}</p>
 
-                            <!-- File -->
                             <a *ngIf="item.fileName !== 'No File Attached'" href="javascript:void(0)" class="file-link">
                                 <div class="pdfIcon" (click)="openAttachment(item.fileName)">
                                     <i class="bi bi-download"></i>
                                 </div>
                             </a>
-
-
-
-                            <!-- Footer -->
-
-
                         </div>
                     </div>
 
+                </div> -->
+              <div
+  class="chat-body chat-body-scroll"
+  *ngIf="commentsAttachments?.length > 0; else noMessages"
+>
+
+  <div
+    class="chat-message"
+    *ngFor="let item of commentsAttachments"
+    [ngClass]="{
+      'chat-right': item.commentsBy?.toUpperCase() === 'ADMIN',
+      'chat-left': item.commentsBy?.toUpperCase() !== 'ADMIN'
+    }"
+  >
+
+    <!-- ================= ADMIN / OFFICER MESSAGE ================= -->
+    <div class="message-bubble">
+      <div class="sender-name">
+        <div
+          class="send"
+          [ngStyle]="{ color: item.commentsBy?.toUpperCase() === 'ADMIN' ? 'green' : 'brown' }"
+        >
+          {{ item.commentsBy }}
+        </div>
+
+        <div class="message-footer">
+          <small>{{ item.createdOn | date:'dd MMM yyyy, hh:mm a' }}</small>
+        </div>
+      </div>
+
+      <p class="mb-1">{{ item.comments }}</p>
+
+      <!-- File -->
+      <a *ngIf="item.fileName !== 'No File Attached'" href="javascript:void(0)">
+        <div class="pdfIcon" (click)="openAttachment(item.fileName)">
+          <i class="bi bi-download"></i>
+        </div>
+      </a>
+
+          <div
+      class="chat-message chat-left mt-2"
+      *ngIf="item.citizenFeedback"
+    >
+    <div class="message-bubble citizen-reply">
+        <div class="sender-name">
+            <div class="send text-primary">
+                <span>CITIZEN</span>
+                <div>
+                    <small class="badge bg-success" *ngIf="item.citizenFeedback?.feedbackStatus === 'S'">
+                        Satisfied
+                    </small>
+                    <small class="badge bg-warning" *ngIf="item.citizenFeedback.feedbackStatus === 'US'" style="    background-color: #fff4e5;
+        color: #b36b00;
+        border: 1px solid #ffd8a8;">
+                        UNSatisfied
+                    </small>
                 </div>
+            </div>
+        </div>
+        <p class="mb-1">{{ item.citizenFeedback.feedbackComments }}</p>
+    
+        <small>{{ item.citizenFeedback.feedbackSubmittedOn | date:'dd MMM yyyy, hh:mm a' }}</small>
+    
+    </div>
+    </div>
+    </div>
+
+    <!-- ================= CITIZEN FEEDBACK (REPLY) ================= -->
+
+
+  </div>
+</div>
+
+              
                 <ng-template #noMessages>
                     <div class="no-message">
                         No comments yet for this grievance.
@@ -338,5 +408,5 @@
             </mat-dialog-actions>
         </form>
     </div>
-
+</div>
 </mat-dialog-content>
