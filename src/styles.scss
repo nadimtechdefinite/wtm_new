@@ -731,5 +731,32 @@ button.mat-icon-button:hover {
     color: #0d6efd;
     font-size: 22px !important;
     }
+/* Expansion panel right-side arrow icon */
+::ng-deep .custom-panel .mat-expansion-indicator::after {
+  color: #ffffff !important;
+}
+/* Expansion panel arrow icon (SVG) */
+.custom-panel .mat-expansion-indicator svg {
+  fill: #ffffff !important;
+}
 
+/* Open state */
+.custom-panel.mat-expanded .mat-expansion-indicator svg {
+  fill: #ffffff !important;
+}
 
+/* Hover state */
+.custom-panel .mat-expansion-panel-header:hover 
+.mat-expansion-indicator svg {
+  fill: #ffffff !important;
+}
+
+/* Default header background */
+.custom-panel .mat-expansion-panel-header {
+  background-color: #064381;
+}
+
+/* Hover background */
+.custom-panel .mat-expansion-panel-header:hover {
+  background-color: #2573c2 !important;
+}
