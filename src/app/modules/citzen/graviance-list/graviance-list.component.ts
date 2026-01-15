@@ -43,7 +43,7 @@ export class GravianceListComponent {
     { column: 'grievanceNumber', header: 'Grievance ID' },
     { column: 'schemeName', header: 'Scheme/Division' },
     { column: 'description', header: 'Description (Source language)', width: '30%' },
-    { column: 'translatedDesc', header: 'Transcript (In English)', width: '20%' },
+    { column: 'translatedDesc', header: 'Translated Transcript', width: '20%' },
      { column: 'createdOn', header: 'Date', type: 'date',width: '10%' },
      { column: 'status', type: 'status', header: 'Status',width: '10%' },
     { column: 'action', header: 'Action', type: 'action' }
@@ -250,30 +250,35 @@ exportToPdf() {
   }
 
   const doc = new jsPDF('l', 'mm', 'a4'); // landscape
-
+    const topMargin = 20;
   // 🔹 Title
   doc.setFontSize(14);
-  doc.text('Citizen Grievance List', 14, 15);
+  doc.text('Write To Rural Development Minister', 110, 13);
+  doc.setFontSize(12);
+  doc.text('Grievance List', 14, topMargin);
 
   // 🔹 Table Header
   const headers = [[
     'S.No',
     'Grievance No',
+    'Scheme/Division',
+    'Description (Source language)',
+    'Translated Transcript',
+    'Date',
     'Status',
-    'Ministry',
-    'Scheme',
-    'Date'
   ]];
 
   // 🔹 Table Body
   const data = tableData.map((item: any) => ([
     item.serialNo,
     item.grievanceNumber,
+    item.schemeName || '',
+    item.description || '',
+    item.translatedDesc || '',
+    item.createdOn ? new Date(item.createdOn).toLocaleDateString('en-GB') : '',
     item.status === 'U' ? 'Under Process' :
     item.status === 'C' ? 'Completed' : item.status,
-    item.ministryName || '',
-    item.schemeName || '',
-    item.createdOn ? new Date(item.createdOn).toLocaleDateString('en-GB') : ''
+
   ]));
 
   // 🔹 Auto Table

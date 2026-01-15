@@ -191,11 +191,14 @@ export class LoginComponent implements OnInit {
     this.adminForm.get('captcha')?.reset();
     this.pdForm.get('captcha')?.reset();
   }
+
+  
   generateCaptcha() {
     this.masterService.generateCaptcha().subscribe((response: any) => {
       console.log(response, "response captcha");
      this.getCaptchadata = response.data
       this.captcha = this.getCaptchadata.captcha
+      this.captchaCode = this.getCaptchadata.captchaCode
       sessionStorage.setItem('sessionId1', response.data.sessionId);
       this.generateImage(this.captcha)
     });
@@ -211,6 +214,25 @@ export class LoginComponent implements OnInit {
       imageContainer.innerHTML = imgHtml;
     }
   }
+speakCaptcha() {
+  if (!this.captchaCode) {
+    return;
+  }
+
+  // Stop previous speech (important)
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(
+    this.captchaCode.split('').join(' ')
+  );
+
+  utterance.lang = 'en-IN';  
+  utterance.rate = 0.6;      
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  window.speechSynthesis.speak(utterance);
+}
 
 
   // user type change
@@ -463,9 +485,9 @@ verifyOtp() {
       this.mobileService.updatelogindata(response);
 
       this.otpValue = '';
-      this.citizenForm.reset();
       this.dialog.closeAll();
       this.router.navigate(['/layout/citizen']);
+      //  this.citizenForm.reset();
 
       this.toastr.success('Login successful');
     },

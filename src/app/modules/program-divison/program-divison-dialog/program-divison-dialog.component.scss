@@ -222,6 +222,7 @@ background: #f1f7ff;
     box-shadow: none;
     border: 1px solid #9dd2ff;
     border-radius: 12px;
+    width: 100%;
 }
 .citizen-reply .send span{
   font-size: 12px;
@@ -349,4 +350,11 @@ font-size: 10px;
     min-width: 187px;
     word-wrap: break-word;
     white-space: normal;
+}
+
+.comment-area{
+  display: flex;
+      align-items: center;
+    margin-top: 10px;
+    justify-content: space-between;
 }

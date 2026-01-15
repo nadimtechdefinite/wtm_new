@@ -214,6 +214,25 @@ export class GravianceRegisterComponent implements OnInit {
     }
   }
 
+  speakCaptcha() {
+  if (!this.captchaCode) {
+    return;
+  }
+
+  // Stop previous speech (important)
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(
+    this.captchaCode.split('').join(' ')
+  );
+
+  utterance.lang = 'en-IN';  
+  utterance.rate = 0.6;      
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  window.speechSynthesis.speak(utterance);
+}
 
   onStateChange(event: any) {
     this.stateCode = event.value;

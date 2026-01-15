@@ -46,7 +46,7 @@ export class GrievanceListAdminComponent {
     { column: 'schemeName', header: 'Scheme/Division' },
     { column: 'address', header: 'Address', type: 'address', width: '15%' },
     { column: 'description', header: 'Description (Source language)', width: '30%' },
-    { column: 'translatedDesc', header: 'Transcript (In English)', width: '20%' },
+    { column: 'translatedDesc', header: 'Translated Transcript', width: '20%' },
     { column: 'createdOn', header: 'Date', type: 'date', width: '10%' },
     { column: 'status', type: 'status', header: 'Status', width: '10%' },
     { column: 'action', header: 'Action', type: 'action' }
@@ -181,7 +181,7 @@ exportToExcel() {
 
   // 🔹 Excel ke liye clean data banao
   const exportData = tableData.map((item: any) => ({
-    'S.No': item.serialNo,
+    'S.No': item.SerialNo,
     'Grievance No': item.grievanceNumber,
     'Address': item.ministryName,
     'Scheme/Division': item.schemeName,
@@ -291,33 +291,44 @@ exportToPdf() {
 
   const doc = new jsPDF('l', 'mm', 'a4'); // landscape
 
+    const topMargin = 20;
   // 🔹 Title
   doc.setFontSize(14);
-  doc.text('Admin/PD Grievance List', 14, 15);
+  doc.text('Write To Rural Development Minister', 110, 13);
+  doc.setFontSize(12);
+  doc.text('Admin/PD Grievance List', 14, topMargin);
+
 
   // 🔹 Table Header
   const headers = [[
     'S.No',
-    'Grievance No',
-    'Status',
-    'Ministry',
-    'Scheme',
+    'Grievance Id',
+    'Scheme/Division',
+    'Address',
     'Description (Source language)',
-    'Transcripte (In English)',
-    'Date'
+    'Translated Transcript',
+    'Date',
+    'Status',
   ]];
 
   // 🔹 Table Body
   const data = tableData.map((item: any) => ([
-    item.serialNo,
+    item.SerialNo,
     item.grievanceNumber,
-    item.status === 'U' ? 'Under Process' :
-    item.status === 'C' ? 'Completed' : item.status,
-    item.ministryName || '',
     item.schemeName || '',
+    [
+    item.stateName,
+    item.districtName,
+    item.blockName,
+    item.panchayatName,
+    item.villageName,
+    item.pinCode
+  ].filter(Boolean).join(', '),
     item.description || '',
     item.translatedDesc || '',
-    item.createdOn ? new Date(item.createdOn).toLocaleDateString('en-GB') : ''
+    item.createdOn ? new Date(item.createdOn).toLocaleDateString('en-GB') : '',
+    item.status === 'U' ? 'Under Process' :
+    item.status === 'C' ? 'Completed' : item.status,
   ]));
 
   // 🔹 Auto Table

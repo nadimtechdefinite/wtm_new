@@ -179,12 +179,15 @@
                                 class="captcha-box mat-elevation-z1 d-flex align-items-center justify-content-center">
 
                             </div>
+                            <div class="captcha-refresh-button d-flex">
+                                        <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
+                                         <i class="bi bi-volume-up-fill"></i>
+                                          </a>
+                                        <a mat-icon-button (click)="reload()">
+                                            <mat-icon>refresh</mat-icon>
+                                        </a>
+                                    </div>
 
-                            <div class="captcha-refresh-button">
-                                <button mat-icon-button (click)="reload()">
-                                    <mat-icon>refresh</mat-icon>
-                                </button>
-                            </div>
                             <mat-form-field appearance="outline" class="flex-grow-1">
                                 <mat-label>Enter Captcha</mat-label>
                                 <input matInput type="text" formControlName="captcha" maxlength="6">
