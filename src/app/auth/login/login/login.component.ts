@@ -387,43 +387,102 @@ resendOtp() {
   //   })
   // }
 
+// verifyOtp() {
+
+//   if (!this.otpValue || this.otpValue.length < 4) {
+//     this.toastr.error("Please enter valid OTP");
+//     return;
+//   }
+
+//   const json = {
+//     mobileNo: this.citizenForm.get('mobile')?.value,
+//     otp: this.otpValue
+//   };
+
+//   this.masterService.verifyOtp(json).subscribe((response: any) => {
+//     if (response.messageCode === 1) {
+//        this.messageResp = response.data;
+//       sessionStorage.setItem('userInfo', JSON.stringify(response.data));
+
+//       this.masterService.isLoggingIn = true;
+
+//       this.masterService
+//         .saveAuditLog('LOGIN', '/login')
+//         .subscribe({
+//           complete: () => {
+//             this.masterService.isLoggingIn = false;
+//           }
+//         });
+//       const mobile = this.citizenForm.get('mobile')?.value
+//       this.mobileService.updateMobile(mobile)
+//       this.mobileService.updatelogindata(response)
+//       this.otpValue = ''
+//       this.router.navigate(['/layout/citizen']);
+//       this.dialog.closeAll();
+//       this.toastr.success("Login successful");
+//       this.citizenForm.reset()
+//     }
+//   });
+// }
+
+
 verifyOtp() {
 
   if (!this.otpValue || this.otpValue.length < 4) {
-    this.toastr.error("Please enter valid OTP");
+    this.toastr.error('Please enter valid OTP');
     return;
   }
 
-  const json = {
+  const payload = {
     mobileNo: this.citizenForm.get('mobile')?.value,
     otp: this.otpValue
   };
 
-  this.masterService.verifyOtp(json).subscribe((response: any) => {
-    if (response.messageCode === 1) {
-       this.messageResp = response.data;
+  this.masterService.verifyOtp(payload).subscribe({
+    next: (response: any) => {
+
+      if (response.messageCode !== 1) {
+        this.toastr.error(response.message || 'Invalid OTP');
+        return;
+      }
+
+      // ✅ SUCCESS FLOW
+      this.messageResp = response.data;
       sessionStorage.setItem('userInfo', JSON.stringify(response.data));
 
       this.masterService.isLoggingIn = true;
 
-      this.masterService
-        .saveAuditLog('LOGIN', '/login')
-        .subscribe({
-          complete: () => {
-            this.masterService.isLoggingIn = false;
-          }
-        });
-      const mobile = this.citizenForm.get('mobile')?.value
-      this.mobileService.updateMobile(mobile)
-      this.mobileService.updatelogindata(response)
-      this.citizenForm.reset()
-      this.otpValue = ''
-      this.router.navigate(['/layout/citizen']);
+      this.masterService.saveAuditLog('LOGIN', '/login').subscribe({
+        complete: () => {
+          this.masterService.isLoggingIn = false;
+        }
+      });
+
+      const mobile = this.citizenForm.get('mobile')?.value;
+      this.mobileService.updateMobile(mobile);
+      this.mobileService.updatelogindata(response);
+
+      this.otpValue = '';
+      this.citizenForm.reset();
       this.dialog.closeAll();
-      this.toastr.success("Login successful");
+      this.router.navigate(['/layout/citizen']);
+
+      this.toastr.success('Login successful');
+    },
+
+    error: (err) => {
+      console.error('OTP Verify Error:', err);
+
+      // ❌ API / Network / Server error
+      if (err?.error?.message) {
+        this.toastr.error(err.error.message);
+      } else {
+        this.toastr.error('Something went wrong. Please try again');
+      }
     }
   });
 }
+
 
 
 

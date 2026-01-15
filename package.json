@@ -8,7 +8,7 @@
     "start:prod": "ng serve --host 0.0.0.0 --configuration production",
     "build": "ng build",
     "build:dev": "ng build --configuration development",
-    "build:prod": "ng build --configuration production",
+    "build:prod": "ng build --configuration production --optimization=true",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

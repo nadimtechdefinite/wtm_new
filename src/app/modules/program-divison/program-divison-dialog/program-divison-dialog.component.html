@@ -204,39 +204,6 @@
                         <strong> Action taken by Admin / Program Division (PD)</strong>
                     </div>
 
-                    <!-- Chat Body -->
-                    <!-- <div class="chat-body chat-body-scroll" *ngIf="commentsAttachments?.length > 0; else noMessages"
-                    [style.min-height]="commentsAttachments?.length > 1 ? '250px' : 'auto'"
-                    [style.overflowY]="commentsAttachments?.length > 1 ? 'auto' : 'hidden'">
-
-                    <div class="chat-message" *ngFor="let item of commentsAttachments" [ngClass]="{
-                        'chat-right': item.commentsBy === 'ADMIN' || item.commentsBy === 'Admin',
-                        'chat-left': item.commentsBy !== 'ADMIN' || item.commentsBy !== 'Admin'
-                    }">
-
-                        <div class="message-bubble">
-                            <div class="sender-name">
-                                <div class="send"
-                                    [ngStyle]="{ color: item.commentsBy?.toUpperCase() === 'ADMIN' ? 'green' : 'brown' }">
-                                    {{ item.commentsBy
-                                    }}</div>
-                                <div class="message-footer">
-                                    <small>
-                                        {{ item.createdOn | date:'dd MMM yyyy, hh:mm a' }}
-                                    </small>
-                                </div>
-                            </div>
-                            <p class="mb-1">{{ item.comments }}</p>
-
-                            <a *ngIf="item.fileName !== 'No File Attached'" href="javascript:void(0)" class="file-link">
-                                <div class="pdfIcon" (click)="openAttachment(item.fileName)">
-                                    <i class="bi bi-download"></i>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                </div> -->
                     <div class="chat-body chat-body-scroll" *ngIf="commentsAttachments?.length > 0; else noMessages">
 
                         <div class="chat-message" *ngFor="let item of commentsAttachments" [ngClass]="{
