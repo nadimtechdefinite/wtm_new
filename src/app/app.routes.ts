@@ -3,6 +3,7 @@ import { authRoutes } from './auth/auth.routes';
 import { LayoutComponent } from './modules/layout-wrapper/layout/layout.component';
 import { WebsiteWrapperComponent } from './core/components/website-wrapper/website-wrapper.component';
 import { AuthGuard } from './auth/auth.gaurds';
+import { KeyboardSettingComponent } from './keyboard-setting/keyboard-setting.component';
 
 export const routes: Routes = [
   // Public pages + auth pages (WebsiteWrapperComponent)
@@ -59,5 +60,7 @@ export const routes: Routes = [
     }
   ]
 },
+
+{path:'keyboard-setting', component:KeyboardSettingComponent},
  { path: '**', redirectTo: '' }
 ];

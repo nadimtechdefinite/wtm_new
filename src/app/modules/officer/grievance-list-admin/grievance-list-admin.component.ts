@@ -15,6 +15,9 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { NOTO_SANS } from '../../../../assets/fonts/noto-sans.base64';
+import { NOTO_SANS_TAMIL } from '../../../../assets/fonts/NotoSansTamil-Regular.base64';
+import { GUJARATI } from '../../../../assets/fonts/noto-sans.gujarati.base64';
 
 @Component({
   selector: 'app-grievance-list-admin',
@@ -290,6 +293,17 @@ exportToPdf() {
   }
 
   const doc = new jsPDF('l', 'mm', 'a4'); // landscape
+doc.addFileToVFS('NotoSans-Regular.ttf', NOTO_SANS);
+doc.addFont('NotoSans-Regular.ttf', 'NotoSans', 'normal');
+doc.setFont('NotoSans');
+
+// Tamil
+doc.addFileToVFS('NotoSansTamil-Regular.ttf', NOTO_SANS_TAMIL);
+doc.addFont('NotoSansTamil-Regular.ttf', 'NotoSansTamil', 'normal');
+
+// Tamil
+doc.addFileToVFS('NotoSansGujarati-Regular.ttf', GUJARATI);
+doc.addFont('NotoSansGujarati-Regular.ttf', 'NotoSansGujarati', 'normal');
 
     const topMargin = 20;
   // 🔹 Title
@@ -341,6 +355,11 @@ exportToPdf() {
       fontSize: 9,
       cellPadding: 3
     },
+     didParseCell: (hookData) => {
+    const cellText = String(hookData.cell.text || '');
+    const font = this.detectFont(cellText);
+    hookData.cell.styles.font = font;
+  },
     headStyles: {
       fillColor: [22, 92, 173] // blue header
     }
@@ -349,6 +368,15 @@ exportToPdf() {
   // 🔹 Download
   doc.save(`Admin/PD_Grievance_List_${Date.now()}.pdf`);
 }
+
+ detectFont(text: string): string {
+  if (/[\u0B80-\u0BFF]/.test(text)) return 'NotoSansTamil';     // Tamil
+  if (/[\u0900-\u097F]/.test(text)) return 'NotoSans';      // Hindi
+  if (/[\u0A80-\u0AFF]/.test(text)) return 'NotoSansGujarati';  // Gujarati
+  if (/[\u0980-\u09FF]/.test(text)) return 'NotoSansBengali';   // Bengali
+  return 'NotoSans';                                           // English
+}
+
 
 
 }

@@ -43,7 +43,7 @@
         </div>
         <div class="mat-elevation-z8 table-responsive tbl "
         style="border: 1px solid #dddddd !important; box-shadow: none !important;
-    border-radius: 10px !important;">
+    border-radius: 10px !important;" >
             <table mat-table [dataSource]="admindataSource" class="mat-elevation-z1">
                 <ng-container *ngFor="let col of columns" [matColumnDef]="col.column">
                     <th mat-header-cell *matHeaderCellDef> {{ col.header }} </th>

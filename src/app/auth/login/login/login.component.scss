@@ -12,16 +12,19 @@ button[mat-icon-button] {
     align-items: center;
     justify-content: center;
 }
-
-.captcha-refresh-button button {
-    background: linear-gradient(45deg, #3dd5ff, #4b70ff);
-    ;
+.captcha-refresh-button a {
+       background: linear-gradient(45deg, #3dd5ff, #4b70ff);
     border-radius: 5px;
     height: 55px !important;
-    margin-right: 10px;
+    margin-right: 5px;
     border: 1px solid #68a5ff !important;
-
+    color: #fff;
+    width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
 
 .captcha-refresh-button .mat-icon {
     color: #ffffff;
