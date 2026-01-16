@@ -4,6 +4,7 @@ import { LayoutComponent } from './modules/layout-wrapper/layout/layout.componen
 import { WebsiteWrapperComponent } from './core/components/website-wrapper/website-wrapper.component';
 import { AuthGuard } from './auth/auth.gaurds';
 import { KeyboardSettingComponent } from './keyboard-setting/keyboard-setting.component';
+import { SitemapComponent } from './sitemap/sitemap.component';
 
 export const routes: Routes = [
   // Public pages + auth pages (WebsiteWrapperComponent)
@@ -62,5 +63,6 @@ export const routes: Routes = [
 },
 
 {path:'keyboard-setting', component:KeyboardSettingComponent},
+{path:'sitemap', component:SitemapComponent},
  { path: '**', redirectTo: '' }
 ];
