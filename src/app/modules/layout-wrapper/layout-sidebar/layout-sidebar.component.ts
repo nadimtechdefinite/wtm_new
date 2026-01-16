@@ -134,7 +134,7 @@ logOut() {
       complete: () => {
         sessionStorage.clear();
         this.masterService.isLoggingOut = false;
-        this.router.navigate(['/login']);
+        this.router.navigate(['/home']);
       }
     });
 }
