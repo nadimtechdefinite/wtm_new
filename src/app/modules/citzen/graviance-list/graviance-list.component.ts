@@ -300,4 +300,5 @@ exportToPdf() {
   doc.save(`Citizen_Grievance_List_${Date.now()}.pdf`);
 }
 
+
 }
