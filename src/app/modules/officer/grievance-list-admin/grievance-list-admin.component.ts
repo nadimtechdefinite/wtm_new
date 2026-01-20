@@ -207,9 +207,16 @@ applyFilterq
     const exportData = tableData.map((item: any) => ({
       'S.No': item.SerialNo,
       'Grievance No': item.grievanceNumber,
-      'Address': item.ministryName,
+      'Address': [
+        item.stateName,
+        item.districtName,
+        item.blockName,
+        item.panchayatName,
+        item.villageName,
+        item.pinCode
+      ].filter(Boolean).join(', '),
       'Scheme/Division': item.schemeName,
-      'Description': item.stateName,
+      'Description': item.description,
       "transitioned Desc": item.translatedDesc,
       'Created Date': item.createdOn ? new Date(item.createdOn).toLocaleDateString() : '',
       'Status': item.status === 'U' ? 'Under Process' :

@@ -29,7 +29,7 @@
 }
 
 .logo-item img {
-  height: 60px;
+  height: 50px;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
@@ -47,3 +47,18 @@
     transform: translateX(-50%);
   }
 }
+.sortlink ul{
+  display: flex;
+    list-style: none;
+    justify-content: center;
+    align-items: center;
+    margin: 0px;
+    padding: 0px;
+    color: #fff;
+    cursor: pointer;
+    background-color: #346eb5;
+}
+.sortlink ul li{font-size: 12px;     
+  padding: 0px 10px;}
+
+  .footer-logo{height: 40px !important;}

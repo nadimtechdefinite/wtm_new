@@ -168,7 +168,7 @@
 
           <td mat-cell *matCellDef="let element">
             <!-- If file exists -->
-            <ng-container *ngIf="element.fileName; else noPdf">
+            <ng-container *ngIf="element.fileName && element.fileName !== 'No File Attached'; else noPdf">
               <a href="javascript:void(0)" title="{{ element.fileName }}" (click)="openAttachment(element.fileName)"
                 matTooltip="View File">
                 <i class="bi bi-download pdfIcon"></i>
@@ -177,7 +177,7 @@
 
             <!-- Else part -->
             <ng-template #noPdf>
-              <span>No PDF</span>
+              <span>No File Attached</span>
             </ng-template>
           </td>
         </ng-container>

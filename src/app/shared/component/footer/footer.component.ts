@@ -1,17 +1,27 @@
 import { AfterViewInit, Component, ElementRef, HostListener } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { SortlinkDialogComponent } from '../sortlink-dialog/sortlink-dialog.component';
+import { A11yModule } from "@angular/cdk/a11y";
 declare var $: any;
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [],
+  imports: [MatDialogModule, A11yModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements AfterViewInit {
-constructor(private eRef:ElementRef){}
+
   title = 'wtm';
   loginDropdownOpen = false;
+
+  todayDate: string = '';
+
+constructor(private eRef:ElementRef, private dialog:MatDialog){}
+
   ngOnInit(): void {
+      this.todayDate = new Date().toLocaleDateString('en-GB');
+
     // Bhashini translation plugin
     const script = document.createElement('script');
     script.src = 'https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js';
@@ -71,4 +81,20 @@ constructor(private eRef:ElementRef){}
     //   ]
     // });
   }
+
+
+
+
+  openDialog(type: string, title:any) {
+    debugger
+  this.dialog.open(SortlinkDialogComponent, {
+    width: '600px',
+    data: {
+      type:type,
+      title:title
+    },
+  });
 }
+
+}
+

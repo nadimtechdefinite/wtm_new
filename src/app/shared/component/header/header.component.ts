@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatTooltip } from "@angular/material/tooltip";
 import { MatMenuModule } from '@angular/material/menu';
@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(private eRef: ElementRef) { }
 
   ngOnInit() {
     /** -----------------------------
@@ -38,8 +38,17 @@ export class HeaderComponent implements OnInit {
 showFontMenu = false;
 fontSize = 100; // base %
 
-toggleFontMenu() {
+toggleFontMenu(event: Event) {
+   event.stopPropagation();
   this.showFontMenu = !this.showFontMenu;
+
+}
+
+@HostListener('document:click')
+closeOnOutsideClick() {
+  if (this.showFontMenu) {
+    this.showFontMenu = false;
+  }
 }
 
 fontIncrease() {
@@ -64,4 +73,16 @@ fontNormal() {
 applyFontSize() {
   document.documentElement.style.fontSize = this.fontSize + '%';
 }
+
+
+  confirmRedirect(url: string) {
+    const confirmMsg = `You will be redirected to an external website.
+The Ministry of Rural Development will not be responsible for the content available on this website.
+Are you sure you want to proceed?`;
+    if (confirm(confirmMsg)) {
+      window.open(url, '_blank');
+    }
+  }
+
+
 }

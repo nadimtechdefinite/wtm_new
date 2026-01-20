@@ -156,11 +156,10 @@ export class GravianceListComponent {
     // 🔹 Data rows
     const exportData = tableData.map((item: any) => ({
       'S.No': item.serialNo,
-      'Grievance No': item.grievanceNumber,
-      'Ministry': item.ministryName,
+      'Grievance ID': item.grievanceNumber,
       'Scheme/Division': item.schemeName,
-      'Description': item.description,
-      'Translated Desc': item.translatedDesc,
+      'Description (Source language)': item.description,
+      'Translated Transcript': item.translatedDesc,
       'Created Date': item.createdOn
         ? new Date(item.createdOn).toLocaleDateString()
         : '',
@@ -332,6 +331,5 @@ export class GravianceListComponent {
     // 🔹 Download
     doc.save(`Citizen_Grievance_List_${Date.now()}.pdf`);
   }
-
 
 }

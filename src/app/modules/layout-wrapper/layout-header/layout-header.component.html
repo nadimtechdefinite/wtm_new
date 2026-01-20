@@ -20,15 +20,30 @@
   </div>
   <div class="right-side">
         <div class="bhashini-plugin-container"></div>
+        
     <!-- <span class="dont-translate language-badge">  {{ name ? name : 'English' }}</span> -->
     <div class="profile">
-      <button class="logout-btn" (click)="logOut()" matTooltip="Log Out" title="Log Out">
-        🔒
+      <button class="logout-btn" title="Log Out" [matMenuTriggerFor]="socialMenu">
+         <img src="/assets/images/profile.png" width="25px">
         <span class="profile-name">
           {{ displayName }}
         </span>
       </button>
+      <mat-menu #socialMenu="matMenu" yPosition="below" xPosition="after">
+        <button mat-menu-item class="logout-item p-3"  (click)="logOut()">
+          <i class="bi bi-box-arrow-right"></i> log out
+        </button>
+
+        <button mat-menu-item class="logout-item p-3"  >
+          <i class="bi bi-person-lines-fill"></i> Profile
+        </button>
+
+         <button mat-menu-item class="logout-item p-3"  >
+          <i class="bi bi-key"></i> Forgot Password
+        </button>
+      </mat-menu>
     </div>
 
+    
   </div>
 </div>

@@ -22,16 +22,16 @@
                         <img src="../assets/images/smc.svg" alt="Skip to main content" height="24" />
                     </a>
                 </li>
-                <!-- <li class="nav-item skip-main"><a class="nav-link p-0 skip-btn"  role="link" (click)="toggleFontMenu()" title="accessibility">
+                 <li class="nav-item skip-main"><a class="nav-link p-0 skip-btn"   role="link" (click)="toggleFontMenu($event)" title="accessibility">
                         <img src="../assets/images/srg.svg" alt="accessibility" height="24" />
                     </a>
 
-                     <div class="font-menu" *ngIf="showFontMenu">
+                     <div class="font-menu" *ngIf="showFontMenu" (click)="$event.stopPropagation()">
                     <button (click)="fontIncrease()">A+</button>
                     <button (click)="fontNormal()">A</button>
                     <button (click)="fontDecrease()">A-</button>
                 </div>
-                </li> -->
+                </li>
 
                 
                 <li class="nav-item skip-main social-menu">

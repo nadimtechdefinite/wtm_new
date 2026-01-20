@@ -76,24 +76,7 @@ button[mat-icon-button] {
     transform: scale(0.98);
 }
 
-.webline {
-    font-size: 25px !important;
-    position: relative;
-    font-weight: 500;
-    letter-spacing: 1px;
-    display: inline-block;
-    color: #1b79d9;
-    margin-bottom: 20px;
-}
 
-.webline::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -11px;
-    width: 100%;
-    border-bottom: 1px dotted #6a7b95;
-}
 
 #image.captcha-box {
     width: 200px;
@@ -288,4 +271,28 @@ mat-radio-button {
 .captcha-img {
   width: 120px;
   height: 40px;
+}
+
+.signInTitle{box-shadow: inset 0 0 1px 1px hsla(0,0%,100%,.9),0 20px 27px 0 rgba(0,0,0,.05)!important;
+background: #fff;
+padding: 30px; border-radius: 15px; margin-top: -60px; margin-bottom: 20px;}
+
+.webline {
+    font-size: 25px !important;
+    position: relative;
+    font-weight: 500;
+    letter-spacing: 1px;
+    display: inline-block;
+    color: #1560d1;
+    margin-bottom: 20px;
+
+}
+
+.webline::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -11px;
+    width: 100%;
+    border-bottom: 1px dotted #6a7b95;
 }

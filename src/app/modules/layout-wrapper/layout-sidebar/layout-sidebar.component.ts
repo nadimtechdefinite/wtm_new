@@ -64,7 +64,7 @@ export class LayoutSidebarComponent implements OnInit {
   // ✅ Empty arrays future ke liye
   adminLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/admin/dashboard', icon: 'fa fa-home', color: '#ff5722' },
-    { label: 'Review/Update Status', routerLink: '/layout/admin/admin-grievance-list', icon: 'fa fa-hand-holding-heart', color: '#e91e63' },
+    { label: 'Review/Update Status', routerLink: '/layout/admin/admin-grievance-list', icon: 'fas fa-list', color: '#e91e63' },
     {label: 'Logout',icon: 'fa fa-sign-out-alt',color: '#f44336',isLogout: true
     }
   ];

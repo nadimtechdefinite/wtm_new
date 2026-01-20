@@ -65,12 +65,15 @@ body {
 .btn.login-btn {
   background: linear-gradient(45deg, var(--accent-a), #4b70ff);
   color: #fff;
-  border-radius: 28px;
-  padding: .45rem 1.4rem;
-  box-shadow: 0 6px 18px rgba(75, 112, 255, .12);
+    border-radius: 30px;
+    padding: 0.6rem 1.6rem;
+    box-shadow: none;
+    border: none;
+    transition: all 0.3s ease;
 }
 .btn.login-btn:hover {
   transform: translateY(-2px);
+  color: #fff;
   background: linear-gradient(45deg, #ffb300, #ff6f00)
 }
 /* Hero area */

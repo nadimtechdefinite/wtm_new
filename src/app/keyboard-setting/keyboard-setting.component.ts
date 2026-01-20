@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { LayoutFooterComponent } from "../modules/layout-wrapper/layout-footer/layout-footer.component";
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
@@ -33,8 +33,19 @@ export class KeyboardSettingComponent implements OnInit {
 showFontMenu = false;
 fontSize = 100; // base %
 
-toggleFontMenu() {
+
+
+toggleFontMenu(event: Event) {
+   event.stopPropagation();
   this.showFontMenu = !this.showFontMenu;
+
+}
+
+@HostListener('document:click')
+closeOnOutsideClick() {
+  if (this.showFontMenu) {
+    this.showFontMenu = false;
+  }
 }
 
 fontIncrease() {
