@@ -176,7 +176,7 @@
 
                     <td mat-cell *matCellDef="let element">
                         <!-- If file exists -->
-                        <ng-container *ngIf="element.fileName; else noPdf">
+                        <ng-container *ngIf="element.fileName && element.fileName !== 'No File Attached'; else noPdf">
                             <a href="javascript:void(0)" (click)="openAttachment(element.fileName)" download
                                 title="{{ element.fileName }}" matTooltip="View File">
                                 <i class="bi bi-download pdfIcon"></i>
@@ -185,7 +185,7 @@
 
                         <!-- Else part -->
                         <ng-template #noPdf>
-                            <span>No PDF</span>
+                            <span>No File Attached</span>
                         </ng-template>
                     </td>
                 </ng-container>
@@ -233,7 +233,7 @@
                                 <p class="mb-1">{{ item.comments }}</p>
 
                                 <!-- File -->
-                                <a *ngIf="item.fileName !== 'No File Attached'" href="javascript:void(0)">
+                                <a *ngIf="item.fileName !== 'No File Attached'" href="javascript:void(0)" matTooltip="view file">
                                     <div class="pdfIcon" (click)="openAttachment(item.fileName)">
                                         <i class="bi bi-download"></i>
                                     </div>

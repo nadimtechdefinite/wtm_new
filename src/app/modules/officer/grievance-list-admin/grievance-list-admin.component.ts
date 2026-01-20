@@ -78,7 +78,7 @@ export class GrievanceListAdminComponent {
     private mobileService: MobileService,
     private masterService: masterService,
     private errorHandler: ErrorHandlerService,
-  private route: ActivatedRoute) { }
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.displayedColumns = this.columns.map(col => col.column);
@@ -102,8 +102,8 @@ export class GrievanceListAdminComponent {
       // this.getGrievanceDetailsForAdmin();
       this.pendingCount();
     });
-    if(this.selectedStatus){
-       this.pendingCount();
+    if (this.selectedStatus) {
+      this.pendingCount();
     }
     this.officeStatus();
     this.getGrievanceDetailsForAdmin()
@@ -143,10 +143,10 @@ export class GrievanceListAdminComponent {
             ...item,
             SerialNo: i + 1
           }));
-           this.applyFilterq();
+          this.applyFilterq();
           // this.grievanceList = res.data.grievanceDetails;
           console.log('User List Citizen Details:', this.citzenDetails);
-          const tableData = this.selectedStatus? this.filteredList: this.GrievanceContent;
+          const tableData = this.selectedStatus ? this.filteredList : this.GrievanceContent;
           this.admindataSource = new MatTableDataSource(tableData);
           this.admindataSource.paginator = this.paginator;
         }
@@ -157,67 +157,88 @@ export class GrievanceListAdminComponent {
 
   }
 
-filteredList: any[] = [];
-selectedStatus: string | null = null;
-applyFilterq() {
-  if (this.selectedStatus) {
-      if (!this.selectedStatus || this.selectedStatus === 'T') {
-    this.filteredList = [...this.GrievanceContent];
-    return;
-  }
-    this.filteredList = this.GrievanceContent.filter(
-      (g:any) => g.status === this.selectedStatus
-    );
+  filteredList: any[] = [];
+  selectedStatus: string | null = null;
+  // applyFilterq() {
+  //   if (this.selectedStatus) {
+  //     if (!this.selectedStatus || this.selectedStatus === 'T') {
+  //       this.filteredList = [...this.GrievanceContent];
+  //       return;
+  //     }
+  //     this.filteredList = this.GrievanceContent.filter(
+  //       (g: any) => g.status === this.selectedStatus
+  //     );
+  //   } else {
+  //     this.filteredList = this.GrievanceContent;
+  //   }
+  // }
+applyFilterq
+  () {
+  let data: any[] = [];
+
+  if (!this.selectedStatus || this.selectedStatus === 'T') {
+    data = [...this.GrievanceContent];
   } else {
-    this.filteredList = this.GrievanceContent;
-  }
-}
-
-exportToExcel() {
-  // 🔹 Same data jo table me dikh raha hai
-  // const tableData = this.selectedStatus ? this.filteredList : this.grievanceList;
-  const tableData = this.GrievanceContent;
-  if (!tableData || tableData.length === 0) {
-    alert('No data available to export');
-    return;
+    data = this.GrievanceContent.filter(
+      (g: any) => g.status === this.selectedStatus
+    );
   }
 
-  // 🔹 Excel ke liye clean data banao
-  const exportData = tableData.map((item: any) => ({
-    'S.No': item.SerialNo,
-    'Grievance No': item.grievanceNumber,
-    'Address': item.ministryName,
-    'Scheme/Division': item.schemeName,
-    'Description': item.stateName,
-    "transitioned Desc": item.translatedDesc,
-    'Created Date': item.createdOn ? new Date(item.createdOn).toLocaleDateString() : '',
-    'Status': item.status === 'U' ? 'Under Process' :
-              item.status === 'C' ? 'Completed' : item.status,
+  // 🔹 Re-assign SerialNo after filter
+  this.filteredList = data.map((item, index) => ({
+    ...item,
+    SerialNo: index + 1
   }));
 
-  // 🔹 Worksheet & Workbook
-  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
-  const workbook: XLSX.WorkBook = {
-    Sheets: { 'Grievance List': worksheet },
-    SheetNames: ['Grievance List']
-  };
-
-  // 🔹 Excel file generate
-  const excelBuffer: any = XLSX.write(workbook, {
-    bookType: 'xlsx',
-    type: 'array'
-  });
-
-  this.saveExcelFile(excelBuffer, 'Citizen_Grievance_List');
+  // 🔹 Update table datasource also
+  this.admindataSource = new MatTableDataSource(this.filteredList);
+  this.admindataSource.paginator = this.paginator;
 }
 
 
-saveExcelFile(buffer: any, fileName: string) {
-  const data: Blob = new Blob([buffer], {
-    type: 'application/octet-stream'
-  });
-  saveAs(data, `${fileName}_${new Date().getTime()}.xlsx`);
-}
+  exportToExcel() {
+    const tableData = this.GrievanceContent;
+    if (!tableData || tableData.length === 0) {
+      alert('No data available to export');
+      return;
+    }
+
+    // 🔹 Excel ke liye clean data banao
+    const exportData = tableData.map((item: any) => ({
+      'S.No': item.SerialNo,
+      'Grievance No': item.grievanceNumber,
+      'Address': item.ministryName,
+      'Scheme/Division': item.schemeName,
+      'Description': item.stateName,
+      "transitioned Desc": item.translatedDesc,
+      'Created Date': item.createdOn ? new Date(item.createdOn).toLocaleDateString() : '',
+      'Status': item.status === 'U' ? 'Under Process' :
+        item.status === 'C' ? 'Completed' : item.status,
+    }));
+
+    // 🔹 Worksheet & Workbook
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'Grievance List': worksheet },
+      SheetNames: ['Grievance List']
+    };
+
+    // 🔹 Excel file generate
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array'
+    });
+
+    this.saveExcelFile(excelBuffer, 'Citizen_Grievance_List');
+  }
+
+
+  saveExcelFile(buffer: any, fileName: string) {
+    const data: Blob = new Blob([buffer], {
+      type: 'application/octet-stream'
+    });
+    saveAs(data, `${fileName}_${new Date().getTime()}.xlsx`);
+  }
 
   ngAfterViewInit() {
     this.admindataSource.paginator = this.paginator;
@@ -283,99 +304,99 @@ saveExcelFile(buffer: any, fileName: string) {
   }
 
 
-exportToPdf() {
-  // const tableData = this.selectedStatus ? this.filteredList : this.grievanceList;
-  const tableData = this.GrievanceContent;
+  exportToPdf() {
+    // const tableData = this.selectedStatus ? this.filteredList : this.grievanceList;
+    const tableData = this.GrievanceContent;
 
-  if (!tableData || tableData.length === 0) {
-    alert('No data available');
-    return;
-  }
+    if (!tableData || tableData.length === 0) {
+      alert('No data available');
+      return;
+    }
 
-  const doc = new jsPDF('l', 'mm', 'a4'); // landscape
-doc.addFileToVFS('NotoSans-Regular.ttf', NOTO_SANS);
-doc.addFont('NotoSans-Regular.ttf', 'NotoSans', 'normal');
-doc.setFont('NotoSans');
+    const doc = new jsPDF('l', 'mm', 'a4'); // landscape
+    doc.addFileToVFS('NotoSans-Regular.ttf', NOTO_SANS);
+    doc.addFont('NotoSans-Regular.ttf', 'NotoSans', 'normal');
+    doc.setFont('NotoSans');
 
-// Tamil
-doc.addFileToVFS('NotoSansTamil-Regular.ttf', NOTO_SANS_TAMIL);
-doc.addFont('NotoSansTamil-Regular.ttf', 'NotoSansTamil', 'normal');
+    // Tamil
+    doc.addFileToVFS('NotoSansTamil-Regular.ttf', NOTO_SANS_TAMIL);
+    doc.addFont('NotoSansTamil-Regular.ttf', 'NotoSansTamil', 'normal');
 
-// Tamil
-doc.addFileToVFS('NotoSansGujarati-Regular.ttf', GUJARATI);
-doc.addFont('NotoSansGujarati-Regular.ttf', 'NotoSansGujarati', 'normal');
+    // Tamil
+    doc.addFileToVFS('NotoSansGujarati-Regular.ttf', GUJARATI);
+    doc.addFont('NotoSansGujarati-Regular.ttf', 'NotoSansGujarati', 'normal');
 
     const topMargin = 20;
-  // 🔹 Title
-  doc.setFontSize(14);
-  doc.text('Write To Rural Development Minister', 110, 13);
-  doc.setFontSize(12);
-  doc.text('Admin/PD Grievance List', 14, topMargin);
+    // 🔹 Title
+    doc.setFontSize(14);
+    doc.text('Write To Rural Development Minister', 110, 13);
+    doc.setFontSize(12);
+    doc.text('Admin/PD Grievance List', 14, topMargin);
 
 
-  // 🔹 Table Header
-  const headers = [[
-    'S.No',
-    'Grievance Id',
-    'Scheme/Division',
-    'Address',
-    'Description (Source language)',
-    'Translated Transcript',
-    'Date',
-    'Status',
-  ]];
+    // 🔹 Table Header
+    const headers = [[
+      'S.No',
+      'Grievance Id',
+      'Scheme/Division',
+      'Address',
+      'Description (Source language)',
+      'Translated Transcript',
+      'Date',
+      'Status',
+    ]];
 
-  // 🔹 Table Body
-  const data = tableData.map((item: any) => ([
-    item.SerialNo,
-    item.grievanceNumber,
-    item.schemeName || '',
-    [
-    item.stateName,
-    item.districtName,
-    item.blockName,
-    item.panchayatName,
-    item.villageName,
-    item.pinCode
-  ].filter(Boolean).join(', '),
-    item.description || '',
-    item.translatedDesc || '',
-    item.createdOn ? new Date(item.createdOn).toLocaleDateString('en-GB') : '',
-    item.status === 'U' ? 'Under Process' :
-    item.status === 'C' ? 'Completed' : item.status,
-  ]));
+    // 🔹 Table Body
+    const data = tableData.map((item: any) => ([
+      item.SerialNo,
+      item.grievanceNumber,
+      item.schemeName || '',
+      [
+        item.stateName,
+        item.districtName,
+        item.blockName,
+        item.panchayatName,
+        item.villageName,
+        item.pinCode
+      ].filter(Boolean).join(', '),
+      item.description || '',
+      item.translatedDesc || '',
+      item.createdOn ? new Date(item.createdOn).toLocaleDateString('en-GB') : '',
+      item.status === 'U' ? 'Under Process' :
+        item.status === 'C' ? 'Completed' : item.status,
+    ]));
 
-  // 🔹 Auto Table
-  autoTable(doc, {
-    head: headers,
-    body: data,
-    startY: 22,
-    theme: 'grid',
-    styles: {
-      fontSize: 9,
-      cellPadding: 3
-    },
-     didParseCell: (hookData) => {
-    const cellText = String(hookData.cell.text || '');
-    const font = this.detectFont(cellText);
-    hookData.cell.styles.font = font;
-  },
-    headStyles: {
-      fillColor: [22, 92, 173] // blue header
-    }
-  });
+    // 🔹 Auto Table
+    autoTable(doc, {
+      head: headers,
+      body: data,
+      startY: 22,
+      theme: 'grid',
+      styles: {
+        fontSize: 9,
+        cellPadding: 3
+      },
+      didParseCell: (hookData) => {
+        const cellText = String(hookData.cell.text || '');
+        const font = this.detectFont(cellText);
+        hookData.cell.styles.font = font;
+      },
+      headStyles: {
+        fillColor: [22, 92, 173] // blue header
+      }
+    });
 
-  // 🔹 Download
-  doc.save(`Admin/PD_Grievance_List_${Date.now()}.pdf`);
-}
+    // 🔹 Download
+    doc.save(`Admin/PD_Grievance_List_${Date.now()}.pdf`);
+  }
 
- detectFont(text: string): string {
-  if (/[\u0B80-\u0BFF]/.test(text)) return 'NotoSansTamil';     // Tamil
-  if (/[\u0900-\u097F]/.test(text)) return 'NotoSans';      // Hindi
-  if (/[\u0A80-\u0AFF]/.test(text)) return 'NotoSansGujarati';  // Gujarati
-  if (/[\u0980-\u09FF]/.test(text)) return 'NotoSansBengali';   // Bengali
-  return 'NotoSans';                                           // English
-}
+  detectFont(text: string): string {
+    if (/[\u0B80-\u0BFF]/.test(text)) return 'NotoSansTamil';     // Tamil
+    if (/[\u0900-\u097F]/.test(text)) return 'NotoSans';      // Hindi
+    if (/[\u0A80-\u0AFF]/.test(text)) return 'NotoSansGujarati';  // Gujarati
+    if (/[\u0980-\u09FF]/.test(text)) return 'NotoSansBengali';   // Bengali
+    return 'NotoSans';                                           // English
+  }
 
 
 

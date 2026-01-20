@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SitemapComponent } from './sitemap.component';
+import { ScreenReaderComponent } from './screen-reader.component';
 
-describe('SitemapComponent', () => {
-  let component: SitemapComponent;
-  let fixture: ComponentFixture<SitemapComponent>;
+describe('ScreenReaderComponent', () => {
+  let component: ScreenReaderComponent;
+  let fixture: ComponentFixture<ScreenReaderComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SitemapComponent]
+      imports: [ScreenReaderComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SitemapComponent);
+    fixture = TestBed.createComponent(ScreenReaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

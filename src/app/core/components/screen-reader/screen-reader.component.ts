@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
-import { LayoutFooterComponent } from "../modules/layout-wrapper/layout-footer/layout-footer.component";
-import { HeaderComponent } from "../shared/component/header/header.component";
 import { MatTableDataSource } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute  } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { MATERIAL_MODULES } from '../shared/material/material';
+import { MATERIAL_MODULES } from '../../../shared/material/material';
+
+
 
 @Component({
-  selector: 'app-sitemap',
+  selector: 'app-screen-reader',
   standalone: true,
-  imports: [LayoutFooterComponent, HeaderComponent,CommonModule, MATERIAL_MODULES ],
-  templateUrl: './sitemap.component.html',
-  styleUrl: './sitemap.component.scss'
+  imports: [CommonModule, MATERIAL_MODULES ],
+  templateUrl: './screen-reader.component.html',
+  styleUrl: './screen-reader.component.scss'
 })
-export class SitemapComponent {
+export class ScreenReaderComponent {
 
   displayedColumns: string[] = [
     'sno',

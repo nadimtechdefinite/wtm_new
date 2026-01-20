@@ -11,21 +11,56 @@
             </div>
 
         </div>
-        <nav aria-label="Utility">
+         <nav aria-label="Utility">
             <ul class="nav justify-content-lg-end justify-content-center gap-3">
-                <li  class="nav-item" style="z-index: 9999;">
-                    <div  class="bhashini-plugin-container"></div>
+                <li class="nav-item skip-main" style="z-index: 9999;">
+                    <div class="bhashini-plugin-container"></div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link p-0" role="link" title="Skip to main content">
+                <li class="nav-item skip-main">
+                    <a class="nav-link p-0 skip-btn" role="link" title="Skip to main content" href="javascript:void(0)"
+                        (click)="skipToMain()">
                         <img src="../assets/images/smc.svg" alt="Skip to main content" height="24" />
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link p-0" role="link" title="Screen Reader Guide">
-                        <img src="../assets/images/srg.svg" alt="Screen Reader Guide" height="24" /></a> </li>
-                <li class="nav-item"><a class="nav-link p-0" role="link" title="Accessibility Options">
-                        <img src="../assets/images/accessibility.svg" alt="Accessibility Options" height="24" /></a>
+                <!-- <li class="nav-item skip-main"><a class="nav-link p-0 skip-btn"  role="link" (click)="toggleFontMenu()" title="accessibility">
+                        <img src="../assets/images/srg.svg" alt="accessibility" height="24" />
+                    </a>
+
+                     <div class="font-menu" *ngIf="showFontMenu">
+                    <button (click)="fontIncrease()">A+</button>
+                    <button (click)="fontNormal()">A</button>
+                    <button (click)="fontDecrease()">A-</button>
+                </div>
+                </li> -->
+
+                
+                <li class="nav-item skip-main social-menu">
+                    <a class="nav-link p-0 skip-btn" [matMenuTriggerFor]="socialMenu" matTooltip="Social Media" role="link" title="social-media">
+                        <img src="../assets/images/social-media.png" alt="social-media" height="24" />
+                    </a>
+                    <mat-menu #socialMenu="matMenu" yPosition="below" xPosition="after">
+                        <button mat-menu-item class="social-item facebook">
+                            <i class="fab fa-facebook-f me-2"></i> Facebook
+                        </button>
+                        <button mat-menu-item class="social-item twitter">
+                            <i class="fab fa-twitter me-2"></i> Twitter
+                        </button>
+                        <button mat-menu-item class="social-item youtube">
+                            <i class="fab fa-youtube me-2"></i> YouTube
+                        </button>
+                        <button mat-menu-item class="social-item instagram">
+                            <i class="fab fa-instagram me-2"></i> Instagram
+                        </button>
+                    </mat-menu>
                 </li>
+
+                <li class="nav-item skip-main" style="z-index: 99999;">
+                    <a class="nav-link p-0 skip-btn" routerLink="/sitemap" matTooltip="Screen Reader Guide" role="link"
+                        title="Screen Reader Guide">
+                        <img src="../assets/images/accessibility.svg" alt="Screen Reader Guide" />
+                    </a>
+                </li>
+
             </ul>
         </nav>
     </div>

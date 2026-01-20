@@ -242,3 +242,23 @@
     display: none;
 }
 }
+
+.language-badge {
+  background: linear-gradient(135deg, #1f3c88, #3f6ad8) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 18px rgba(63, 106, 216, 0.35) !important;
+    color: white !important;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    border: 1px solid #ffffff;
+    margin-left: 5px;
+}
+
+
+
+.lang-text {
+  white-space: nowrap;
+}
