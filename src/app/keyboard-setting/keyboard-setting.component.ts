@@ -3,11 +3,12 @@ import { LayoutFooterComponent } from "../modules/layout-wrapper/layout-footer/l
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-keyboard-setting',
   standalone: true,
-  imports: [LayoutFooterComponent, MatTooltip, MatMenuModule, CommonModule],
+  imports: [LayoutFooterComponent, MatTooltip, MatMenuModule, CommonModule, RouterLink],
   templateUrl: './keyboard-setting.component.html',
   styleUrl: './keyboard-setting.component.scss'
 })
@@ -70,4 +71,13 @@ fontNormal() {
 applyFontSize() {
   document.documentElement.style.fontSize = this.fontSize + '%';
 }
+
+  confirmRedirect(url: string) {
+    const confirmMsg = `You will be redirected to an external website.
+The Ministry of Rural Development will not be responsible for the content available on this website.
+Are you sure you want to proceed?`;
+    if (confirm(confirmMsg)) {
+      window.open(url, '_blank');
+    }
+  }
 }

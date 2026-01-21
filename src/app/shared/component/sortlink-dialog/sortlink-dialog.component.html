@@ -1,6 +1,4 @@
-<h2 mat-dialog-title style="
-background-color: #c1ddff;
-    color: #1d55a1;">
+<h2 mat-dialog-title style="background-color: #c1ddff; color: #1d55a1;">
     {{ title | titlecase }}
 </h2>
 
@@ -87,21 +85,36 @@ background-color: #c1ddff;
                 belonging to this site must load into a newly opened browser window of the User.</p>
         </div>
 
-        <p *ngSwitchCase="'copyright'">
-            Copyright information content...
-        </p>
+        <div *ngSwitchCase="'copyright'">
+            <p>Material featured on this website may be reproduced free of charge. However, the material has to be reproduced accurately and not to be used in a derogatory manner or in a misleading context. Wherever the material is being published or issued to others, the source must be prominently acknowledged. However, the permission to reproduce this material shall not extend to any material, which is identified as being copyright of a third party. Authorization to reproduce such material must be obtained from the departments/copyright holders concerned.
+<br><br>
+             Extracts of the information in the website may be reviewed, reproduced or translated for research or private study but not for sale or for use in conjunction with commercial purposes. Any use of information in the website should be accompanied by an acknowledgement of MoRD as the source, citing the uniform resource locator (URL) of the article/page. Reproduction or translation of substantial portions of the website, or any use other than for educational or other non-commercial purposes, requires explicit, prior authorization in writing.</p>
+        </div>
 
-        <p *ngSwitchCase="'accessibility'">
-            Accessibility statement content...
-        </p>
+        <div *ngSwitchCase="'accessibility'">
+           <p> We are committed to ensure that the Ministry of Rural Development website is accessible to all users irrespective of device in use, technology or ability. It has been built, with an aim, to provide maximum accessibility and usability to its visitors. As a result this website can be viewed from a variety of devices such as Desktop / Laptop Computers, Web-enabled mobile devices; etc.
+<br><br>
+            We have put in our best efforts to ensure that all information on this website is accessible easily. We also aim to be standards compliant and follow principles of usability and universal design, which should help all visitors of this website.
+<br><br>
+            If you have any problem or suggestion regarding the accessibility of this website, please contact us to enable us to respond in a helpful manner. Do let us know the nature of the problem along with your contact information.</p>
+        </div>
 
-        <p *ngSwitchCase="'disclaimer'">
-            Disclaimer details content...
-        </p>
+        <div *ngSwitchCase="'disclaimer'">
+            <p>This web site is brought to you by the Ministry of Rural Development (MoRD). While surfing through this site you will come across directories and links to Government and Private Organizations. The contents of these sites are not to be construed as a responsibility of or an endorsement by the Authority and are owned by the respective organizations which may be contacted for any further information or suggestion.</p>
+            <span class="sortlink-title">e-Payment Policy</span><br>
+            <p>The information related to financial releases and funds transfer for Write to RD Minister is being sourced from PFMS systems and the information provided on the MoRD website is as per the information received from PFMS as on date and details reported by States.</p>
+         <span class="sortlink-title">Language Translation</span><br>
+         <p>The website has been translated for your convenience using translation software powered by BHASINI.The official text is the English version of the website. Any discrepancies or differences created in the translation are not binding and have no legal effect for compliance or enforcement purposes. If any questions arise related to the accuracy of the information contained in the translated website, refer to the English version of the website which is the official version.</p>
+        </div>
 
-        <p *ngSwitchCase="'services'">
-            Most often used services content...
-        </p>
+        <!-- <div *ngSwitchCase="'services'">
+            <p>List of Write to RD Minister Most Often Used Services</p>
+            <span class="sortlink-title">Online Registration/Application for Pension</span><br>
+            <ul>
+                <li><a href="ledgerHistroy.do?method=intialize" target="_blank">Track Pension Payment Status</a></li>
+            </ul>
+            
+        </div> -->
 
         <p *ngSwitchCase="'help'">
             Help related content...

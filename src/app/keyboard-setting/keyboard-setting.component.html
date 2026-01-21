@@ -11,18 +11,24 @@
             </div>
 
         </div>
-         <nav aria-label="Utility">
+             <nav aria-label="Utility">
             <ul class="nav justify-content-lg-end justify-content-center gap-3">
                 <li class="nav-item skip-main" style="z-index: 9999;">
                     <div class="bhashini-plugin-container"></div>
                 </li>
+                <!-- <li class="nav-item skip-main">
+                    <a class="nav-link p-0 skip-btn" role="link" title="Skip to main content" href="javascript:void(0)"
+                        [routerLink]="'/'">
+                        <i class="bi bi-house-door" style="color: aliceblue; font-size: 24px;"></i>
+                    </a>
+                </li> -->
                 <li class="nav-item skip-main">
                     <a class="nav-link p-0 skip-btn" role="link" title="Skip to main content" href="javascript:void(0)"
                         (click)="skipToMain()">
                         <img src="../assets/images/smc.svg" alt="Skip to main content" height="24" />
                     </a>
                 </li>
-                 <li class="nav-item skip-main"><a class="nav-link p-0 skip-btn"   role="link" (click)="toggleFontMenu($event)" title="accessibility">
+                <li class="nav-item skip-main"><a class="nav-link p-0 skip-btn"   role="link" (click)="toggleFontMenu($event)" title="accessibility">
                         <img src="../assets/images/srg.svg" alt="accessibility" height="24" />
                     </a>
 
@@ -39,16 +45,16 @@
                         <img src="../assets/images/social-media.png" alt="social-media" height="24" />
                     </a>
                     <mat-menu #socialMenu="matMenu" yPosition="below" xPosition="after">
-                        <button mat-menu-item class="social-item facebook">
-                            <i class="fab fa-facebook-f me-2"></i> Facebook
+                        <button mat-menu-item class="social-item facebook" (click)="confirmRedirect('https://www.facebook.com/IndiaRuralDev')">
+                            <i class="fab fa-facebook-f me-2" ></i> Facebook
                         </button>
-                        <button mat-menu-item class="social-item twitter">
+                        <button mat-menu-item class="social-item twitter" (click)="confirmRedirect('https://x.com/mord_goi')">
                             <i class="fab fa-twitter me-2"></i> Twitter
                         </button>
-                        <button mat-menu-item class="social-item youtube">
+                        <button mat-menu-item class="social-item youtube" (click)="confirmRedirect('https://www.youtube.com/channel/UCgZxfCRDCfMjuxe9N61210g?view_as=subscriber')">
                             <i class="fab fa-youtube me-2"></i> YouTube
                         </button>
-                        <button mat-menu-item class="social-item instagram">
+                        <button mat-menu-item class="social-item instagram" (click)="confirmRedirect('https://www.instagram.com/indiaruraldev/')">
                             <i class="fab fa-instagram me-2"></i> Instagram
                         </button>
                     </mat-menu>

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import {  Component, ElementRef, HostListener } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatAccordion, MatExpansionPanel, MatExpansionModule } from "@angular/material/expansion";
-
+declare var bootstrap: any;
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -32,6 +32,18 @@ constructor(private eRef:ElementRef){}
     }
   }
 
-  
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      const carouselElement = document.querySelector('#galleryCarousel');
+      if (carouselElement) {
+        new bootstrap.Carousel(carouselElement, {
+          interval: 3000,
+          ride: 'carousel',
+          pause: false,
+          wrap: true
+        });
+      }
+    }, 0);
+  }
 
 }
