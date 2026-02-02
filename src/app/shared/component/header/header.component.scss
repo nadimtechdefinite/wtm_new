@@ -18,5 +18,13 @@
   justify-content: center;
 }
 
+.navbar-collapse {
+  display: none;
+}
+
+.navbar-collapse.open {
+  display: block;
+}
+
 
 

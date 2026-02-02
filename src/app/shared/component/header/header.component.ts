@@ -84,5 +84,9 @@ Are you sure you want to proceed?`;
     }
   }
 
+isNavOpen = false;
 
+toggleNav() {
+  this.isNavOpen = !this.isNavOpen;
+}
 }

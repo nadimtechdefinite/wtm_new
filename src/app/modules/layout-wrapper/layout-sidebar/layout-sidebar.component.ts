@@ -42,8 +42,8 @@ export class LayoutSidebarComponent implements OnInit {
      private citizenStore: CitizenStoreService,
      private mobileService: MobileService,
      private menuReload: MenuReloadService,
-      private sidebarToggle: SidebarToggleService,
-        private masterService: masterService,) { }
+     private sidebarToggle: SidebarToggleService,
+     private masterService: masterService,) { }
  citizenLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },    
     { label: 'Register Grievance ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },   // Orange
@@ -86,12 +86,12 @@ export class LayoutSidebarComponent implements OnInit {
       } else {
         this.menu = [];
       }
-   if(this.userType === 1 || this.userType === 2){
-   this.selectedRoute = this.router.url || '/layout/admin/dashboard';
-   }else{
-       this.selectedRoute = this.router.url || '/layout/citizen/dashboard';
-   }
-  //  this.selectedRoute = this.router.url || '/layout/citizen/dashboard';
+    if(this.userType === 1 || this.userType === 2){
+    this.selectedRoute = this.router.url || '/layout/admin/dashboard';
+    }else{
+        this.selectedRoute = this.router.url || '/layout/citizen/dashboard';
+    }
+    //  this.selectedRoute = this.router.url || '/layout/citizen/dashboard';
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.selectedRoute = event.urlAfterRedirects;
@@ -99,6 +99,7 @@ export class LayoutSidebarComponent implements OnInit {
       }
     });
   }
+
 expandParentMenu(route: string) {
     this.menu.forEach(item => {
       if (item.children) {
@@ -127,7 +128,6 @@ expandParentMenu(route: string) {
 logOut() {
 
   this.masterService.isLoggingOut = true;
-
   this.masterService
     .saveAuditLog('LOGOUT', '/login')
     .subscribe({
@@ -139,5 +139,10 @@ logOut() {
     });
 }
 
+closeSidebarOnClick() {
+  if (window.innerWidth <= 768) {
+    this.isSidebarOpen = true;
+  }
+}
 
 }

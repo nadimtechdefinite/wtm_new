@@ -87,7 +87,8 @@ constructor(private eRef:ElementRef, private dialog:MatDialog){}
 
   openDialog(type: string, title:any) {
   this.dialog.open(SortlinkDialogComponent, {
-    width: '600px',
+    width: '700px',
+    maxWidth: '90vw',
     data: {
       type:type,
       title:title

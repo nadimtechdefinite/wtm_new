@@ -15,11 +15,12 @@ import { masterService } from '../../../services/master.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
 import { NumberOnlyDirective } from "../../../shared/directives/numberonly.directive";
+import { NoPasteDirective } from '../../../shared/directives/no-paste.directive';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [...MATERIAL_MODULES, FormsModule, ReactiveFormsModule, CommonModule, NumberOnlyDirective, ],
+  imports: [...MATERIAL_MODULES, FormsModule, ReactiveFormsModule, CommonModule, NumberOnlyDirective,NoPasteDirective ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA,],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -55,10 +56,7 @@ export class LoginComponent implements OnInit {
     { value: 'admin', viewValue: 'Admin' },
     { value: 'pd', viewValue: 'PD' },
     // { value: 'state', viewValue: 'State' },
-
-    
   ];
-
   users = [
     { value: 'Admin', viewValue: 'Admin' },
     { value: 'MoRD', viewValue: 'MoRD' },

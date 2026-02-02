@@ -61,12 +61,17 @@
                 </li>
 
                 <li class="nav-item skip-main" style="z-index: 99999;">
-                    <a class="nav-link p-0 skip-btn" routerLink="/sitemap" matTooltip="Screen Reader Guide" role="link"
+                    <a class="nav-link p-0 skip-btn" routerLink="/screen-reader" matTooltip="Screen Reader Guide" role="link"
                         title="Screen Reader Guide">
                         <img src="../assets/images/accessibility.svg" alt="Screen Reader Guide" />
                     </a>
                 </li>
 
+                <li class="nav-item skip-main">
+                    <a class="nav-link p-0 skip-btn" role="link" title="Skip to main content" matTooltip="Sitemap" routerLink="/sitemap">
+                        <i class="bi bi-diagram-3" style="color: aliceblue; font-size: 24px;"></i>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -83,11 +88,11 @@
                 <small class="brand-sub">A Grievance Redressel System For Citizens</small>
             </div>
         </a>
-        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" (click)="toggleNav()"  data-bs-target="#mainNav"
             aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
         </button>
-        <div id="mainNav" class="collapse navbar-collapse">
+        <div id="mainNav" class="collapse navbar-collapse " [class.open]="isNavOpen">
             <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item"><a class="nav-link active" [routerLink]="['/']">Home</a></li>
                 <li class="nav-item"><a class="nav-link" [routerLink]="['/graviance-register']">Citizen Registration</a>
@@ -98,3 +103,5 @@
         </div>
     </div>
 </nav>
+
+

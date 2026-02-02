@@ -13,14 +13,14 @@
   animation-iteration-count: infinite;
 
   animation-play-state: running;
-  animation-delay: 0.1s;          // ✅ KEY FIX
-  animation-fill-mode: both;      // ✅ prevent snap
+  animation-delay: 0.1s; // ✅ KEY FIX
+  animation-fill-mode: both; // ✅ prevent snap
 
   will-change: transform;
 }
 
 .logo-carousel:hover .logo-track {
-  animation-play-state: paused;  // ✅ smooth pause (no reset)
+  animation-play-state: paused; // ✅ smooth pause (no reset)
 }
 
 .logo-item {
@@ -43,22 +43,46 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-50%);
   }
 }
-.sortlink ul{
-  display: flex;
-    list-style: none;
-    justify-content: center;
-    align-items: center;
-    margin: 0px;
-    padding: 0px;
-    color: #fff;
-    cursor: pointer;
-    background-color: #346eb5;
-}
-.sortlink ul li{font-size: 12px;     
-  padding: 0px 10px;}
 
-  .footer-logo{height: 40px !important;}
+.sortlink ul {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  align-items: center;
+  margin: 0px;
+  padding: 0px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #346eb5;
+}
+
+.sortlink ul li {
+  font-size: 12px;
+  padding: 0px 10px;
+  border-right: 1px solid #fff;
+}
+
+.footer-logo {
+  text-align: left;
+}
+
+.footer-logo img {
+  height: 40px !important;
+}
+
+@media (max-width: 500px) {
+  .sortlink ul {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .footer-logo {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+}

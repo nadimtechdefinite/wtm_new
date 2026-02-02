@@ -3,7 +3,7 @@
 </h2>
 
 
-<div mat-dialog-content>
+<div mat-dialog-content class="dialog-wrap">
     <ng-container [ngSwitch]="type">
 
         <div *ngSwitchCase="'terms'">
@@ -24,7 +24,7 @@
         </div>
 
         <div *ngSwitchCase="'privacy'">
-            <p>MoRD Website does not automatically capture any specific personal information from you, (like name, phone
+            <p> MoRD Website does not automatically capture any specific personal information from you, (like name, phone
                 number or e-mail address), that allows us to identify you individually. This website records your visit
                 and logs the following information for statistical purposes, such as Internet protocol (IP) addresses,
                 domain name, server's address; name of the top-level domain from which you access the Internet (for
@@ -86,25 +86,54 @@
         </div>
 
         <div *ngSwitchCase="'copyright'">
-            <p>Material featured on this website may be reproduced free of charge. However, the material has to be reproduced accurately and not to be used in a derogatory manner or in a misleading context. Wherever the material is being published or issued to others, the source must be prominently acknowledged. However, the permission to reproduce this material shall not extend to any material, which is identified as being copyright of a third party. Authorization to reproduce such material must be obtained from the departments/copyright holders concerned.
-<br><br>
-             Extracts of the information in the website may be reviewed, reproduced or translated for research or private study but not for sale or for use in conjunction with commercial purposes. Any use of information in the website should be accompanied by an acknowledgement of MoRD as the source, citing the uniform resource locator (URL) of the article/page. Reproduction or translation of substantial portions of the website, or any use other than for educational or other non-commercial purposes, requires explicit, prior authorization in writing.</p>
+            <p>Material featured on this website may be reproduced free of charge. However, the material has to be
+                reproduced accurately and not to be used in a derogatory manner or in a misleading context. Wherever the
+                material is being published or issued to others, the source must be prominently acknowledged. However,
+                the permission to reproduce this material shall not extend to any material, which is identified as being
+                copyright of a third party. Authorization to reproduce such material must be obtained from the
+                departments/copyright holders concerned.
+                <br><br>
+                Extracts of the information in the website may be reviewed, reproduced or translated for research or
+                private study but not for sale or for use in conjunction with commercial purposes. Any use of
+                information in the website should be accompanied by an acknowledgement of MoRD as the source, citing the
+                uniform resource locator (URL) of the article/page. Reproduction or translation of substantial portions
+                of the website, or any use other than for educational or other non-commercial purposes, requires
+                explicit, prior authorization in writing.
+            </p>
         </div>
 
         <div *ngSwitchCase="'accessibility'">
-           <p> We are committed to ensure that the Ministry of Rural Development website is accessible to all users irrespective of device in use, technology or ability. It has been built, with an aim, to provide maximum accessibility and usability to its visitors. As a result this website can be viewed from a variety of devices such as Desktop / Laptop Computers, Web-enabled mobile devices; etc.
-<br><br>
-            We have put in our best efforts to ensure that all information on this website is accessible easily. We also aim to be standards compliant and follow principles of usability and universal design, which should help all visitors of this website.
-<br><br>
-            If you have any problem or suggestion regarding the accessibility of this website, please contact us to enable us to respond in a helpful manner. Do let us know the nature of the problem along with your contact information.</p>
+            <p> We are committed to ensure that the Ministry of Rural Development website is accessible to all users
+                irrespective of device in use, technology or ability. It has been built, with an aim, to provide maximum
+                accessibility and usability to its visitors. As a result this website can be viewed from a variety of
+                devices such as Desktop / Laptop Computers, Web-enabled mobile devices; etc.
+                <br><br>
+                We have put in our best efforts to ensure that all information on this website is accessible easily. We
+                also aim to be standards compliant and follow principles of usability and universal design, which should
+                help all visitors of this website.
+                <br><br>
+                If you have any problem or suggestion regarding the accessibility of this website, please contact us to
+                enable us to respond in a helpful manner. Do let us know the nature of the problem along with your
+                contact information.
+            </p>
         </div>
 
         <div *ngSwitchCase="'disclaimer'">
-            <p>This web site is brought to you by the Ministry of Rural Development (MoRD). While surfing through this site you will come across directories and links to Government and Private Organizations. The contents of these sites are not to be construed as a responsibility of or an endorsement by the Authority and are owned by the respective organizations which may be contacted for any further information or suggestion.</p>
+            <p>This web site is brought to you by the Ministry of Rural Development (MoRD). While surfing through this
+                site you will come across directories and links to Government and Private Organizations. The contents of
+                these sites are not to be construed as a responsibility of or an endorsement by the Authority and are
+                owned by the respective organizations which may be contacted for any further information or suggestion.
+            </p>
             <span class="sortlink-title">e-Payment Policy</span><br>
-            <p>The information related to financial releases and funds transfer for Write to RD Minister is being sourced from PFMS systems and the information provided on the MoRD website is as per the information received from PFMS as on date and details reported by States.</p>
-         <span class="sortlink-title">Language Translation</span><br>
-         <p>The website has been translated for your convenience using translation software powered by BHASINI.The official text is the English version of the website. Any discrepancies or differences created in the translation are not binding and have no legal effect for compliance or enforcement purposes. If any questions arise related to the accuracy of the information contained in the translated website, refer to the English version of the website which is the official version.</p>
+            <p>The information related to financial releases and funds transfer for Write to RD Minister is being
+                sourced from PFMS systems and the information provided on the MoRD website is as per the information
+                received from PFMS as on date and details reported by States.</p>
+            <span class="sortlink-title">Language Translation</span><br>
+            <p>The website has been translated for your convenience using translation software powered by BHASINI.The
+                official text is the English version of the website. Any discrepancies or differences created in the
+                translation are not binding and have no legal effect for compliance or enforcement purposes. If any
+                questions arise related to the accuracy of the information contained in the translated website, refer to
+                the English version of the website which is the official version.</p>
         </div>
 
         <!-- <div *ngSwitchCase="'services'">
@@ -120,9 +149,103 @@
             Help related content...
         </p>
 
-        <p *ngSwitchCase="'feedback'">
-            Feedback form or text here...
-        </p>
+        <div *ngSwitchCase="'feedback'">
+            <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()" style="margin-top: 20px;">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100" >
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="name">
+                            <mat-error *ngIf="feedbackForm.get('name')?.errors?.['required'] && feedbackForm.get('name')?.errors">
+                                Name is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="email">
+                            <mat-error *ngIf="feedbackForm.get('email')?.errors?.['required'] && feedbackForm.get('email')?.errors">
+                                Enter valid email
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Mobile Number</mat-label>
+                            <input matInput appNumberOnly formControlName="mobile" maxlength="10" minlength="10">
+                        <mat-error *ngIf="(feedbackForm.get('mobile')?.touched) && feedbackForm.get('mobile')?.errors">
+                                    <ng-container *ngIf="feedbackForm.get('mobile')?.errors?.['required']">
+                                    Mobile No is required
+                                    </ng-container>
+                                    <ng-container *ngIf="feedbackForm.get('mobile')?.errors?.['pattern']">
+                                    Mobile number must start with 6, 7, 8, or 9 and be 10 digits
+                                    </ng-container>
+                                </mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Subject</mat-label>
+                            <input matInput formControlName="subject">
+                            <mat-error *ngIf="(feedbackForm.get('subject')?.touched) && feedbackForm.get('subject')?.errors">
+                                Subject is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Feedback</mat-label>
+                    <textarea matInput rows="3" formControlName="message"></textarea>
+                    <mat-error *ngIf="(feedbackForm.get('message')?.touched) && feedbackForm.get('message')?.errors">
+                        Feedback is required
+                    </mat-error>
+                </mat-form-field>
+
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-md-6 col-sm-4 d-flex mb-4 gap-2 justify-content-start align-items-left">
+                        <div  class="captcha-box d-flex align-items-center justify-content-center">
+                            <img 
+                                *ngIf="captchaImageSrc"
+                                [src]="captchaImageSrc"
+                                alt="Captcha"
+                                class="img-fluid"
+                                style="height: 100%; width: 100%; border-radius: 5px;"
+                                />
+                        </div>
+                        <div class="captcha-refresh-button d-flex">
+                            <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
+                                <i class="bi bi-volume-up-fill"></i>
+                            </a>
+                            <a mat-icon-button (click)="reload()">
+                                <mat-icon>refresh</mat-icon>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-4">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Enter Captcha</mat-label>
+                            <input matInput type="text" formControlName="captcha" maxlength="6" autocomplete="off">
+                            <mat-error *ngIf="f['captcha']?.touched && f['captcha']?.invalid">
+                                Captcha is required
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <div class="text-end mt-3" mat-dialog-actions align="end">
+                    <button mat-raised-button color="primary" type="submit" class="btn-glow btn-blue" [disabled]="feedbackForm.invalid">
+                        Submit
+                    </button>
+                    <button mat-button mat-dialog-close class="btn-glow btn-red">Close</button>
+                </div>
+
+            </form>
+        </div>
 
         <p *ngSwitchDefault>
             No content available
@@ -131,6 +254,6 @@
     </ng-container>
 </div>
 
-<div mat-dialog-actions align="end">
+<div mat-dialog-actions align="end" *ngIf="this.type !== 'feedback'">
     <button mat-button mat-dialog-close>Close</button>
 </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponentComponent } from '../shared/alert-dialog.component/alert-dialog.component.component';
+import Swal from 'sweetalert2';
 
 
 @Injectable({
@@ -9,6 +10,18 @@ import { AlertDialogComponentComponent } from '../shared/alert-dialog.component/
 export class AlertService {
 
   constructor(private dialog: MatDialog) {}
+
+  successwithok(message: string, onOk?: () => void) {
+  Swal.fire({
+    icon: 'success',
+    text: message,
+    confirmButtonText: 'OK'
+  }).then((result) => {
+    if (result.isConfirmed && onOk) {
+      onOk();
+    }
+  });
+}
 
   success(message: string, title: string = 'Success'): MatDialogRef<AlertDialogComponentComponent> {
     return this.openDialog(message, title, 'check_circle', 'primary');

@@ -220,7 +220,7 @@
                                         {{ item.commentsBy }}
                                         <span>
                                             <span class="status" [ngClass]="{'completed': item?.status === 'C','pending': item?.status === 'U',}">
-                                                {{ item?.status === 'U' ? 'Under-Process' : item?.status === 'C' ?'Complete' :item?.status }}
+                                                {{ item?.status === 'U' ? 'Under-Process' : item?.status === 'C' ?'Complete' : item?.status === 'T' ? 'Transferred' : item?.status }}
                                             </span>
                                         </span>
                                     </div>

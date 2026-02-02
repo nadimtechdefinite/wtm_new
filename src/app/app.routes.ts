@@ -29,9 +29,15 @@ export const routes: Routes = [
             .then(m => m.GravianceRegisterComponent)
       },
       {
-        path: 'sitemap',
+        path: 'screen-reader',
         loadComponent: () =>
           import('./core/components/screen-reader/screen-reader.component').then(m => m.ScreenReaderComponent)
+      },
+
+      {
+        path: 'sitemap',
+        loadComponent: () =>
+          import('./core/components/sitemap/sitemap.component').then(m => m.SitemapComponent)
       },
       // Spread auth routes here
       ...authRoutes

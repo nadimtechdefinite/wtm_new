@@ -4,59 +4,56 @@
 <section class="dashboard-container">
   <div class="row g-3 mt-4 dord">
     <h5 class="text-center">DoRD Grievance Dashboard</h5>
-    <div class="col-md-6 col-lg-3">
+    <div class="col">
       <div class="card-box" (click)="goToGrievanceList('T')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>
             <div class="card-header">Total Registered</div>
             <div class="card-value">{{ adminPdsummary?.totalRegistered }}</div>
           </div>
-          <!-- <div class="card-icon">{{ c.icon }}</div> -->
         </div>
       </div>
     </div>
-    <div class="col-md-6 col-lg-3">
+    <div class="col">
       <div class="card-box" (click)="goToGrievanceList('C')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>
             <div class="card-header">Completed</div>
             <div class="card-value">{{ adminPdsummary?.completed }}</div>
           </div>
-          <!-- <div class="card-icon">{{ c.icon }}</div> -->
         </div>
       </div>
     </div>
 
-    <div class="col-md-6 col-lg-3">
+    <div class="col">
       <div class="card-box" (click)="goToGrievanceList('U')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>
-            <div class="card-header">Under Process</div>
+            <div class="card-header">{{this.userType === 2 ? 'Under Process/transferred' : 'Under Process'}}</div>
             <div class="card-value">{{ adminPdsummary?.underProgress }}</div>
           </div>
-          <!-- <div class="card-icon">{{ c.icon }}</div> -->
         </div>
       </div>
     </div>
 
-    <div class="col-md-6 col-lg-3">
+    <div class="col" *ngIf="this.userType === 1">
       <div class="card-box" (click)="goToGrievanceList('F')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>
             <div class="card-header">Forwarded</div>
             <div class="card-value">{{ adminPdsummary?.forwarded }}</div>
           </div>
-          <!-- <div class="card-icon">{{ c.icon }}</div> -->
         </div>
       </div>
     </div>
+
   </div>
 </section>
 
 <section class="dashboard-container">
   <div class="row g-3 mt-5 Pending-dord">
     <h5 class="text-center">Pending Grievance</h5>
-    <div class="col-2">
+    <div class="col-6 col-lg-2">
       <div class="card-box" (click)="goToGrievanceList('PENDING_1_WEEK')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>
@@ -67,7 +64,7 @@
         </div>
       </div>
     </div>
-    <div class="col-2">
+    <div class="col-6 col-lg-2">
       <div class="card-box" (click)="goToGrievanceList('PENDING_7_15_DAYS')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>
@@ -79,7 +76,7 @@
       </div>
     </div>
 
-    <div class="col-2">
+    <div class="col-6 col-lg-2">
       <div class="card-box" (click)="goToGrievanceList('PENDING_15_30_DAYS')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>
@@ -91,7 +88,7 @@
       </div>
     </div>
 
-    <div class="col-2">
+    <div class="col-6 col-lg-2">
       <div class="card-box" (click)="goToGrievanceList('PENDING_30_90_DAYS')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>
@@ -103,7 +100,7 @@
       </div>
     </div>
 
-    <div class="col-2">
+    <div class="col-6 col-lg-2">
       <div class="card-box" (click)="goToGrievanceList('PENDING_MORE_THAN_90')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <div>

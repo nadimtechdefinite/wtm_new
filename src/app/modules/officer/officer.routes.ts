@@ -25,7 +25,17 @@ export const ADMIN_ROUTES: Routes = [
             .then(m => m.GrievanceListAdminComponent),
         canActivate: [AuthGuard],
         data: { title: 'Admin Grievance List', role: ['1','2']}
+      },
+
+      {
+        path: 'change-password',
+        loadComponent: () =>
+          import('../officer/change-password/change-password.component')
+            .then(m => m.ChangePasswordComponent),
+        canActivate: [AuthGuard],
+        data: { title: 'Change Password', role: ['1','2']}
       }
+
     ]
   }
 ];

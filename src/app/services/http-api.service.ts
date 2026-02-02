@@ -137,4 +137,15 @@ export class HttpApiService {
       responseType: 'blob',
     });
   }
+
+
+ putApi(uri: string, req: any) {
+  this.httpOptions = {
+    headers: new HttpHeaders({
+      Authorization: 'Bearer ' + sessionStorage.getItem('accessToken'),
+      'Content-Type': 'application/json'
+    }),
+  };
+  return this.http.put(uri, req, this.httpOptions);
+} 
 }

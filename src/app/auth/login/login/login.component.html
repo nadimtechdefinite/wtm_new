@@ -124,7 +124,7 @@
                             </mat-form-field>
                             <mat-form-field appearance="outline" class="w-100 mb-3">
                                 <mat-label>Password</mat-label>
-                                <input matInput type="password" placeholder="Enter Password"
+                                <input matInput type="password" appNoPaste placeholder="Enter Password"
                                     formControlName="password" />
                                 <mat-error
                                     *ngIf="adminForm.get('password')?.touched && adminForm.get('password')?.invalid">
@@ -184,7 +184,7 @@
                             </mat-form-field>
                             <mat-form-field appearance="outline" class="w-100 mb-3">
                                 <mat-label>Password</mat-label>
-                                <input matInput type="password" placeholder="Enter Password"
+                                <input matInput type="password" appNoPaste placeholder="Enter Password"
                                     formControlName="password" />
                                 <mat-error
                                     *ngIf="pdForm.get('password')?.touched && pdForm.get('password')?.invalid">

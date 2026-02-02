@@ -34,6 +34,9 @@ const captchaApi = environment.apiUrl + "auth/captcha/generate";
 const verifyCaptchaApi = environment.apiUrl + "auth/captcha/validate?captcha";
 const getGrievanceDetailsForAdmin = environment.apiUrl + "pd-admin/grievanceDetails?schemeId";
 const COMMENTS_ATTACHMENTS_URL = environment.apiUrl + "comments-attachments/save";
+const changePasswordApi = environment.apiUrl + 'update-password/changePassword';
+const citizenFeedback = environment.apiUrl + "application/feedback";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -63,6 +66,10 @@ isLoggingIn = false;
 
   grievanceregister(json: any) {
     return this.http.post(`${grievanceregister}`, json);
+  }
+
+  citizenFeedback(json: any) {
+    return this.http.post(`${citizenFeedback}`, json);
   }
   
     saveGrievance(json: any) {
@@ -173,7 +180,9 @@ saveAuditLog( type: 'LOGIN' | 'LOGOUT' | 'VISIT'| 'ADD_GRIEVANCE',page: string):
   return this.http.post(auditTrailSave, payload);
 }
   
-
+changePassword(data: any) {
+  return this.putApi(changePasswordApi, data);
+}
 
 }
 
