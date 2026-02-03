@@ -1,6 +1,23 @@
 
-<section *ngIf="data.flag !== 'citizenRegister'">
-  <h2 mat-dialog-title>{{ data.title }}</h2>
+<style>
+.confirm-title {
+  text-align: center;
+  color: #41ab41;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+mat-dialog-content {
+  font-size: 14px;
+}
+
+.text-center {
+  text-align: center;
+}
+</style>
+
+<section *ngIf="data?.flag !== 'citizenRegister' && data?.flag !== 'changepassword'">
+  <h2 mat-dialog-title class="confirm-title">{{ data.title }}</h2>
   <mat-dialog-content>
     <p>{{ data.message }}</p>
   </mat-dialog-content>
@@ -12,12 +29,25 @@
 </section>
 
 <section *ngIf="data.flag === 'citizenRegister'">
-  <h2 mat-dialog-title style="text-align: center;
-    color: #41ab41;
-    font-size: 18px;
-        margin-bottom: 0px;
-    padding-bottom: 0px;">{{ data.title }}</h2>
+  <h2 mat-dialog-title class="confirm-title">{{ data.title }}</h2>
   <mat-dialog-actions align="center">
     <button mat-raised-button color="primary" [mat-dialog-close]="true">OK</button>
   </mat-dialog-actions>
 </section>
+
+<section *ngIf="data.flag === 'changepassword'">
+ <mat-dialog-content class="text-center">
+    <p>{{ data?.message }}</p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center">
+    <button mat-stroked-button mat-dialog-close>
+      Cancel
+    </button>
+
+    <button mat-raised-button color="warn" [mat-dialog-close]="true">
+      Change Password
+    </button>
+  </mat-dialog-actions>
+</section>
+

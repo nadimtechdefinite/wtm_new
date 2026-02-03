@@ -56,7 +56,7 @@
               "sha.js",
               "jquery",
               "html2canvas",
-              "sweetalert",
+              "sweetalert2",
               "highcharts",
               "canvg",
               "core-js",

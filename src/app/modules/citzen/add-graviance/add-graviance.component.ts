@@ -21,6 +21,8 @@ import { MenuReloadService } from '../../../services/citizen-dashboard.component
 import { NumberOnlyDirective } from '../../../shared/directives/numberonly.directive';
 import { LoaderService } from '../../../services/loader.service';
 import { AlertService } from '../../../services/alert.service';
+import { SpeechService } from '../../../services/speetch.service';
+
 
 declare var Sanscript: any;
 @Component({
@@ -79,6 +81,23 @@ export class AddGravianceComponent implements OnInit {
   isSelectedFile: any;
   isClearFile: any
   generatedComplaintId: any;
+
+  languages = [
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'Hindi (हिन्दी)' },
+  { code: 'bn', label: 'Bengali (বাংলা)' },
+  { code: 'ta', label: 'Tamil (தமிழ்)' },
+  { code: 'te', label: 'Telugu (తెలుగు)' },
+  { code: 'gu', label: 'Gujarati (ગુજરાતી)' },
+  { code: 'ml', label: 'Malayalam (മലയാളം)' },
+  { code: 'mr', label: 'Marathi (मराठी)' },
+  { code: 'kn', label: 'Kannada (ಕನ್ನಡ)' },
+  { code: 'pa', label: 'Punjabi (ਪੰਜਾਬੀ)' },
+  { code: 'or', label: 'Odia (ଓଡ଼ିଆ)' },
+  { code: 'sa', label: 'Sanskrit (संस्कृत)' },
+  { code: 'ur', label: 'Urdu (اردو)' }
+];
+
   constructor(
     private service: CommonService,
     private fb: FormBuilder,
@@ -92,9 +111,9 @@ export class AddGravianceComponent implements OnInit {
     private masterService: masterService,
     private menuReload: MenuReloadService,
     private loader: LoaderService,
-    private alertService: AlertService
-  ) {
-  }
+    private alertService: AlertService,
+    private speechService: SpeechService,
+  ) {}
 
   ngOnInit() {
 
@@ -229,7 +248,7 @@ export class AddGravianceComponent implements OnInit {
       ministry: ['', Validators.required],
       schemeCode: ['', Validators.required],
       Description: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(1000)]],
-      Language: ['en-IN', Validators.required],
+      Language: ['', Validators.required],
       captcha: ['', [
         Validators.required,
         Validators.minLength(1),
@@ -248,15 +267,47 @@ export class AddGravianceComponent implements OnInit {
     }
   }
 
-  onLanguageChange(event: MatSelectChange) {
-    const selected = event.value;
-    this.grievanceForm.get('Language')?.setValue(selected);
-    this.selectedLanguage = selected;
-    if (this.recognition) {
-      this.recognition.lang = selected;
-    }
-  }
+  // onLanguageChange(event: MatSelectChange) {
+  //   const selected = event.value;
+  //   this.grievanceForm.get('Language')?.setValue(selected);
 
+  //   // 🔁 reset ONLY description
+  //   this.grievanceForm.get('Description')?.reset();
+
+  //   this.grievanceForm.get('Language')?.setValue(selected);
+  //   this.selectedLanguage = selected;
+  //   if (this.recognition) {
+  //     this.recognition.lang = selected;
+  //   }
+  // }
+previousDescriptionLength = 0;
+onDescriptionInput(event: Event) {
+  if (this.micActive) return;
+  const value = (event.target as HTMLTextAreaElement).value || '';
+  const currentLength = value.length;
+  if (currentLength < this.previousDescriptionLength) {
+    this.speechService.resetRecording();
+  }
+  this.previousDescriptionLength = currentLength;
+  this.transliterateOnType(event);
+}
+
+  onLanguageChange(event: MatSelectChange) {
+  const selected = event.value;
+  if (this.micActive) {
+    this.micActive = false;
+    this.speechService.resetRecording();
+  }
+  this.speechService.resetRecording();
+
+  this.grievanceForm.get('Description')?.reset();
+  this.grievanceForm.get('Language')?.setValue(selected);
+  this.selectedLanguage = selected;
+
+  if (this.recognition) {
+    this.recognition.lang = selected;
+  }
+}
 
   reload() {
     this.generateCaptcha();
@@ -693,107 +744,52 @@ export class AddGravianceComponent implements OnInit {
   }
 
   message: any = ""
+ async toggleMic() {
+  this.message = 'Speak...';
 
-  // toggleMic() {
+  if (this.micActive) {
+    // 🔴 STOP MIC
+    this.micActive = false;
+    this.message = '';
 
-  //   if (!this.recognition) return;
-  //   if (this.micActive) {
-  //     try { this.recognition.stop(); } catch { }
-  //     this.micActive = false;
-  //     return;
-  //   }
-
-  //   // Start
-  //   const lang = this.grievanceForm.get("Language")?.value;
-  //   this.recognition.lang = lang;
-  //   try {
-  //     this.recognition.start();
-  //     this.micActive = true;
-  //   } catch { }
-  // }
-
-
-  toggleMic() {
-    this.message = "Speak...";
-
-    if (!this.recognition) return;
-
-    // AUTO RESTART LOGIC
-    this.recognition.onend = () => {
-      console.log("Recognition ended");
-
-      if (this.micActive) {
-        console.log("Restarting mic...");
-        this.recognition.start();
-      }
-    };
-
-    this.recognition.onerror = (e: any) => {
-      console.log("Speech recognition error", e);
-
-      if (this.micActive) {
-        console.log("Restarting due to error...");
-        this.recognition.start();
-      }
-    };
-
-    if (this.micActive) {
-      // USER STOPPED
-      try { this.recognition.stop(); } catch { }
-      this.micActive = false;
-    } else {
-      // USER STARTED
-      const lang = this.grievanceForm.get('Language')?.value;
-      this.recognition.lang = lang;
-
-      try {
-        this.recognition.start();
-        this.micActive = true;
-      } catch (e) {
-        console.warn("Mic already started", e);
-      }
+    const wavBlob = await this.speechService.stopRecording();
+    const base64 = await this.toBase64(wavBlob);
+    const lang = this.grievanceForm.get('Language')?.value || 'hi';
+    const payload = {
+    audioBase64: base64,
+     language: lang
     }
+    this.masterService.asrBhasini(payload).subscribe((res:any) => { 
+     const text = res.data
+    this.grievanceForm.patchValue({
+      Description: text
+      });
+     
+    });
+
+  } else {
+    // 🟢 START MIC
+    this.micActive = true;
+    this.message = 'Speak...';
+    await this.speechService.startRecording();
   }
-
-  // ---------------- TRANSLITERATION ----------------
-  // private getScript(langCode: string): string {
-  //   return {
-  //     'en-IN': 'english',
-  //     'hi-IN': 'devanagari',
-  //     'bn-IN': 'bengali',
-  //     'ta-IN': 'tamil',
-  //     'te-IN': 'telugu',
-  //     'gu-IN': 'gujarati',
-  //     'ml-IN': 'malayalam',
-  //     'mr-IN': 'devanagari',
-  //     'kn-IN': 'kannada',
-  //     'pa-IN': 'gurmukhi',
-  //   }[langCode] || 'english';
-  // }
-
-  // transliterateOnType(event: Event) {
-  //   if (this.micActive) return;  // 🎤 mic mode = No transliteratio
-  //   const raw = (event.target as HTMLTextAreaElement).value;
-  //   const lang = this.grievanceForm.get('Language')?.value;
-  //   const script = this.getScript(lang);
-  //   if (!Sanscript?.schemes?.[script]) return;
-  //   const converted = Sanscript.t(raw, "itrans", script);
-  //   this.grievanceForm.patchValue({ Description: converted });
-  // }
-
+}
   // ---------------- TRANSLITERATION ----------------
   private getScript(langCode: string): string {
     return {
-      'en-IN': 'english',
-      'hi-IN': 'devanagari',
-      'bn-IN': 'bengali',
-      'ta-IN': 'tamil',
-      'te-IN': 'telugu',
-      'gu-IN': 'gujarati',
-      'ml-IN': 'malayalam',
-      'mr-IN': 'devanagari',
-      'kn-IN': 'kannada',
-      'pa-IN': 'gurmukhi',
+      'en': 'english',
+      'hi': 'devanagari',
+      'bn': 'bengali',
+      'ta': 'tamil',
+      'te': 'telugu',
+      'gu': 'gujarati',
+      'ml': 'malayalam',
+      'mr': 'devanagari',
+      'kn': 'kannada',
+      'pa': 'gurmukhi',
+      'or': 'odia',
+      'sa': 'sanskrit',
+      'ur': 'urdu',
     }[langCode] || 'english';
   }
 
@@ -808,6 +804,19 @@ export class AddGravianceComponent implements OnInit {
     const converted = Sanscript.t(raw, 'itrans', script);
     this.grievanceForm.get('Description')?.setValue(converted, { emitEvent: false });
   }
+
+  //---------New ASR (Bhasini)---------
+  toBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () =>
+        resolve((reader.result as string).split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+
   ngOnDestroy(): void {
     try { this.recognition?.stop(); } catch { }
     if (this.recognition) {
@@ -859,15 +868,7 @@ export class AddGravianceComponent implements OnInit {
       pdf.save(`Grievance_${this.generatedComplaintNo}.pdf`);
     });
   }
-  // ngOnDestroy(): void {
-  //   try { this.recognition?.stop(); } catch { }
-  //   if (this.recognition) {
-  //     try { this.recognition.stop(); } catch { }
-  //   }
-  //   this.micActive = false;
-  //   this.destroy$.complete()
 
-  // }
   openConfirm() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
@@ -885,24 +886,6 @@ export class AddGravianceComponent implements OnInit {
     });
   }
 
-
-
-
-
-  // getStateMaster() {
-  //   this.masterService.getStateMaster().subscribe({
-  //     next: (response: any) => {
-  //       if (response?.messageCode === 1 && response?.data?.length) {
-  //         this.masterStateData = response.data;
-  //         console.log(this.masterStateData, 'this.masterdata');
-
-  //       } else {
-  //         console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
-  //       }
-  //     },
-  //     error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
-  //   });
-  // }
 
   onPinInput() {
     const control = this.grievanceForm.get('pinCode');

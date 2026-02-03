@@ -39,7 +39,8 @@
           matTooltip="{{ item.label }}"
           [routerLinkActiveOptions]="{ exact: true }"
           class="flex items-center gap-2"
-          (click)="item.isLogout && logOut()"
+
+          (click)="closeSidebarOnClick(); item.isLogout && logOut()"
         >
           <i [class]="item.icon + ' fa-fw'" [style.color]="item?.color"></i>
           <span>{{ item.label }}</span>

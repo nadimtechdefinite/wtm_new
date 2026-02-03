@@ -2,7 +2,7 @@ import { Directive, HostListener } from '@angular/core';
 
 @Directive({
   selector: '[appNumberOnly]',
-  standalone: true   // 🔥 REQUIRED for standalone usage
+  standalone: true   // 
 })
 export class NumberOnlyDirective {
 

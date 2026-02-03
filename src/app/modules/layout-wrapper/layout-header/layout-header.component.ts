@@ -9,6 +9,7 @@ import { NgZone } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDivider } from "@angular/material/divider";
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'app-layout-header',
@@ -23,7 +24,12 @@ export class LayoutHeaderComponent {
   parsedUserInfo: any;
   name: any;
   getUsername: any;
-  constructor(private router: Router, private citizenStore: CitizenStoreService, private ngZone: NgZone, private mobileService: MobileService, private sidebarToggle: SidebarToggleService) { }
+  constructor(private router: Router,
+     private citizenStore: CitizenStoreService,
+      private ngZone: NgZone,
+       private mobileService: MobileService,
+        private sidebarToggle: SidebarToggleService,
+      private authService: AuthService) { }
   userName: any;
   citizenData: any;
   citizenId: any;
@@ -31,11 +37,10 @@ export class LayoutHeaderComponent {
   mobileNo: any;
   showMenu = false;
   displayName: string = '';
-    
-logOut(){
-  sessionStorage.clear();
-   this.router.navigate(['/home']);
-}
+
+  logOut() {
+    this.authService.logout();
+  }
 
 toggleMenu() {
   this.showMenu = !this.showMenu;

@@ -29,9 +29,15 @@ export const routes: Routes = [
             .then(m => m.GravianceRegisterComponent)
       },
       {
-        path: 'sitemap',
+        path: 'screen-reader',
         loadComponent: () =>
           import('./core/components/screen-reader/screen-reader.component').then(m => m.ScreenReaderComponent)
+      },
+
+      {
+        path: 'sitemap',
+        loadComponent: () =>
+          import('./core/components/sitemap/sitemap.component').then(m => m.SitemapComponent)
       },
       // Spread auth routes here
       ...authRoutes
@@ -45,7 +51,7 @@ export const routes: Routes = [
   children: [
     {
       path: 'admin',
-      canLoad: [AuthGuard],
+      canMatch: [AuthGuard],
       data: { role: ['1','2'] },
       loadChildren: () =>
         import('../app/modules/officer/officer.routes')
@@ -53,7 +59,7 @@ export const routes: Routes = [
     },
     {
       path: 'citizen',
-      canLoad: [AuthGuard],
+      canMatch: [AuthGuard],
       data: { role: ['0'] },
       loadChildren: () =>
         import('../app/modules/citzen/citzen.routes')
@@ -68,5 +74,5 @@ export const routes: Routes = [
 },
 
 {path:'keyboard-setting', component:KeyboardSettingComponent},
- { path: '**', redirectTo: '' }
+{ path: '**', redirectTo: '' }
 ];

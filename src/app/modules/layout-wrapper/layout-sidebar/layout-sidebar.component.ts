@@ -8,6 +8,7 @@ import { MenuReloadService } from '../../../services/citizen-dashboard.component
 import { SidebarToggleService } from '../../../services/sidebar-toggle.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { masterService } from '../../../services/master.service';
+import { AuthService } from '../../../auth/auth.service';
 
 interface MenuItem {
   label: string;
@@ -41,27 +42,15 @@ export class LayoutSidebarComponent implements OnInit {
   constructor(private router: Router,
      private citizenStore: CitizenStoreService,
      private mobileService: MobileService,
-     private menuReload: MenuReloadService,
-      private sidebarToggle: SidebarToggleService,
-        private masterService: masterService,) { }
+     private masterService: masterService,
+    private authService: AuthService) { }
  citizenLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },    
     { label: 'Register Grievance ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },   // Orange
     { label: 'Grievance List', routerLink: '/layout/citizen/graviance-list', icon: 'fas fa-list', color: '#3f51b5' },
     {label: 'Logout',icon: 'fa fa-sign-out-alt',color: '#f44336',isLogout: true}
-
-    // {
-    //   label: 'Event',
-    //   icon: 'fas fa-calendar-alt', // calendar icon
-    //   color: '#2196f3', // Blue
-    //   children: [
-    //     { label: 'Educational', routerLink: '/dashboard/events/educational-events-list', icon: 'fas fa-book-open', color: '#4caf50' },  // book for education
-    //     { label: 'Social', routerLink: '/dashboard/events/social-events-list', icon: 'fas fa-users', color: '#f44336' } // users for social
-    //   ]
-    // },
   ];
 
-  // ✅ Empty arrays future ke liye
   adminLinks: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/layout/admin/dashboard', icon: 'fa fa-home', color: '#ff5722' },
     { label: 'Review/Update Status', routerLink: '/layout/admin/admin-grievance-list', icon: 'fas fa-list', color: '#e91e63' },
@@ -73,10 +62,12 @@ export class LayoutSidebarComponent implements OnInit {
   userRole: string = 'citizen' 
   ngOnInit(): void {
        const userInfo = sessionStorage.getItem('userInfo');
+       console.log(userInfo, "userInfo");
+       
       if (userInfo) {
         this.parsedUserInfo = JSON.parse(userInfo);
         this.userType = Number(this.parsedUserInfo.userType);
-        console.log(this.userType, "this.userType");
+        console.log(this.parsedUserInfo, "this.userType");
         
       }
     if (this.userType === 1 || this.userType === 2) {
@@ -86,12 +77,12 @@ export class LayoutSidebarComponent implements OnInit {
       } else {
         this.menu = [];
       }
-   if(this.userType === 1 || this.userType === 2){
-   this.selectedRoute = this.router.url || '/layout/admin/dashboard';
-   }else{
-       this.selectedRoute = this.router.url || '/layout/citizen/dashboard';
-   }
-  //  this.selectedRoute = this.router.url || '/layout/citizen/dashboard';
+    if(this.userType === 1 || this.userType === 2){
+    this.selectedRoute = this.router.url || '/layout/admin/dashboard';
+    }else{
+        this.selectedRoute = this.router.url || '/layout/citizen/dashboard';
+    }
+    //  this.selectedRoute = this.router.url || '/layout/citizen/dashboard';
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.selectedRoute = event.urlAfterRedirects;
@@ -99,6 +90,7 @@ export class LayoutSidebarComponent implements OnInit {
       }
     });
   }
+
 expandParentMenu(route: string) {
     this.menu.forEach(item => {
       if (item.children) {
@@ -112,32 +104,30 @@ expandParentMenu(route: string) {
   }
 
 
+
+
 // logOut() {
 
 //   this.masterService.isLoggingOut = true;
-
 //   this.masterService
-//     .saveAuditLog('LOGOUT', '/logout')
-//     .subscribe(() => {
-//       sessionStorage.clear();
-//       this.router.navigate(['/login']);
+//     .saveAuditLog('LOGOUT', '/login')
+//     .subscribe({
+//       complete: () => {
+//         sessionStorage.clear();
+//         this.masterService.isLoggingOut = false;
+//         this.router.navigate(['/home']);
+//       }
 //     });
 // }
 
-logOut() {
+  logOut() {
+    this.authService.logout();
+  }
 
-  this.masterService.isLoggingOut = true;
-
-  this.masterService
-    .saveAuditLog('LOGOUT', '/login')
-    .subscribe({
-      complete: () => {
-        sessionStorage.clear();
-        this.masterService.isLoggingOut = false;
-        this.router.navigate(['/home']);
-      }
-    });
+closeSidebarOnClick() {
+  if (window.innerWidth <= 768) {
+    this.isSidebarOpen = true;
+  }
 }
-
 
 }

@@ -13,11 +13,12 @@ button[mat-icon-button] {
     justify-content: center;
 }
 .captcha-refresh-button a {
-       background: linear-gradient(45deg, #3dd5ff, #4b70ff);
+    background: linear-gradient(45deg, #3c63c7, #99aeff);
     border-radius: 5px;
     height: 55px !important;
     margin-right: 5px;
-    border: 1px solid #68a5ff !important;
+    border: 1px solid #ffffff !important;
+
     color: #fff;
     width: 44px;
     display: flex;
@@ -125,6 +126,24 @@ button[mat-icon-button] {
     transform: rotate(-10deg);
 }
 
+
+/* captcha text */
+.captcha-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: 'Courier New', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  color: #1f2a44;
+  transform: skewX(-10deg);
+  user-select: none;
+}
+
+
+
 .count {
     float: right;
     width: 100%;
@@ -208,7 +227,7 @@ mat-radio-button {
   font-weight: 500;
 }
 .section-authentication-signin{
-    padding: 38px 0px;
+    padding: 7px 0px;
 }
 
 .login-card .card-body{
@@ -296,3 +315,4 @@ padding: 30px; border-radius: 15px; margin-top: -60px; margin-bottom: 20px;}
     width: 100%;
     border-bottom: 1px dotted #6a7b95;
 }
+

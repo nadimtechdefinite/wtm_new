@@ -879,3 +879,20 @@ button.mat-icon-button:hover {
   font-weight: 600;
 }
 
+/* Header */
+.page-header {
+    background: aliceblue;
+    color: #0f386a;
+    padding: 35px 20px !important;
+    text-align: center;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.page-header p {
+  font-size: 14px;
+  opacity: 0.9;
+}

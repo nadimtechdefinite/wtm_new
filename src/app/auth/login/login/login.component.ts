@@ -15,11 +15,14 @@ import { masterService } from '../../../services/master.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
 import { NumberOnlyDirective } from "../../../shared/directives/numberonly.directive";
+import { NoPasteDirective } from '../../../shared/directives/no-paste.directive';
+import { jwtDecode } from 'jwt-decode';
+import { UserContext } from '../../user-context.model';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [...MATERIAL_MODULES, FormsModule, ReactiveFormsModule, CommonModule, NumberOnlyDirective, ],
+  imports: [...MATERIAL_MODULES, FormsModule, ReactiveFormsModule, CommonModule, NumberOnlyDirective,NoPasteDirective ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA,],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -55,10 +58,7 @@ export class LoginComponent implements OnInit {
     { value: 'admin', viewValue: 'Admin' },
     { value: 'pd', viewValue: 'PD' },
     // { value: 'state', viewValue: 'State' },
-
-    
   ];
-
   users = [
     { value: 'Admin', viewValue: 'Admin' },
     { value: 'MoRD', viewValue: 'MoRD' },
@@ -71,6 +71,7 @@ export class LoginComponent implements OnInit {
   getcooldownPeriod: any;
   otpNumber: any;
   getschemeList: any;
+  captchaId:any;
 
   constructor(
     private service: CommonService,
@@ -199,6 +200,7 @@ export class LoginComponent implements OnInit {
      this.getCaptchadata = response.data
       this.captcha = this.getCaptchadata.captcha
       this.captchaCode = this.getCaptchadata.captchaCode
+      this.captchaId = this.getCaptchadata.captchaId
       sessionStorage.setItem('sessionId1', response.data.sessionId);
       this.generateImage(this.captcha)
     });
@@ -275,7 +277,8 @@ GetverifyCaptcha(templateRef: TemplateRef<any>) {
   }
 
   const payload = {
-    captcha: enteredCaptcha
+    captcha: enteredCaptcha,
+    captchaId: this.captchaId
   }
 
 this.masterService.verifyCaptcha(payload).subscribe({
@@ -380,74 +383,6 @@ resendOtp() {
   );
 }
 
-
-  // verifyOtp() {
-  //   if (!this.otpValue || this.otpValue.length < 4) {
-  //     this.toastr.error("Please enter valid OTP");
-  //     return;
-  //   }
-  //   const json = {
-  //     mobileNo: this.citizenForm.get('mobile')?.value,
-  //     otp: this.otpValue
-
-  //   };
-  //   this.masterService.verifyOtp(json).subscribe((response: any) => {
-  //     if (response.messageCode == 1) {
-  //       this.messageResp = response.data;
-  //         this.router.navigate(['/layout/citizen']);
-  //         this.dialog.closeAll();
-  //         this.otpValue = ''
-  //         const mobile = this.citizenForm.get('mobile')?.value
-  //         this.mobileService.updateMobile(mobile)
-  //         this.mobileService.updatelogindata(response)
-  //         this.citizenForm.reset()
-  //         sessionStorage.setItem("userInfo", JSON.stringify(response.data));
-  //         // this.generateCaptcha()
-  //         this.toastr.success(response.message || "Login successful");
-        
-  //     }
-  //   })
-  // }
-
-// verifyOtp() {
-
-//   if (!this.otpValue || this.otpValue.length < 4) {
-//     this.toastr.error("Please enter valid OTP");
-//     return;
-//   }
-
-//   const json = {
-//     mobileNo: this.citizenForm.get('mobile')?.value,
-//     otp: this.otpValue
-//   };
-
-//   this.masterService.verifyOtp(json).subscribe((response: any) => {
-//     if (response.messageCode === 1) {
-//        this.messageResp = response.data;
-//       sessionStorage.setItem('userInfo', JSON.stringify(response.data));
-
-//       this.masterService.isLoggingIn = true;
-
-//       this.masterService
-//         .saveAuditLog('LOGIN', '/login')
-//         .subscribe({
-//           complete: () => {
-//             this.masterService.isLoggingIn = false;
-//           }
-//         });
-//       const mobile = this.citizenForm.get('mobile')?.value
-//       this.mobileService.updateMobile(mobile)
-//       this.mobileService.updatelogindata(response)
-//       this.otpValue = ''
-//       this.router.navigate(['/layout/citizen']);
-//       this.dialog.closeAll();
-//       this.toastr.success("Login successful");
-//       this.citizenForm.reset()
-//     }
-//   });
-// }
-
-
 verifyOtp() {
 
   if (!this.otpValue || this.otpValue.length < 4) {
@@ -514,87 +449,85 @@ verifyOtp() {
   }
 
 onSubmitAdmin() {
-  this.isSubmittedadmin = true;
+    this.isSubmittedadmin = true;
+    if (this.adminForm.invalid) {
+      this.adminForm.markAllAsTouched();
+      this.toastr.error("Admin Form Is Invalid");
+      return;
+    }
 
-  // ❌ Form invalid
-  if (this.adminForm.invalid) {
-    this.adminForm.markAllAsTouched();
-    this.toastr.error("Admin Form Is Invalid");
-    return;
-  }
+    // 🔐 Captcha value
+    const enteredCaptcha = this.adminForm.get('captcha')?.value;
+    if (!enteredCaptcha || enteredCaptcha.trim() === '') {
+      this.toastr.error('Please enter captcha');
+      return;
+    }
+        const payload = {
+      captcha: enteredCaptcha,
+      captchaId: this.captchaId
+    }
 
-  // 🔐 Captcha value
-  const enteredCaptcha = this.adminForm.get('captcha')?.value;
+    // 🔥 Step 1: Verify Captcha
+    this.masterService.verifyCaptcha(payload).subscribe({
+      next: (captchaRes: any) => {
 
-  if (!enteredCaptcha || enteredCaptcha.trim() === '') {
-    this.toastr.error('Please enter captcha');
-    return;
-  }
+        if (captchaRes.messageCode !== 1) {
+          this.toastr.error(captchaRes.message || 'Invalid Captcha');
+          this.adminForm.get('captcha')?.reset();
+          this.generateCaptcha();
+          return;
+        }
 
-  // 🧾 Session check
-  const sessionId = sessionStorage.getItem('sessionId1');
-  if (!sessionId) {
-    this.toastr.error('Session expired. Please refresh captcha');
-    this.generateCaptcha();
-    return;
-  }
+        // 🔐 Step 2: Login API
+        const logindata = this.adminForm.getRawValue();
+        const postLoginForm = {
+          loginName: logindata.user,
+          password: logindata.password
+        };
 
-  const payload = {
-    captcha: enteredCaptcha
-  }
+        this.officer.loginFormCreate(postLoginForm).subscribe({
+          next: (response: any) => {
 
-  // 🔥 Step 1: Verify Captcha
-  this.masterService.verifyCaptcha(payload).subscribe({
-    next: (captchaRes: any) => {
+            if (response.messageCode === 1 && response.data) {
+              const token = response.data.token;
+              sessionStorage.setItem('accessToken', token);
+              const decodedToken: any = jwtDecode(token);
 
-      if (captchaRes.messageCode !== 1) {
-        this.toastr.error(captchaRes.message || 'Invalid Captcha');
-        this.adminForm.get('captcha')?.reset();
-        this.generateCaptcha();
-        return;
-      }
+              const decoded: UserContext = jwtDecode<UserContext>(token);
 
-      // 🔐 Step 2: Login API
-      const logindata = this.adminForm.getRawValue();
-      const postLoginForm = {
-        loginName: logindata.user,
-        password: logindata.password
-      };
+              sessionStorage.setItem(
+                'userContext',
+                JSON.stringify(decoded)
+              );
 
-      this.officer.loginFormCreate(postLoginForm).subscribe({
-        next: (response: any) => {
-          if (response.messageCode === 1) {
-              sessionStorage.setItem('userInfo', JSON.stringify(response.data));
+              // ✅ Save token & user info
+              sessionStorage.setItem('userInfo', JSON.stringify(decoded));
+
               this.masterService.isLoggingIn = true;
-
               this.masterService
                 .saveAuditLog('LOGIN', '/layout/admin/dashboard')
                 .subscribe({
-                  complete: () => {
-                    this.masterService.isLoggingIn = false;
-                  }
+                  complete: () => (this.masterService.isLoggingIn = false)
                 });
-            sessionStorage.setItem("accessToken", response.accessToken);
-            this.toastr.success(response.message || "Login successful");
-            this.router.navigate(['/layout/admin']);
-          } else {
-            this.toastr.error(response.message || 'Login failed');
-          }
-        },
-        error: () => {
-          this.toastr.error('Login API error');
-        }
-      });
+              this.router.navigate(['/layout/admin']);
 
-    },
-    error: (err) => {
-      const msg = err?.error?.message || 'Invalid Captcha';
-      this.toastr.error(msg);
-      this.adminForm.get('captcha')?.reset();
-      this.generateCaptcha();
-    }
-  });
-}
+            } else {
+              this.toastr.error(response.message || 'Login failed');
+            }
+          },
+          error: () => {
+            this.toastr.error('Login API error');
+          }
+        });
+      },
+      error: (err) => {
+        const msg = err?.error?.message || 'Invalid Captcha';
+        this.toastr.error(msg);
+        this.adminForm.get('captcha')?.reset();
+        this.generateCaptcha();
+      }
+    });
+  }
 
   onSubmitPD() {
   this.isSubmittedPd = true;
@@ -618,7 +551,8 @@ onSubmitAdmin() {
   }
 
     const payload = {
-    captcha: enteredCaptcha
+    captcha: enteredCaptcha,
+    captchaId: this.captchaId
   }
 
   this.masterService.verifyCaptcha(payload).subscribe({
@@ -640,8 +574,18 @@ onSubmitAdmin() {
       this.officer.loginFormCreate(postLoginForm).subscribe({
         next: (response: any) => {
           if (response.messageCode === 1) {
+               const token = response.data.token;
+                sessionStorage.setItem('accessToken', token);
+                 const decodedToken: any = jwtDecode(token);
+               const decoded: UserContext = jwtDecode<UserContext>(token);
 
-            sessionStorage.setItem('userInfo', JSON.stringify(response.data));
+              sessionStorage.setItem(
+                'userContext',
+                JSON.stringify(decoded)
+              );
+
+              // ✅ Save token & user info
+              sessionStorage.setItem('userInfo', JSON.stringify(decoded));
               this.masterService.isLoggingIn = true;
               this.masterService
                 .saveAuditLog('LOGIN', '/layout/admin/dashboard')
@@ -650,12 +594,10 @@ onSubmitAdmin() {
                     this.masterService.isLoggingIn = false;
                   }
                 });
-            sessionStorage.setItem("accessToken", response.accessToken);
-            this.toastr.success(response.message || "Login successful");
-            this.router.navigate(['/layout/admin']);
-          } else {
-            this.toastr.error(response.message || 'Login failed');
-          }
+              this.router.navigate(['/layout/admin']);
+            } else {
+              this.toastr.error(response.message || 'Login failed');
+            }
         },
         error: () => {
           this.toastr.error('Login API error');
@@ -707,7 +649,7 @@ onSubmitAdmin() {
 
 
 
-  ////new api for state login////
+  //// new api for state login////
   getStateMaster() {
     this.masterService.getStateMaster().subscribe({
       next: (response: any) => {
