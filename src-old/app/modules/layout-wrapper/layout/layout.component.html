@@ -1,0 +1,30 @@
+<!-- 
+<div class="layout-container">
+  <app-layout-header></app-layout-header>
+  <div class="layout-body">
+    <app-layout-sidebar></app-layout-sidebar>
+    <main class="layout-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  <app-layout-footer></app-layout-footer>
+</div> -->
+
+<div class="layout-container" [class.sidebar-closed]="!isSidebarOpen">
+
+  <app-layout-header
+    (toggleSidebarEvent)="toggleSidebar()">
+  </app-layout-header>
+
+  <div class="layout-body">
+    <app-layout-sidebar
+      [isSidebarOpen]="isSidebarOpen">
+    </app-layout-sidebar>
+
+    <main class="layout-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+
+  <app-layout-footer></app-layout-footer>
+</div>

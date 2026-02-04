@@ -1,0 +1,37 @@
+<section class="page-header">
+    <h1>Sitemap</h1>
+    <p>Complete structure of the portal</p>
+  </section>
+
+  <section class="sitemap-wrapper">
+
+    <div class="sitemap-card">
+      <h3>🏠 Primary Menus</h3>
+      <ul>
+        <li><a href="javascript:void(0)" routerLink="/home">Home</a></li>
+        <li><a href="javascript:void(0)">About</a></li>
+        <li><a href="javascript:void(0)" routerLink="/graviance-register">Citizen Registration</a></li>
+        <li><a href="javascript:void(0)" routerLink="/login">Login</a></li>
+      </ul>
+    </div>
+
+    <div class="sitemap-card">
+      <h3>📄 Policies Menus</h3>
+      <ul>
+        <li><a href="javascript:void(0)" (click)="openDialog('terms', 'Terms and conditions')">Terms & Conditions</a></li>
+        <li><a href="javascript:void(0)" (click)="openDialog('privacy', 'Privacy Policy')">Privacy Policy</a></li>
+        <li><a href="javascrpt:void(0)" (click)="openDialog('hyperlink', 'Hyperlinking Policy')">Hyperlink Policy</a></li>
+        <li><a href="javascript:void(0)" (click)="openDialog('copyright', 'Copyright Policy')">Copyright Policy</a></li>
+      </ul>
+    </div>
+
+    <div class="sitemap-card">
+      <h3>♿ Support Menus</h3>
+      <ul>
+        <li><a href="javascript:void(0)" (click)="openDialog('accessibility', 'Accessibility Statement')">Accessibility Statement</a></li>
+        <li><a href="javascript:void(0)" (click)="openDialog('disclaimer', 'Disclaimer')">Disclaimer</a></li>
+        <li><a href="javascript:void(0)" >Help</a></li>
+      </ul>
+    </div> 
+
+  </section>

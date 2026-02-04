@@ -1,0 +1,87 @@
+/* ----------------------------------
+   MATERIAL TABLE HEADER DESIGN
+----------------------------------- */
+
+
+
+
+
+
+/* ----------------------------------
+   STATUS COLUMN DESIGN
+----------------------------------- */
+.mat-mdc-header-row {
+  background: linear-gradient(to right, #004A94, #004A94);
+  color: white;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.statusgreen {
+  background-color: #e6f7ec;
+  color: #1e7e34;
+  border: 1px solid #b7e4c7;
+}
+
+.statusorange, .statusorangeT {
+  background-color: #fff4e5;
+  color: #b36b00;
+  border: 1px solid #ffd8a8;
+}
+
+/* GREEN = Approved / Success */
+.status.approved,
+.status.success,
+.status.completed {
+  background: #d7f7e0;
+  color: #0a7a36;
+}
+
+/* YELLOW = Pending */
+.status.pending,
+.status.inprogress,
+.status.processing {
+  background: #fff2c6;
+  color: #b07a00;
+}
+
+/* RED = Rejected / Failed */
+.status.rejected,
+.status.failed,
+.status.cancelled {
+  background: #ffe0e0;
+  color: #ba0000;
+}
+
+/* BLUE = Default Status */
+.status.open,
+.status.active,
+.status.new {
+  background: #dbe9ff;
+  color: #0b62c2;
+}
+
+.tbl table tr td {
+  border-bottom-color: #dfdfdf !important;
+}
+
+.tbl table tr th {
+  background: #c9e5fd !important;
+  border-bottom-color: #74a6d1 !important;
+  color: #000 !important;
+}
+
+.statusblue {
+  background: #fde3e3;
+  color: #c01515;
+}
+::ng-deep .mat-mdc-text-field-wrapper {
+  background-color: #ffffff;
+}

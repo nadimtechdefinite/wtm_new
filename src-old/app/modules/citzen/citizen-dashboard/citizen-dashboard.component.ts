@@ -132,11 +132,13 @@ grievanceList:any
 
   prepareChartData() {
     if (!this.citzenDetails) return;
+
     this.chartSummary = [
       { name: 'Completed', y: this.citzenDetails.completed, color: '#28a745' },
       { name: 'Under Process', y: this.citzenDetails.underProcess, color: '#e0a800' },
       { name: 'Returned', y: this.citzenDetails.returned, color: '#dc3545' }
     ];
+
     this.loadPieChart();
     this.loadColumnChart();
   }
@@ -149,8 +151,8 @@ grievanceList:any
       title: {
         text: 'Grievance Status'
       },
-      credits: {
-      enabled: false
+        credits: {
+      enabled: false 
     },
       series: [{
         name: 'Count',
@@ -168,8 +170,8 @@ grievanceList:any
       title: {
         text: 'Total Grievance Overview'
       },
-      credits: {
-      enabled: false
+       credits: {
+      enabled: false 
     },
       xAxis: {
         categories: ['Total Registered', 'Completed', 'Under Process', ]

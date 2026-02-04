@@ -1,0 +1,126 @@
+.dashboard-container {
+  .card-box {
+    position: relative;
+    height: 160px;
+    padding: 1.2rem 1rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    // background: linear-gradient(135deg, #6a11cb, #2575fc); // modern gradient
+    color: #fff;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    // Header text
+    .card-header {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      opacity: 1;
+    }
+
+    // Value text
+    .card-value {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-top: 0.3rem;
+      line-height: 1.2;
+    }
+
+    // Icon
+    .card-icon {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 2.5rem;
+      opacity: 0.3;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+
+      &:hover {
+        opacity: 0.6;
+        transform: scale(1.1);
+      }
+    }
+
+    // Optional subtle animated background shape
+    &::before {
+      content: "";
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      background: rgba(255, 255, 255, 0.05);
+      top: -10%;
+      left: -10%;
+      border-radius: 50%;
+      transform: rotate(45deg);
+    }
+  }
+
+  .card-category {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.5rem;
+  }
+}
+.card-box {
+  border-radius: 14px;
+  padding: 18px 20px;
+  min-height: 120px;
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover effect */
+.card-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.25);
+}
+
+/* Light circle decoration */
+.card-box::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+}
+
+/* Text */
+.card-header {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.card-value {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* ========================= */
+/* Different Card Colors */
+/* ========================= */
+
+.row > div:nth-child(1) .card-box {
+  background: linear-gradient(135deg, #6a11cb61, #2575fc) /* Purple-Blue */
+}
+
+.row > div:nth-child(2) .card-box {
+  background: linear-gradient(135deg, #28a74585, #218838) /* Green */
+}
+
+.row > div:nth-child(3) .card-box {
+  background: linear-gradient(135deg, #ffc10778, #e0a800); /* Yellow */
+  color: #212529;
+}

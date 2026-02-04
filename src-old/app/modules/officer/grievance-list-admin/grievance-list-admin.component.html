@@ -1,0 +1,99 @@
+<div class="row">
+    <div class="col-12" >
+        <h3 class="main-title"> Grievances List</h3></div>
+
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100 align-items-center">
+            <mat-label>Search</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+    </div>
+     <div class="col-md-3 ">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Filter</mat-label>
+      <mat-select formControlName="status" (selectionChange)="applyStatusFilter($event.value)">
+        <mat-option *ngFor="let status of officeStatusDetails" [value]="status.statusCode">
+            {{ status.status}}</mat-option>
+       </mat-select>
+    </mat-form-field>
+  </div>
+    <div class="col-md-4" *ngIf="parsedUserInfo?.userType !== 1 && parsedUserInfo?.userType !== 2">
+        <button mat-raised-button color="primary" class="btn-glow btn-blue" [routerLink]="['/layout/citizen/add-graviance']">
+            Register Complaint
+        </button>
+    </div>
+
+</div>
+
+<!-- DATA TABLE -->
+<div class="card mb-5">
+    <div class="card-body">
+        <div class="row ">
+           <div class="col-md-12 d-flex justify-content-end mb-2 mb-2 gap-1">
+                <button mat-raised-button color="primary" class="btn-glow btn-red" (click)="exportToPdf()" matTooltip="Download to PDF">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>pdf
+                </button>
+                <button mat-raised-button color="primary" class="btn-glow btn-green" (click)="exportToExcel()" matTooltip="Download to Excel">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Excel
+                </button>
+            </div>
+        </div>
+        <div class="mat-elevation-z8 table-responsive tbl "
+        style="border: 1px solid #dddddd !important; box-shadow: none !important;
+    border-radius: 10px !important;" >
+            <table mat-table [dataSource]="admindataSource" class="mat-elevation-z1">
+                <ng-container *ngFor="let col of columns" [matColumnDef]="col.column">
+                    <th mat-header-cell *matHeaderCellDef> {{ col.header }} </th>
+                    <td mat-cell *matCellDef="let row " [ngStyle]="{ width: col.width }" [ngClass]="{ 'word-break': col.column === 'description' || col.column === 'address' }">
+                        <ng-container [ngSwitch]="col.type">
+                            <ng-container *ngSwitchCase="'action'">
+                                <button mat-icon-button color="primary" (click)="openViewDialogAdmin(row, citzenDetails)"  style="    background-color: #ebf5ff;
+                                    color: #0d6efd;
+                                    font-size: 21px;">
+                                    <!-- <mat-icon>visibility</mat-icon> -->
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'status'">
+                                <span class="status" [ngClass]="{
+                                    'statusgreen': row.status === 'C',
+                                    'statusorange': row.status === 'U',
+                                    'statusblue': row.status === 'T'
+                                }">
+                                    {{
+                                        row.status === 'U' ? 'Under-Process' :
+                                        row.status === 'C' ? 'Completed' :
+                                        row.status === 'T' ? 'Transferred' :
+                                        row.status
+                                    }}
+                                </span>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'address'">
+                            {{ row.stateName }},
+                            {{ row.districtName }},
+                            {{ row.blockName }},
+                            {{row.panchayatName}},
+                            {{ row.villageName }},
+                            {{ row.pinCode }}
+                            </ng-container>
+                              <!-- DATE ✅ -->
+                            <ng-container *ngSwitchCase="'date'">
+                                {{ row[col.column] | date:'dd MMM yyyy' }}
+                            </ng-container>
+
+                            <ng-container *ngSwitchDefault>
+                                {{ row[col.column] }}
+                            </ng-container>
+                        </ng-container>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 20, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

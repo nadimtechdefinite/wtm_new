@@ -1,0 +1,166 @@
+
+.logo-img {
+  height: 80px;
+  width: 80px;
+  object-fit: contain;
+}
+
+/* Card body */
+.pdf-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.5;
+}
+
+.pdf-card p {
+  margin-bottom: 0.75rem;
+}
+
+/* Grievance number */
+.grievance-number {
+  color: #0b3d91;
+  font-weight: 600;
+}
+
+/* Footer */
+.footer-box {
+  background: #e8f0fe;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #cfd8dc;
+  font-size: 0.875rem;
+}
+
+.footer-link {
+  color: #0d47a1;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Dialog actions */
+mat-dialog-actions button {
+  min-width: 120px;
+}
+.title-label {
+    font-size: 1rem;
+    font-weight: 500;
+    border-left: 2px solid #005cbb;
+    padding-left: 10px;
+}
+
+ #image.captcha-box {
+    width: 200px;            
+    height: 57px;           
+    border: 2px solid #ccc;   
+    border-radius: 8px;         
+    background-color: #f9f9f9;  
+    font-family: 'Courier New', monospace;
+    font-size: 28px;           
+    font-weight: bold;
+    letter-spacing: 4px;         
+    color: #333;                
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    user-select: none;           
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Optional: add some noise lines */
+#image.captcha-box::before,
+#image.captcha-box::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: rgba(0,0,0,0.1);
+    top: 30%;
+    left: 0;
+    transform: rotate(10deg);
+}
+
+#image.captcha-box::after {
+    top: 60%;
+    transform: rotate(-10deg);
+}
+
+.captcha-refresh-button a {
+    background: linear-gradient(45deg, #3c63c7, #99aeff);
+    border-radius: 5px;
+    height: 55px !important;
+    margin-right: 5px;
+    border: 1px solid #ffffff !important;
+    color: #fff;
+    width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.captcha-refresh-button 
+.mat-icon{   color: #ffffff;
+  }
+
+
+  
+  /* Base mic button */
+.mic-btn {
+  height: 48px;
+  font-size: 18px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
+  background-color: green;
+  width: 48px !important;
+  color: #ffff;
+  border-radius: 50%;
+}
+
+/* 🔴 Active mic state */
+.mic-btn.mic-active {
+  animation: micBlink 1s infinite;
+  box-shadow: 0 0 0 rgba(220, 53, 69, 0.7);
+
+}
+
+/* 🔥 Pulse ring */
+.mic-btn.mic-active::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 10px;
+  border: 2px solid rgba(220, 53, 69, 0.6);
+  animation: micPulse 1.2s infinite;
+    border-radius: 50%;
+}
+
+/* Color blinking */
+@keyframes micBlink {
+  0%   { background-color: #dc3545; }
+  50%  { background-color: #ff6b6b; }
+  100% { background-color: #dc3545; }
+}
+
+/* Pulse animation */
+@keyframes micPulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+  @media (max-width: 767px){
+    .captcha-box img{object-fit: contain;}
+    .captcha-area{flex-direction: column;}
+}
+

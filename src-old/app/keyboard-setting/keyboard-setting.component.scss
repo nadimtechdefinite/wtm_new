@@ -1,0 +1,25 @@
+ .step-card {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+ .step-card img{width: 60%; object-fit: contain; border: 1px solid #636363; margin: 0 auto;  border-radius: 10px;}
+
+    .step-number {
+      font-size: 18px;
+      font-weight: bold;
+      color: #0d6efd;
+    }
+    .step-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+.font-18{font-size: 15px; margin: 0px; line-height: 1.2; font-weight: 600;}
+.font-13{font-size: 12px; margin: 0px; line-height: 1.2;}
+
+/* Wrapper */
+.nav-item.skip-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

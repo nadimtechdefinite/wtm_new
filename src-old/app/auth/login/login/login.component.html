@@ -1,0 +1,316 @@
+<div class="section-authentication-signin d-flex align-items-center justify-content-center my-5 my-lg-0">
+    <div class="container-fluid">
+        <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 my-5">
+            <div class="col mx-auto">
+                <div class="card login-card shadow-lg rounded-4 mb-2">
+                    <div class="card-body rounded-4">
+                        <div class="text-center">
+                            <h5 class="webline">{{signInTitle}}</h5>
+                        </div>
+                        <div class="login-separater text-center mb-2 lh-1">
+                            <h6 class="fs-6 mb-0 text-muted">Write To Rural Development Minister</h6>
+                            <h6 class="fs-6 mb-0 text-muted" *ngIf="isCitizen">
+                                <small class="fs-6">A Grievance Redressal System For Citizens</small>
+                            </h6>
+                        </div>
+                        <!-- <mat-radio-group [value]="selectedRole" (change)="toggleForm($event.value) "
+                            class="d-flex justify-content-center gap-3 mb-3">
+                            <mat-radio-button *ngFor="let r of roles" [value]="r.value">{{ r.viewValue
+                                }}</mat-radio-button>
+                        </mat-radio-group> -->
+
+                        <mat-radio-group
+                        [value]="selectedRole"
+                        (change)="toggleForm($event.value)"
+                        class="role-container"
+                        >
+                        
+                        <div class="role-box">
+                            <ng-container *ngFor="let r of roles">
+                            <mat-radio-button
+                                *ngIf="r.value === 'citizen'"
+                                [value]="r.value"
+                            >
+                                {{ r.viewValue }}
+                            </mat-radio-button>
+                            </ng-container>
+                        </div>
+                        
+                        <div class="role-box2">
+                            <ng-container *ngFor="let r of roles">
+                            <mat-radio-button
+                                *ngIf="r.value !== 'citizen'"
+                                [value]="r.value"
+                            >
+                                {{ r.viewValue }}
+                            </mat-radio-button>
+                            </ng-container>
+                        </div>
+                        </mat-radio-group> 
+
+                      
+                        <!-- Citizen Form -->
+                        <form *ngIf="isCitizen" [formGroup]="citizenForm">
+                            <mat-form-field appearance="outline" class="w-100 mb-1">
+                                <mat-label>Mobile Number</mat-label>
+                                <input matInput placeholder="Enter Mobile No" formControlName="mobile" appNumberOnly maxlength="10" minlength="10" (keyup)="onMobileKeyUp()" />
+                                <mat-error *ngIf="(citizenForm.get('mobile')?.touched || isSubmitted) && citizenForm.get('mobile')?.errors">
+                                    <ng-container *ngIf="citizenForm.get('mobile')?.errors?.['required']">
+                                    Mobile No is required
+                                    </ng-container>
+                                    <ng-container *ngIf="citizenForm.get('mobile')?.errors?.['pattern']">
+                                    Mobile number must start with 6, 7, 8, or 9 and be 10 digits
+                                    </ng-container>
+                                </mat-error>
+                            </mat-form-field>
+
+                            <div class="row align-items-center justify-content-center">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-12 d-flex mb-4 gap-2 justify-content-start align-items-left mt-1">
+                                    <div id="image"
+                                        class="captcha-box d-flex align-items-center justify-content-center">
+                                    </div>
+<!--                                     
+                                    <div class="captcha-refresh-button">
+                                        <button mat-icon-button (click)="reload()">
+                                            <mat-icon>refresh</mat-icon>
+                                        </button>
+                                    </div> -->
+
+                        <div class="captcha-refresh-button d-flex">
+                                <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
+                                    <i class="bi bi-volume-up-fill"></i>
+                                </a>
+                                <a mat-icon-button (click)="reload()">
+                                    <mat-icon>refresh</mat-icon>
+                                </a>
+                            </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label>Enter Captcha</mat-label>
+                                        <input matInput type="text" formControlName="captcha" maxlength="6">
+                                        <mat-error
+                                            *ngIf="(citizenForm.get('captcha')?.touched || isSubmitted) && citizenForm.get('captcha')?.invalid">
+                                            Captcha is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                            <div class="col-md-6">
+                                <button mat-raised-button color="primary" class="btn-glow btn-blue w-100 "  type="submit"
+                                    (click)="GetverifyCaptcha(otpDialog)">Get OTP</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button mat-raised-button class="w-100 btn-glow btn-red m-mt" type="button"
+                                    (click)="resetFormCitizen()">Reset</button>
+                            </div>
+                        </div>
+                        </form>
+                        
+
+                        <!-- Admin Form -->
+                        <form *ngIf="!isCitizen && isAdmin" [formGroup]="adminForm">
+                            <mat-form-field appearance="outline" class="w-100 mb-1">
+                                <mat-label>Select User Type</mat-label>
+                                <mat-select formControlName="user">
+                                    <mat-option *ngFor="let u of users" [value]="u.value">{{ u.viewValue
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(adminForm.get('user')?.touched || isSubmittedadmin) && adminForm.get('user')?.invalid">
+                                    Please select a user.
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="w-100 mb-3">
+                                <mat-label>Password</mat-label>
+                                <input matInput type="password" appNoPaste placeholder="Enter Password"
+                                    formControlName="password" />
+                                <mat-error
+                                    *ngIf="adminForm.get('password')?.touched && adminForm.get('password')?.invalid">
+                                    Password is required
+                                </mat-error>
+                            </mat-form-field>
+                                 <div class="row align-items-center justify-content-center">
+                                <div class="col-md-6 col-sm-4 d-flex mb-4 gap-2 justify-content-start align-items-left">
+                                    <div id="image"
+                                        class="captcha-box d-flex align-items-center justify-content-center">
+                                    </div>
+                                   <div class="captcha-refresh-button d-flex">
+                                <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
+                                    <i class="bi bi-volume-up-fill"></i>
+                                </a>
+                                <a mat-icon-button (click)="reload()">
+                                    <mat-icon>refresh</mat-icon>
+                                </a>
+                            </div>
+                                </div>
+                                <div class="col-md-6 col-sm-4">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label>Enter Captcha</mat-label>
+                                        <input matInput type="text" formControlName="captcha" maxlength="6" autocomplete="off">
+                                        <mat-error
+                                            *ngIf="(adminForm.get('captcha')?.touched || isSubmittedadmin) && adminForm.get('captcha')?.invalid">
+                                             Captcha is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <button mat-raised-button color="primary" class="btn-glow btn-blue w-100" type="submit"
+                                    (click)="onSubmitAdmin()" >Submit By Admin</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button mat-raised-button class="w-100 btn-glow btn-red m-mt" type="button"
+                                    (click)="resetFormAdmin()">Reset</button>
+                            </div>
+                        </div>
+                        </form>
+                        
+
+                     <!-- PD Form -->
+                        <form *ngIf="!isCitizen && !isAdmin && !isState" [formGroup]="pdForm">
+                            <mat-form-field appearance="outline" class="w-100 mb-3">
+                                <mat-label>Select PD Type</mat-label>
+                                <mat-select formControlName="user" (selectionChange)="selectedScheme($event)">
+                                    <mat-option *ngFor="let scheme of getschemeList" [value]="scheme.schemeName">
+                                        {{ scheme.schemeName}}</mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(pdForm.get('user')?.touched || isSubmittedPd) && pdForm.get('user')?.invalid">
+                                    Please select a user.
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="w-100 mb-3">
+                                <mat-label>Password</mat-label>
+                                <input matInput type="password" appNoPaste placeholder="Enter Password"
+                                    formControlName="password" />
+                                <mat-error
+                                    *ngIf="pdForm.get('password')?.touched && pdForm.get('password')?.invalid">
+                                    Password is required
+                                </mat-error>
+                            </mat-form-field>
+                                 <div class="row align-items-center justify-content-center">
+                                <div class="col-md-6 col-sm-4 d-flex mb-4 gap-2 justify-content-start align-items-left">
+                                    <div id="image"
+                                        class="captcha-box d-flex align-items-center justify-content-center">
+                                    </div>
+                                    <div class="captcha-refresh-button d-flex">
+                                <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
+                                    <i class="bi bi-volume-up-fill"></i>
+                                </a>
+                                <a mat-icon-button (click)="reload()">
+                                    <mat-icon>refresh</mat-icon>
+                                </a>
+                            </div>
+                                </div>
+                                <div class="col-md-6 col-sm-4">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label>Enter Captcha</mat-label>
+                                        <input matInput type="text" formControlName="captcha" maxlength="6" autocomplete="off">
+                                        <mat-error
+                                            *ngIf="(pdForm.get('captcha')?.touched || isSubmittedPd) && pdForm.get('captcha')?.invalid">
+                                             Captcha is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                         <div class="row mb-3" >
+                            <div class="col-md-6">
+                                <button mat-raised-button class="w-100 btn-glow btn-blue" type="submit"
+                                    (click)="onSubmitPD()" >Submit By PD</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button mat-raised-button class="w-100 btn-glow btn-red m-mt" type="button"
+                                    (click)="resetFormAdmin()" >Reset</button>
+                            </div>
+                        </div>
+                        </form>
+                        
+
+                       <!-- state Form -->
+                        <form *ngIf="!isCitizen && !isAdmin && isState" [formGroup]="adminForm">
+                            <mat-form-field appearance="outline" class="w-100 mb-3">
+                                <mat-label>Select State Type</mat-label>
+                                <mat-select formControlName="user" (selectionChange)="onStateChange($event)">
+                                    <mat-option *ngFor="let u of masterStateData" [value]="u">{{ u.stateName
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error
+                                    *ngIf="(adminForm.get('user')?.touched || isSubmittedadmin) && adminForm.get('user')?.invalid">
+                                    Please select a user.
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="w-100 mb-3">
+                                <mat-label>Password</mat-label>
+                                <input matInput type="password" placeholder="Enter Password"
+                                    formControlName="password" />
+                                <mat-error
+                                    *ngIf="adminForm.get('password')?.touched && adminForm.get('password')?.invalid">
+                                    Password is required
+                                </mat-error>
+                            </mat-form-field>
+                                 <div class="d-flex align-items-center justify-content-center">
+                                <div class="col-md-6 col-sm-4 d-flex mb-4 gap-2 justify-content-start align-items-left">
+                                    <div id="image"
+                                        class="captcha-box d-flex align-items-center justify-content-center">
+                                    </div>
+                                    <div class="captcha-refresh-button d-flex">
+                                <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
+                                    <i class="bi bi-volume-up-fill"></i>
+                                </a>
+                                <a mat-icon-button (click)="reload()">
+                                    <mat-icon>refresh</mat-icon>
+                                </a>
+                            </div>
+                                </div>
+                                <div class="col-md-6 col-sm-4">
+                                    <mat-form-field appearance="outline" class="w-100">
+                                        <mat-label>Enter Captcha</mat-label>
+                                        <input matInput type="text" formControlName="captcha" maxlength="6" autocomplete="off">
+                                        <mat-error
+                                            *ngIf="(adminForm.get('captcha')?.touched || isSubmitted) && adminForm.get('captcha')?.invalid">
+                                             Captcha is required
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                         <div class="row mb-3">
+                            <div class="col-md-6">
+                                <button mat-flat-button class="w-100 btn-glow btn-blue" type="submit"
+                                    (click)="onSubmitAdmin()"      [disabled]="adminForm.invalid">Submit By State</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button mat-stroked-button class="w-100 btn-glow btn-red" type="button"
+                                    (click)="resetFormAdmin()" [disabled]="adminForm.invalid">Reset</button>
+                            </div>
+                        </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- OTP POPUP TEMPLATE -->
+<ng-template #otpDialog>
+    <h2 mat-dialog-title>Enter OTP - {{otpNumber}}</h2>
+    <mat-dialog-content>
+        <p class="mb-3">We have sent an OTP to your mobile number.</p>
+        <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Enter OTP</mat-label>
+            <input matInput maxlength="6" [(ngModel)]="otpValue" />
+        </mat-form-field>
+    </mat-dialog-content>
+    <div class="count">
+        <span *ngIf="this.cooldown != 0">{{cooldown}}</span>
+        <button *ngIf="this.cooldown <= 0" mat-stroked-button color="warn" (click)="resendOtp()">resent</button>
+    </div>
+    <mat-dialog-actions align="center" style="padding-top: 0px !important;">
+        <button mat-stroked-button color="warn" mat-dialog-close>Cancel</button>
+        <button mat-flat-button color="primary" (click)="verifyOtp()">Verify</button>
+    </mat-dialog-actions>
+</ng-template>
