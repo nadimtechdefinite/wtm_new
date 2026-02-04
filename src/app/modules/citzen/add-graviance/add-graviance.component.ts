@@ -282,25 +282,35 @@ export class AddGravianceComponent implements OnInit {
   // }
 previousDescriptionLength = 0;
 onDescriptionInput(event: Event) {
+   this.speechService.resetRecording();
   if (this.micActive) return;
+
   const value = (event.target as HTMLTextAreaElement).value || '';
   const currentLength = value.length;
+
+  // 🧹 user deleted something
   if (currentLength < this.previousDescriptionLength) {
     this.speechService.resetRecording();
   }
+
   this.previousDescriptionLength = currentLength;
+
+  // existing transliteration logic
   this.transliterateOnType(event);
 }
 
   onLanguageChange(event: MatSelectChange) {
   const selected = event.value;
+ this.speechService.resetRecording();
+  // 🔴 stop mic if active
   if (this.micActive) {
     this.micActive = false;
     this.speechService.resetRecording();
   }
-  this.speechService.resetRecording();
 
+  // 🔁 reset description
   this.grievanceForm.get('Description')?.reset();
+
   this.grievanceForm.get('Language')?.setValue(selected);
   this.selectedLanguage = selected;
 
@@ -744,6 +754,49 @@ onDescriptionInput(event: Event) {
   }
 
   message: any = ""
+
+// audioBase64: string | null = null;
+// async toggleMic() {
+
+//   if (this.micActive) {
+//     // 🔴 STOP
+//     this.micActive = false;
+
+//     const wavBlob = await this.speechService.stopRecording();
+//     this.audioBase64 = await this.toBase64(wavBlob);
+
+//     this.hitAsrBhasini();
+//   } else {
+//     // 🟢 START
+//     this.micActive = true;
+//     this.audioBase64 = null;
+
+//     // ✅ CLEAR OLD TEXT HERE
+//     this.grievanceForm.patchValue({
+//       Description: ''
+//     });
+
+//     await this.speechService.startRecording();
+//   }
+// }
+
+//  hitAsrBhasini() {
+//   const lang = this.grievanceForm.get('Language')?.value || 'hi';
+
+//   const payload = {
+//     audioBase64: this.audioBase64,
+//     language: lang
+//   };
+
+//   this.masterService.asrBhasini(payload).subscribe((res: any) => {
+
+//     // ✅ FORCE REPLACE (NO APPEND)
+//     this.grievanceForm.get('Description')?.setValue(res?.data || '');
+
+//   });
+// }
+
+
  async toggleMic() {
   this.message = 'Speak...';
 
@@ -754,6 +807,8 @@ onDescriptionInput(event: Event) {
 
     const wavBlob = await this.speechService.stopRecording();
     const base64 = await this.toBase64(wavBlob);
+    // this.audioBase64 = await this.toBase64(wavBlob);
+
     const lang = this.grievanceForm.get('Language')?.value || 'hi';
     const payload = {
     audioBase64: base64,

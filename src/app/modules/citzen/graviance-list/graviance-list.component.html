@@ -69,12 +69,12 @@
                                 <span class="status" [ngClass]="{
                                     'statusgreen': row.status === 'C',
                                     'statusorange': row.status === 'U',
-                                    'statusblue': row.status === 'T'
+                                    'statusorangeT': row.status === 'T'
                                 }">
                                     {{
                                         row.status === 'U' ? 'Under-Process' :
                                         row.status === 'C' ? 'Completed' :
-                                        row.status === 'T' ? 'Transferred' :
+                                        row.status === 'T' ? 'Under-Process' :
                                         row.status
                                     }}
                                 </span>

@@ -151,6 +151,9 @@ grievanceList:any
       title: {
         text: 'Grievance Status'
       },
+        credits: {
+      enabled: false 
+    },
       series: [{
         name: 'Count',
         data: this.chartSummary
@@ -167,6 +170,9 @@ grievanceList:any
       title: {
         text: 'Total Grievance Overview'
       },
+       credits: {
+      enabled: false 
+    },
       xAxis: {
         categories: ['Total Registered', 'Completed', 'Under Process', ]
       },
