@@ -219,8 +219,8 @@
                                         [ngStyle]="{ color: item.commentsBy?.toUpperCase() === 'ADMIN' ? 'green' : 'brown' }">
                                         {{ item.commentsBy }}
                                         <span>
-                                            <span class="status" [ngClass]="{'completed': item?.status === 'C','pending': item?.status === 'U',}">
-                                                {{ item?.status === 'U' ? 'Under-Process' : item?.status === 'C' ?'Complete' :item?.status }}
+                                            <span class="status" [ngClass]="{'completed': item?.status === 'C','pending': item?.status === 'U', 'statusblue': item?.status === 'T'}">
+                                                {{ item?.status === 'U' ? 'Under-Process' : item?.status === 'C' ?'Complete' :item?.status === 'T' ? 'Transferred' : item?.status }}
                                             </span>
                                         </span>
                                     </div>

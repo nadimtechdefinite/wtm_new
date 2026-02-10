@@ -81,22 +81,33 @@ export class AddGravianceComponent implements OnInit {
   isSelectedFile: any;
   isClearFile: any
   generatedComplaintId: any;
+  parsedUserInfo: any;
+  userInfo: string | null = null;
+  grievanceId: any;
+  getCitizenId: any;
+  officeStatusDetails: any;
+  userCode: any;
+  userType: any;
+  loginName: any;
+  UserMobile: any;
+  UserCitizenId: any;
+  captchaId: any;
 
   languages = [
-  { code: 'en', label: 'English' },
-  { code: 'hi', label: 'Hindi (हिन्दी)' },
-  { code: 'bn', label: 'Bengali (বাংলা)' },
-  { code: 'ta', label: 'Tamil (தமிழ்)' },
-  { code: 'te', label: 'Telugu (తెలుగు)' },
-  { code: 'gu', label: 'Gujarati (ગુજરાતી)' },
-  { code: 'ml', label: 'Malayalam (മലയാളം)' },
-  { code: 'mr', label: 'Marathi (मराठी)' },
-  { code: 'kn', label: 'Kannada (ಕನ್ನಡ)' },
-  { code: 'pa', label: 'Punjabi (ਪੰਜਾਬੀ)' },
-  { code: 'or', label: 'Odia (ଓଡ଼ିଆ)' },
-  { code: 'sa', label: 'Sanskrit (संस्कृत)' },
-  { code: 'ur', label: 'Urdu (اردو)' }
-];
+    { code: 'en', label: 'English' },
+    { code: 'hi', label: 'Hindi (हिन्दी)' },
+    { code: 'bn', label: 'Bengali (বাংলা)' },
+    { code: 'ta', label: 'Tamil (தமிழ்)' },
+    { code: 'te', label: 'Telugu (తెలుగు)' },
+    { code: 'gu', label: 'Gujarati (ગુજરાતી)' },
+    { code: 'ml', label: 'Malayalam (മലയാളം)' },
+    { code: 'mr', label: 'Marathi (मराठी)' },
+    { code: 'kn', label: 'Kannada (ಕನ್ನಡ)' },
+    { code: 'pa', label: 'Punjabi (ਪੰਜਾਬੀ)' },
+    { code: 'or', label: 'Odia (ଓଡ଼ିଆ)' },
+    { code: 'sa', label: 'Sanskrit (संस्कृत)' },
+    { code: 'ur', label: 'Urdu (اردو)' }
+  ];
 
   constructor(
     private service: CommonService,
@@ -113,7 +124,7 @@ export class AddGravianceComponent implements OnInit {
     private loader: LoaderService,
     private alertService: AlertService,
     private speechService: SpeechService,
-  ) {}
+  ) { }
 
   ngOnInit() {
 
@@ -123,16 +134,31 @@ export class AddGravianceComponent implements OnInit {
     this.getSchemeList();
     this.getMinistry();
     //  this.citizenDetails();
-    this.mobileService.updateMobile$.subscribe(value => {
-      this.mobile = value;  // bind to variable
-    });
-    this.mobileService.updatelogindata$.subscribe(value => {
-      this.getcitizenId = value.data.citizenId;
-      this.mobileNo = value.data.mobileNo;  // bind to variable
-    });
-    this.grievanceForm.get('mobile')?.setValue(this.mobile)
-    if (this.mobile != null) {
-      this.masterService.citizenDetails(this.getcitizenId, this.mobileNo).subscribe((res: any) => {
+    // this.mobileService.updateMobile$.subscribe(value => {
+    //   this.mobile = value;  // bind to variable
+    // });
+    // this.mobileService.updatelogindata$.subscribe(value => {
+    //   this.getcitizenId = value.data.citizenId;
+    //   this.mobileNo = value.data.mobileNo;  // bind to variable
+    // });
+    this.userInfo = sessionStorage.getItem('userInfo');
+    if (this.userInfo) {
+      this.parsedUserInfo = JSON.parse(this.userInfo);
+      this.UserMobile = this.parsedUserInfo.mobileNo;
+      this.UserCitizenId = this.parsedUserInfo.citizenId;
+      this.userCode = this.parsedUserInfo.userCode;
+      this.userType = this.parsedUserInfo.userType;
+      this.schemeCode = this.parsedUserInfo.schemeCode
+      this.loginName = this.parsedUserInfo.loginName
+      console.log(this.userType, "this.userType");
+    }
+    // if(this.UserCitizenId && this.UserMobile) {
+    //    this.getCitizenDetails();
+    // }
+
+    this.grievanceForm.get('mobile')?.setValue(this.UserMobile)
+    if (this.UserMobile != null) {
+      this.masterService.citizenDetails(this.UserCitizenId, this.UserMobile).subscribe((res: any) => {
         if (res) {
           this.citzenDetails = res.data
           this.userName = res.data.name
@@ -280,44 +306,44 @@ export class AddGravianceComponent implements OnInit {
   //     this.recognition.lang = selected;
   //   }
   // }
-previousDescriptionLength = 0;
-onDescriptionInput(event: Event) {
-   this.speechService.resetRecording();
-  if (this.micActive) return;
-
-  const value = (event.target as HTMLTextAreaElement).value || '';
-  const currentLength = value.length;
-
-  // 🧹 user deleted something
-  if (currentLength < this.previousDescriptionLength) {
+  previousDescriptionLength = 0;
+  onDescriptionInput(event: Event) {
     this.speechService.resetRecording();
+    if (this.micActive) return;
+
+    const value = (event.target as HTMLTextAreaElement).value || '';
+    const currentLength = value.length;
+
+    // 🧹 user deleted something
+    if (currentLength < this.previousDescriptionLength) {
+      this.speechService.resetRecording();
+    }
+
+    this.previousDescriptionLength = currentLength;
+
+    // existing transliteration logic
+    this.transliterateOnType(event);
   }
-
-  this.previousDescriptionLength = currentLength;
-
-  // existing transliteration logic
-  this.transliterateOnType(event);
-}
 
   onLanguageChange(event: MatSelectChange) {
-  const selected = event.value;
- this.speechService.resetRecording();
-  // 🔴 stop mic if active
-  if (this.micActive) {
-    this.micActive = false;
+    const selected = event.value;
     this.speechService.resetRecording();
+    // 🔴 stop mic if active
+    if (this.micActive) {
+      this.micActive = false;
+      this.speechService.resetRecording();
+    }
+
+    // 🔁 reset description
+    this.grievanceForm.get('Description')?.reset();
+
+    this.grievanceForm.get('Language')?.setValue(selected);
+    this.selectedLanguage = selected;
+
+    if (this.recognition) {
+      this.recognition.lang = selected;
+    }
   }
-
-  // 🔁 reset description
-  this.grievanceForm.get('Description')?.reset();
-
-  this.grievanceForm.get('Language')?.setValue(selected);
-  this.selectedLanguage = selected;
-
-  if (this.recognition) {
-    this.recognition.lang = selected;
-  }
-}
 
   reload() {
     this.generateCaptcha();
@@ -329,9 +355,10 @@ onDescriptionInput(event: Event) {
   generateCaptcha() {
     this.masterService.generateCaptcha().subscribe((response: any) => {
       console.log(response, "response captcha");
-      this.getCaptchadata = response.data
-      this.captcha = this.getCaptchadata.captcha
-      this.captchaCode = this.getCaptchadata.captchaCode
+      this.getCaptchadata = response.data;
+      this.captcha = this.getCaptchadata.captcha;
+      this.captchaCode = this.getCaptchadata.captchaCode;
+      this.captchaId = this.getCaptchadata.captchaId;
       sessionStorage.setItem('sessionId1', response.data.sessionId);
       this.generateImage(this.captcha)
     });
@@ -349,25 +376,20 @@ onDescriptionInput(event: Event) {
   }
 
   speakCaptcha() {
-  if (!this.captchaCode) {
-    return;
+    if (!this.captchaCode) {
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(
+      this.captchaCode.split('').join(' ')
+    );
+    utterance.lang = 'en-IN';
+    utterance.rate = 0.6;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    window.speechSynthesis.speak(utterance);
   }
-
-  // Stop previous speech (important)
-  window.speechSynthesis.cancel();
-
-  const utterance = new SpeechSynthesisUtterance(
-    this.captchaCode.split('').join(' ')
-  );
-
-  utterance.lang = 'en-IN';  
-  utterance.rate = 0.6;      
-  utterance.pitch = 1;
-  utterance.volume = 1;
-
-  window.speechSynthesis.speak(utterance);
-}
-
   selectedMinister(event: any) {
     const valuename = event.value
   }
@@ -404,11 +426,6 @@ onDescriptionInput(event: Event) {
       error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
     });
   }
-
-
-
-
-
   onStateChange(event: any) {
 
     this.stateCode = event.value;
@@ -459,8 +476,7 @@ onDescriptionInput(event: Event) {
       error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading district list')
     });
   }
-
-
+  
   getBlockList() {
     this.masterService.getBlockList(this.stateCode, this.districtCode).subscribe({
       next: (response: any) => {
@@ -556,9 +572,6 @@ onDescriptionInput(event: Event) {
 
 
   GetverifyCaptcha() {
-
-
-    // 🔐 captcha value
     if (!this.captcha || this.captcha.trim() === '') {
       this.toastr.error('Please enter captcha');
       return;
@@ -580,7 +593,8 @@ onDescriptionInput(event: Event) {
     }
 
     const payload = {
-      captcha: enteredCaptcha
+      captcha: enteredCaptcha,
+      captchaId: this.captchaId
     }
 
     this.masterService.verifyCaptcha(payload).subscribe({
@@ -755,80 +769,80 @@ onDescriptionInput(event: Event) {
 
   message: any = ""
 
-// audioBase64: string | null = null;
-// async toggleMic() {
+  // audioBase64: string | null = null;
+  // async toggleMic() {
 
-//   if (this.micActive) {
-//     // 🔴 STOP
-//     this.micActive = false;
+  //   if (this.micActive) {
+  //     // 🔴 STOP
+  //     this.micActive = false;
 
-//     const wavBlob = await this.speechService.stopRecording();
-//     this.audioBase64 = await this.toBase64(wavBlob);
+  //     const wavBlob = await this.speechService.stopRecording();
+  //     this.audioBase64 = await this.toBase64(wavBlob);
 
-//     this.hitAsrBhasini();
-//   } else {
-//     // 🟢 START
-//     this.micActive = true;
-//     this.audioBase64 = null;
+  //     this.hitAsrBhasini();
+  //   } else {
+  //     // 🟢 START
+  //     this.micActive = true;
+  //     this.audioBase64 = null;
 
-//     // ✅ CLEAR OLD TEXT HERE
-//     this.grievanceForm.patchValue({
-//       Description: ''
-//     });
+  //     // ✅ CLEAR OLD TEXT HERE
+  //     this.grievanceForm.patchValue({
+  //       Description: ''
+  //     });
 
-//     await this.speechService.startRecording();
-//   }
-// }
+  //     await this.speechService.startRecording();
+  //   }
+  // }
 
-//  hitAsrBhasini() {
-//   const lang = this.grievanceForm.get('Language')?.value || 'hi';
+  //  hitAsrBhasini() {
+  //   const lang = this.grievanceForm.get('Language')?.value || 'hi';
 
-//   const payload = {
-//     audioBase64: this.audioBase64,
-//     language: lang
-//   };
+  //   const payload = {
+  //     audioBase64: this.audioBase64,
+  //     language: lang
+  //   };
 
-//   this.masterService.asrBhasini(payload).subscribe((res: any) => {
+  //   this.masterService.asrBhasini(payload).subscribe((res: any) => {
 
-//     // ✅ FORCE REPLACE (NO APPEND)
-//     this.grievanceForm.get('Description')?.setValue(res?.data || '');
+  //     // ✅ FORCE REPLACE (NO APPEND)
+  //     this.grievanceForm.get('Description')?.setValue(res?.data || '');
 
-//   });
-// }
+  //   });
+  // }
 
 
- async toggleMic() {
-  this.message = 'Speak...';
-
-  if (this.micActive) {
-    // 🔴 STOP MIC
-    this.micActive = false;
-    this.message = '';
-
-    const wavBlob = await this.speechService.stopRecording();
-    const base64 = await this.toBase64(wavBlob);
-    // this.audioBase64 = await this.toBase64(wavBlob);
-
-    const lang = this.grievanceForm.get('Language')?.value || 'hi';
-    const payload = {
-    audioBase64: base64,
-     language: lang
-    }
-    this.masterService.asrBhasini(payload).subscribe((res:any) => { 
-     const text = res.data
-    this.grievanceForm.patchValue({
-      Description: text
-      });
-     
-    });
-
-  } else {
-    // 🟢 START MIC
-    this.micActive = true;
+  async toggleMic() {
     this.message = 'Speak...';
-    await this.speechService.startRecording();
+
+    if (this.micActive) {
+      // 🔴 STOP MIC
+      this.micActive = false;
+      this.message = '';
+
+      const wavBlob = await this.speechService.stopRecording();
+      const base64 = await this.toBase64(wavBlob);
+      // this.audioBase64 = await this.toBase64(wavBlob);
+
+      const lang = this.grievanceForm.get('Language')?.value || 'hi';
+      const payload = {
+        audioBase64: base64,
+        language: lang
+      }
+      this.masterService.asrBhasini(payload).subscribe((res: any) => {
+        const text = res.data
+        this.grievanceForm.patchValue({
+          Description: text
+        });
+
+      });
+
+    } else {
+      // 🟢 START MIC
+      this.micActive = true;
+      this.message = 'Speak...';
+      await this.speechService.startRecording();
+    }
   }
-}
   // ---------------- TRANSLITERATION ----------------
   private getScript(langCode: string): string {
     return {

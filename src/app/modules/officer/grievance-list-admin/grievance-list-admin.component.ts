@@ -96,20 +96,23 @@ export class GrievanceListAdminComponent {
       this.loginName = this.parsedUserInfo.loginName
       console.log(this.userType, "this.userType");
     }
-
-    this.route.queryParams.subscribe((params: { [x: string]: null; }) => {
-      this.selectedStatus = params['status'] || null;
-      // this.getGrievanceDetailsForAdmin();
-      this.pendingCount();
+    this.route.queryParams.subscribe((params) => {
+      const status = params['status'];
+      this.selectedStatus = status || null;
+      if (
+        status === 'PENDING_1_WEEK' ||
+        status === 'PENDING_7_15_DAYS' ||
+        status === 'PENDING_15_30_DAYS' ||
+        status === 'PENDING_30_90_DAYS' ||
+        status === 'PENDING_MORE_THAN_90'
+      ) {
+        this.pendingCount();
+      } else {
+        this.getGrievanceDetailsForAdmin();
+      }
     });
-    if (this.selectedStatus) {
-      this.pendingCount();
-    }
     this.officeStatus();
-    this.getGrievanceDetailsForAdmin()
   }
-
-
 
   pendingCount() {
     this.masterService
@@ -120,80 +123,96 @@ export class GrievanceListAdminComponent {
             ...item,
             SerialNo: i + 1
           }));
-          //  this.applyFilterq();
-          // this.grievanceList = res.data.grievanceDetails;
-          // const tableData = this.selectedStatus? this.filteredList: this.GrievanceContent;
           this.admindataSource = new MatTableDataSource(this.GrievanceContent);
           this.admindataSource.paginator = this.paginator;
         }
         else {
-
         }
       });
-
   }
 
+  // getGrievanceDetailsForAdmin() {
+  //   this.masterService
+  //     .getGrievanceDetailsForAdmin(this.schemeCode)
+  //     .subscribe((res: any) => {
+  //       if (res.messageCode === 1) {
+  //         this.GrievanceContent = res.data.map((item: any, i: any) => ({
+  //           ...item,
+  //           SerialNo: i + 1
+  //         }));
+  //         this.applyFilterq();
+  //         console.log('User List Citizen Details:', this.citzenDetails);
+  //         const tableData = this.selectedStatus ? this.filteredList : this.GrievanceContent;
+  //         this.admindataSource = new MatTableDataSource(tableData);
+  //         this.admindataSource.paginator = this.paginator;
+  //       }
+  //       else {
+
+  //       }
+  //     });
+
+  // }
 
   getGrievanceDetailsForAdmin() {
-    this.masterService
-      .getGrievanceDetailsForAdmin(this.schemeCode)
-      .subscribe((res: any) => {
-        if (res.messageCode === 1) {
-          this.GrievanceContent = res.data.map((item: any, i: any) => ({
+  this.masterService
+    .getGrievanceDetailsForAdmin(this.schemeCode)
+    .subscribe({
+      next: (res: any) => {
+        if (res?.messageCode === 1 && Array.isArray(res.data)) {
+
+          this.GrievanceContent = res.data.map((item: any, i: number) => ({
             ...item,
             SerialNo: i + 1
           }));
+
           this.applyFilterq();
-          // this.grievanceList = res.data.grievanceDetails;
-          console.log('User List Citizen Details:', this.citzenDetails);
-          const tableData = this.selectedStatus ? this.filteredList : this.GrievanceContent;
+
+          const tableData = this.selectedStatus
+            ? this.filteredList
+            : this.GrievanceContent;
+
           this.admindataSource = new MatTableDataSource(tableData);
           this.admindataSource.paginator = this.paginator;
-        }
-        else {
 
+        } else {
+          console.error('Failed to load scheme list:', res?.errorMsg || 'Unknown error');
         }
-      });
+      },
 
-  }
+      error: (err: HttpErrorResponse) => {
+        this.errorHandler.handleHttpError(err, 'loading scheme list')
+      },
+      complete: () => {
+        console.log('getGrievanceDetailsForAdmin() completed');
+      }
+    });
+}
 
   filteredList: any[] = [];
   selectedStatus: string | null = null;
-  // applyFilterq() {
-  //   if (this.selectedStatus) {
-  //     if (!this.selectedStatus || this.selectedStatus === 'T') {
-  //       this.filteredList = [...this.GrievanceContent];
-  //       return;
-  //     }
-  //     this.filteredList = this.GrievanceContent.filter(
-  //       (g: any) => g.status === this.selectedStatus
-  //     );
-  //   } else {
-  //     this.filteredList = this.GrievanceContent;
-  //   }
-  // }
-applyFilterq
-  () {
-  let data: any[] = [];
 
-  if (!this.selectedStatus || this.selectedStatus === 'T') {
-    data = [...this.GrievanceContent];
-  } else {
-    data = this.GrievanceContent.filter(
-      (g: any) => g.status === this.selectedStatus
-    );
+  applyFilterq
+    () {
+    let data: any[] = [];
+
+    if (!this.selectedStatus || this.selectedStatus === 'T') {
+      data = [...this.GrievanceContent];
+    } else {
+      data = this.GrievanceContent.filter(
+        (g: any) => g.status === this.selectedStatus
+      );
+    }
+
+    // 🔹 Re-assign SerialNo after filter
+    this.filteredList = data.map((item, index) => ({
+      ...item,
+      SerialNo: index + 1
+    }));
+
+    // 🔹 Update table datasource also
+    this.admindataSource = new MatTableDataSource(this.filteredList);
+    this.admindataSource.paginator = this.paginator;
   }
-
-  // 🔹 Re-assign SerialNo after filter
-  this.filteredList = data.map((item, index) => ({
-    ...item,
-    SerialNo: index + 1
-  }));
-
-  // 🔹 Update table datasource also
-  this.admindataSource = new MatTableDataSource(this.filteredList);
-  this.admindataSource.paginator = this.paginator;
-}
 
 
   exportToExcel() {
@@ -306,7 +325,7 @@ applyFilterq
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
         }
       },
-      error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
+      
     });
   }
 

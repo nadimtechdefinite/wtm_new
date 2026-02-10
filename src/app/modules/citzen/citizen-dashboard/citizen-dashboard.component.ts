@@ -45,6 +45,8 @@ export class CitizenDashboardComponent implements OnInit, AfterViewInit {
   userType:any;
   loginName:any;
   Highcharts: typeof Highcharts = Highcharts;
+  UserMobile: any;
+  UserCitizenId: any;
   constructor(private commonService: CommonService, private route: ActivatedRoute, private mobileService: MobileService,
     private citizenStore: CitizenStoreService,
     private router: Router,
@@ -87,17 +89,23 @@ export class CitizenDashboardComponent implements OnInit, AfterViewInit {
      this.mobileService.updatelogindata$.subscribe(value => {
     this.citizenId = value.data.citizenId;
     this.mobileNo = value.data.mobileNo;
-    this.getCitizenDetails();
   });
      this.userInfo = sessionStorage.getItem('userInfo');
     if (this.userInfo) {
       this.parsedUserInfo = JSON.parse(this.userInfo);
+      this.UserMobile = this.parsedUserInfo.mobileNo;
+      this.UserCitizenId = this.parsedUserInfo.citizenId;
       this.userCode = this.parsedUserInfo.userCode;
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
       console.log(this.userType, "this.userType");
     }
+    if(this.UserCitizenId && this.UserMobile) {
+       this.getCitizenDetails();
+    }
+       
+
   }
 
   ngAfterViewInit(): void {
@@ -117,9 +125,9 @@ export class CitizenDashboardComponent implements OnInit, AfterViewInit {
 citzenDetails:any
 grievanceList:any
   getCitizenDetails() {
-    if (this.citizenId && this.mobileNo) {
+    if (this.UserCitizenId && this.UserMobile) {
       this.masterService
-        .citizenDetails(this.citizenId, this.mobileNo)
+        .citizenDetails(this.UserCitizenId, this.UserMobile)
         .subscribe((res: any) => {
           if (res) {
             this.citzenDetails = res.data

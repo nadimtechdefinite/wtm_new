@@ -17,4 +17,5 @@ export class SidebarToggleService {
   open() {
     this.sidebarState.next(true);
   }
+  
 }

@@ -1,43 +1,49 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MatDialogActions, MatDialogContent, MatDialogModule, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { MatError, MatFormField, MatLabel } from "@angular/material/form-field";
+import { MATERIAL_MODULES } from '../material/material';
+import { MatButtonModule } from '@angular/material/button';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { MatFormField, MatLabel } from "@angular/material/form-field";
-import { MATERIAL_MODULES } from '../../../shared/material/material';
-import { masterService } from '../../../services/master.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component';
+import { CommonModule } from '@angular/common';
+import { AlertService } from '../../services/alert.service';
 import { ToastrService } from 'ngx-toastr';
+import { masterService } from '../../services/master.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ErrorHandlerService } from '../../../shared/error-handler.service';
-import { AlertService } from '../../../services/alert.service';
-import { NoPasteDirective } from '../../../shared/directives/no-paste.directive';
+import { ErrorHandlerService } from '../error-handler.service';
+import { ConfirmDialogComponent } from '../confirm-dialog.component';
+import { NoPasteDirective } from '../directives/no-paste.directive';
+import { AuthService } from '../../auth/auth.service';
 import * as CryptoJS from 'crypto-js';
 @Component({
-  selector: 'app-change-password',
+  selector: 'app-force-change-password-dialog',
   standalone: true,
-  imports: [MatFormField, MatLabel, CommonModule, ReactiveFormsModule, FormsModule, ...MATERIAL_MODULES, NoPasteDirective],
-  templateUrl: './change-password.component.html',
-  styleUrl: './change-password.component.scss'
+  imports: [MatFormField, MatLabel, CommonModule, ReactiveFormsModule, FormsModule, ...MATERIAL_MODULES, NoPasteDirective, MatButtonModule],
+  templateUrl: './force-change-password-dialog.component.html',
+  styleUrl: './force-change-password-dialog.component.scss'
 })
-export class ChangePasswordComponent implements OnInit {
-  changePassword!: FormGroup;
+export class ForceChangePasswordDialogComponent {
+  forceChangePassword!: FormGroup
+  // changePassword!: FormGroup;
   hideCurrent = true;
   hideNew = true;
   hideConfirm = true;
   isSubmitted = false;
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { type: string; title: string },
     private fb: FormBuilder,
     private masterService: masterService,
-    private dialog: MatDialog,
     private toastr: ToastrService,
+    private dialog: MatDialog,
+    private alertService: AlertService,
     private errorHandler: ErrorHandlerService,
-    private alertService:AlertService) { }
+    private auth: AuthService,
+    private dialogRef: MatDialogRef<ForceChangePasswordDialogComponent>
+  ) { }
 
   ngOnInit() {
-    this.changePassword = this.fb.group(
+    this.forceChangePassword = this.fb.group(
       {
         currentpassword: ['', Validators.required],
-
         newpassword: [
           '',
           [
@@ -48,7 +54,6 @@ export class ChangePasswordComponent implements OnInit {
             )
           ]
         ],
-
         confirmpassword: ['', Validators.required]
       },
       {
@@ -60,29 +65,23 @@ export class ChangePasswordComponent implements OnInit {
   passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
     const newPassCtrl = group.get('newpassword');
     const confirmPassCtrl = group.get('confirmpassword');
-
     if (!newPassCtrl || !confirmPassCtrl) return null;
-
     if (confirmPassCtrl.errors && !confirmPassCtrl.errors['passwordMismatch']) {
       return null;
     }
-
     if (newPassCtrl.value !== confirmPassCtrl.value) {
       confirmPassCtrl.setErrors({ passwordMismatch: true });
     } else {
       confirmPassCtrl.setErrors(null);
     }
-
     return null;
   }
 
   formSubmit() {
-    
-    if (this.changePassword.invalid) {
-      this.changePassword.markAllAsTouched();
+    if (this.forceChangePassword.invalid) {
+      this.forceChangePassword.markAllAsTouched();
       return;
     }
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
       data: {
@@ -90,7 +89,6 @@ export class ChangePasswordComponent implements OnInit {
         flag: "changepassword"
       }
     });
-
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (confirmed) {
         this.changePasswordApiCall();
@@ -100,32 +98,38 @@ export class ChangePasswordComponent implements OnInit {
 
   changePasswordApiCall() {
     this.isSubmitted = true;
-    if (this.changePassword.invalid) {
-      this.changePassword.markAllAsTouched();
+    if (this.forceChangePassword.invalid) {
+      this.forceChangePassword.markAllAsTouched();
       return;
     }
-const encryptedPassword = CryptoJS.SHA256(this.changePassword.value.currentpassword.trim()).toString(CryptoJS.enc.Hex);
+    const encryptedPassword = CryptoJS.SHA256(this.forceChangePassword.value.currentpassword.trim()).toString(CryptoJS.enc.Hex);
     const payload = {
       loginName: JSON.parse(sessionStorage.getItem('userInfo') || '{}')?.loginName,
       currentPassword: encryptedPassword,
-      newPassword: this.changePassword.value.newpassword,
-      confirmPassword: this.changePassword.value.confirmpassword
+      newPassword: this.forceChangePassword.value.newpassword,
+      confirmPassword: this.forceChangePassword.value.confirmpassword
     };
-
     this.masterService.changePassword(payload).subscribe({
       next: (res: any) => {
         if (res.messageCode === 1) {
           this.alertService.success(res.message);
           this.isSubmitted = false;
-          this.changePassword.reset();
-          this.changePassword.markAsPristine();
-          this.changePassword.markAsUntouched();
+          this.forceChangePassword.reset();
+          this.forceChangePassword.markAsPristine();
+          this.forceChangePassword.markAsUntouched();
+          this.dialogRef.close(true);
+          this.auth.logout();
         } else {
           this.toastr.error(res.message);
         }
       },
       error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err)
     });
+  }
+
+  close() {
+    this.dialogRef.close(true);
+    // this.auth.logout();
   }
 
 }

@@ -12,12 +12,12 @@ import { ErrorHandlerService } from '../../../shared/error-handler.service';
 @Component({
   selector: 'app-officer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, ],
+  imports: [CommonModule, RouterModule,],
   templateUrl: './officer-dashboard.component.html',
   styleUrl: './officer-dashboard.component.scss'
 })
 export class OfficerDashboardComponent {
- pageTitle: string = '';
+  pageTitle: string = '';
   Highcharts: typeof Highcharts = Highcharts;
   adminPdsummary: any;
   userInfo: any;
@@ -107,14 +107,14 @@ export class OfficerDashboardComponent {
     }
   ];
 
-    goToGrievanceList(status: string) {
-  this.router.navigate(
-    ['layout/admin/admin-grievance-list'],
-    { queryParams: { status } }
-  );
-}
+  goToGrievanceList(status: string) {
+    this.router.navigate(
+      ['layout/admin/admin-grievance-list'],
+      { queryParams: { status } }
+    );
+  }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.userInfo = sessionStorage.getItem('userInfo');
     if (this.userInfo) {
       this.parsedUserInfo = JSON.parse(this.userInfo);
@@ -136,53 +136,53 @@ export class OfficerDashboardComponent {
 
 
   private createChartPie(): void {
-  Highcharts.chart('chart-pie', {
-    chart: { type: 'pie' },
-    title: { text: 'Grievance Overview' },
-    credits: { enabled: false },
-    series: [{
-      innerSize: '55%',
-      data: [
-         { name: 'Total Registered', y: this.adminPdsummary.totalRegistered, color: '#007bff' },
-        { name: 'Completed', y: this.adminPdsummary.completed, color: '#28a745' },
-        { name: 'Under Process', y: this.adminPdsummary.underProgress, color: '#e0a800' },
-        { name: 'Forwarded', y: this.adminPdsummary.forwarded, color: '#dc3545' }
-      ]
-    }]
-  } as any);
-}
+    Highcharts.chart('chart-pie', {
+      chart: { type: 'pie' },
+      title: { text: 'Grievance Overview' },
+      credits: { enabled: false },
+      series: [{
+        innerSize: '55%',
+        data: [
+          { name: 'Total Registered', y: this.adminPdsummary.totalRegistered, color: '#007bff' },
+          { name: 'Completed', y: this.adminPdsummary.completed, color: '#28a745' },
+          { name: 'Under Process', y: this.adminPdsummary.underProgress, color: '#e0a800' },
+          { name: 'Forwarded', y: this.adminPdsummary.forwarded, color: '#dc3545' }
+        ]
+      }]
+    } as any);
+  }
 
 
   private createChartColumn(): void {
-  Highcharts.chart('chart-column', {
-    chart: { type: 'column' },
-    title: { text: 'Pending Grievance Timeline' },
-    credits: { enabled: false },
-    xAxis: {
-      categories: [
-        '1 Week',
-        '15 Days',
-        '30 Days',
-        '3 Months',
-        '> 3 Months'
-      ]
-    },
-    yAxis: {
-      min: 0,
-      title: { text: 'Count' }
-    },
-    series: [{
-      name: 'Pending',
-      data: [
-        { y: this.adminPdsummary.pending1Week, color: '#007bff' },
-        { y: this.adminPdsummary.pending15Days, color: '#28a745' },
-        { y: this.adminPdsummary.pending30Days, color: '#ffc107' },
-        { y: this.adminPdsummary.pending3Months, color: '#a58627ff' },
-        { y: this.adminPdsummary.pendingMoreThan3Months, color: '#dc3545' }
-      ]
-    }]
-  } as any);
-}
+    Highcharts.chart('chart-column', {
+      chart: { type: 'column' },
+      title: { text: 'Pending Grievance Timeline' },
+      credits: { enabled: false },
+      xAxis: {
+        categories: [
+          '1 Week',
+          '15 Days',
+          '30 Days',
+          '3 Months',
+          '> 3 Months'
+        ]
+      },
+      yAxis: {
+        min: 0,
+        title: { text: 'Count' }
+      },
+      series: [{
+        name: 'Pending',
+        data: [
+          { y: this.adminPdsummary.pending1Week, color: '#17a2b8' },
+          { y: this.adminPdsummary.pending15Days, color: '#28a745' },
+          { y: this.adminPdsummary.pending30Days, color: '#ffc107' },
+          { y: this.adminPdsummary.pending3Months, color: '#fd7e14' },
+          { y: this.adminPdsummary.pendingMoreThan3Months, color: '#0a8cff' }
+        ]
+      }]
+    } as any);
+  }
 
 
   getCardBg(index: number): string {
@@ -195,17 +195,19 @@ export class OfficerDashboardComponent {
     return gradients[index % gradients.length];
   }
 
-
   adminSummary() {
-    const role = this.schemeCode 
+    const role = this.schemeCode
     this.masterService.adminSummaryDetails(role).subscribe({
       next: (response: any) => {
-        if (response?.messageCode === 1) {
-          console.log(response.data, "response");
-          this.adminPdsummary = response.data
-        this.createChartPie();
-        this.createChartColumn();
-        } else {
+        if (response?.messageCode === 1 && this.parsedUserInfo?.isExpire === false) {
+          this.adminPdsummary = response?.data || {};
+          this.createChartPie();
+          this.createChartColumn();
+        }
+        else if (response?.messageCode === 1 && this.parsedUserInfo?.isExpire === true) {
+          this.adminPdsummary = {};
+        }
+        else {
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
         }
       },
@@ -213,7 +215,5 @@ export class OfficerDashboardComponent {
     });
   }
 
-
-  
 
 }

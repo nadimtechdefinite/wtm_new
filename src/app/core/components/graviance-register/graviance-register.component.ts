@@ -74,6 +74,7 @@ export class GravianceRegisterComponent implements OnInit {
   isMobileExist: any;
   getCaptchadata: any;
   captchaCode: any;
+  captchaId:any;
   constructor(
     private service: CommonService,
     private fb: FormBuilder,
@@ -198,6 +199,7 @@ export class GravianceRegisterComponent implements OnInit {
       this.getCaptchadata = response.data
       this.captcha = this.getCaptchadata.captcha
       this.captchaCode = this.getCaptchadata.captchaCode
+      this.captchaId = this.getCaptchadata.captchaId
       sessionStorage.setItem('sessionId1', response.data.sessionId);
       this.generateImage(this.captcha)
     });
@@ -295,7 +297,8 @@ export class GravianceRegisterComponent implements OnInit {
   }
 
   const payload = {
-    captcha: enteredCaptcha
+    captcha: enteredCaptcha,
+    captchaId: this.captchaId
   }
 
   this.masterService.verifyCaptcha(payload).subscribe({
@@ -361,50 +364,6 @@ onSubmit() {
     }
   });
 }
-
-
-  // isSubmitted = false; 
-  // onSubmit() {
-  //   this.isSubmitted = true;
-  //   if (this.grievanceForm.invalid) {
-  //     this.grievanceForm.markAllAsTouched();
-  //     return;
-
-  //   }
-
-  //   const formData = {
-  //     name: this.grievanceForm.get('name')?.value,
-  //     fatherHusbandName: this.grievanceForm.get('fatherHus')?.value,
-  //     gender: this.grievanceForm.get('gender')?.value,
-  //     mobileNo: this.grievanceForm.get('mobile')?.value,
-  //     stateCode: this.grievanceForm.get('stateCode')?.value,
-  //     districtCode: this.grievanceForm.get('districtCode')?.value,
-  //     blockCode: this.grievanceForm.get('blockCode')?.value,
-  //     panchayatCode: this.grievanceForm.get('gpCode')?.value,
-  //     villageCode: this.grievanceForm.get('villageCode')?.value,
-  //     pinCode: this.grievanceForm.get('pinCode')?.value,
-  //     address: this.grievanceForm.get('address')?.value,
-  //     deviceType: "WEB",
-  //   }
-  //   this.masterService.grievanceregister(formData).subscribe({
-  //     next: (response: any) => {
-  //       if (response?.messageCode === 1) {
-  //         this.registerData = response.data;
-  //         this.grievanceForm.reset();
-  //         this.toastr.success(response?.message || 'Grievance saved successfully!');
-  //         this.isSubmitted = false;
-  //         this.openConfirmAfterRegister();
-  //       } else {
-  //         this.toastr.warning(response?.responseDesc || 'Something went wrong, please try again.');
-  //       }
-  //     },
-  //     error: (err: HttpErrorResponse) => {
-  //       this.errorHandler.handleHttpError(err, 'Grievance not saved');
-  //       this.toastr.error('Unable to save grievance. Please try again later.');
-  //     }
-  //   });
-
-  // }
 
 openConfirmAfterRegister() {
   const dialogRef = this.dialog.open(ConfirmDialogComponent, {
