@@ -72,6 +72,7 @@ export class GrievanceListAdminComponent {
   userCode: any;
   userType: any;
   loginName: any;
+  getschemeCode: any;
 
   constructor(private dialog: MatDialog,
     private router: Router,
@@ -93,12 +94,38 @@ export class GrievanceListAdminComponent {
       this.userCode = this.parsedUserInfo.userCode;
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode
+      this.getschemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
       console.log(this.userType, "this.userType");
     }
+    // this.route.queryParams.subscribe((params) => {
+    //   const status = params['status'];
+    //   const schemeCode = params['schemeCode'];
+    //   this.selectedStatus = status || null;
+    //   this.schemeCode = schemeCode || null;
+    //   if (
+    //     status === 'PENDING_1_WEEK' ||
+    //     status === 'PENDING_7_15_DAYS' ||
+    //     status === 'PENDING_15_30_DAYS' ||
+    //     status === 'PENDING_30_90_DAYS' ||
+    //     status === 'PENDING_MORE_THAN_90'
+    //   ) {
+    //     this.pendingCount();
+    //   } else {
+    //     this.getGrievanceDetailsForAdmin();
+    //   }
+    // });
+
+
     this.route.queryParams.subscribe((params) => {
       const status = params['status'];
+      const schemeCodeParam = params['schemeCode'];
+
       this.selectedStatus = status || null;
+
+      if (schemeCodeParam !== undefined && schemeCodeParam !== null) {
+        this.schemeCode = schemeCodeParam;
+      }
       if (
         status === 'PENDING_1_WEEK' ||
         status === 'PENDING_7_15_DAYS' ||
@@ -154,39 +181,39 @@ export class GrievanceListAdminComponent {
   // }
 
   getGrievanceDetailsForAdmin() {
-  this.masterService
-    .getGrievanceDetailsForAdmin(this.schemeCode)
-    .subscribe({
-      next: (res: any) => {
-        if (res?.messageCode === 1 && Array.isArray(res.data)) {
+    this.masterService
+      .getGrievanceDetailsForAdmin(this.schemeCode)
+      .subscribe({
+        next: (res: any) => {
+          if (res?.messageCode === 1 && Array.isArray(res.data)) {
 
-          this.GrievanceContent = res.data.map((item: any, i: number) => ({
-            ...item,
-            SerialNo: i + 1
-          }));
+            this.GrievanceContent = res.data.map((item: any, i: number) => ({
+              ...item,
+              SerialNo: i + 1
+            }));
 
-          this.applyFilterq();
+            this.applyFilterq();
 
-          const tableData = this.selectedStatus
-            ? this.filteredList
-            : this.GrievanceContent;
+            const tableData = this.selectedStatus
+              ? this.filteredList
+              : this.GrievanceContent;
 
-          this.admindataSource = new MatTableDataSource(tableData);
-          this.admindataSource.paginator = this.paginator;
+            this.admindataSource = new MatTableDataSource(tableData);
+            this.admindataSource.paginator = this.paginator;
 
-        } else {
-          console.error('Failed to load scheme list:', res?.errorMsg || 'Unknown error');
+          } else {
+            console.error('Failed to load scheme list:', res?.errorMsg || 'Unknown error');
+          }
+        },
+
+        error: (err: HttpErrorResponse) => {
+          this.errorHandler.handleHttpError(err, 'loading scheme list')
+        },
+        complete: () => {
+          console.log('getGrievanceDetailsForAdmin() completed');
         }
-      },
-
-      error: (err: HttpErrorResponse) => {
-        this.errorHandler.handleHttpError(err, 'loading scheme list')
-      },
-      complete: () => {
-        console.log('getGrievanceDetailsForAdmin() completed');
-      }
-    });
-}
+      });
+  }
 
   filteredList: any[] = [];
   selectedStatus: string | null = null;
@@ -325,7 +352,7 @@ export class GrievanceListAdminComponent {
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
         }
       },
-      
+
     });
   }
 

@@ -2,7 +2,11 @@
     <div class="col-12">
         <h3 class="main-title"> Grievances List</h3>
     </div>
-
+    <nav class="mat-breadcrumb">
+        <a mat-button routerLink="/layout/citizen/dashboard">Dashboard</a>
+        <mat-icon>chevron_right</mat-icon>
+        <span class="current">grievance-list</span>
+    </nav>
 </div>
 <div class="row ">
     <div class="col-md-3">
@@ -72,10 +76,10 @@
                                     'statusorangeT': row.status === 'T'
                                 }">
                                     {{
-                                        row.status === 'U' ? 'Under-Process' :
-                                        row.status === 'C' ? 'Completed' :
-                                        row.status === 'T' ? 'Under-Process' :
-                                        row.status
+                                    row.status === 'U' ? 'Under-Process' :
+                                    row.status === 'C' ? 'Completed' :
+                                    row.status === 'T' ? 'Under-Process' :
+                                    row.status
                                     }}
                                 </span>
                             </ng-container>

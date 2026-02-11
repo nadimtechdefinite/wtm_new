@@ -897,3 +897,19 @@ button.mat-icon-button:hover {
   font-size: 14px;
   opacity: 0.9;
 }
+
+.mat-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mat-breadcrumb mat-icon {
+  font-size: 18px;
+  color: #888;
+}
+
+.mat-breadcrumb .current {
+  font-weight: 600;
+  color: #333;
+}

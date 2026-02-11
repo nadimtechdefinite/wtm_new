@@ -15,6 +15,9 @@
             <ul class="nav justify-content-lg-end justify-content-center gap-3">
                 <li class="nav-item skip-main" style="z-index: 9999;">
                     <div class="bhashini-plugin-container"></div>
+                    <span class="language-badge dont-translate">
+                    <span class="text">{{ name ? name : 'English' }}</span>
+                    </span>
                 </li>
                 <!-- <li class="nav-item skip-main">
                     <a class="nav-link p-0 skip-btn" role="link" title="Skip to main content" href="javascript:void(0)"
@@ -64,6 +67,12 @@
                     <a class="nav-link p-0 skip-btn" routerLink="/sitemap" matTooltip="Screen Reader Guide" role="link"
                         title="Screen Reader Guide">
                         <img src="../assets/images/accessibility.svg" alt="Screen Reader Guide" />
+                    </a>
+                </li>
+
+                <li class="nav-item skip-main">
+                    <a class="nav-link p-0 skip-btn" role="link" title="Skip to main content" matTooltip="Sitemap" routerLink="/sitemap">
+                        <i class="bi bi-diagram-3" style="color: aliceblue; font-size: 24px;"></i>
                     </a>
                 </li>
 

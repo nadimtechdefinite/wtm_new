@@ -13,13 +13,78 @@ import { RouterLink } from "@angular/router";
   styleUrl: './keyboard-setting.component.scss'
 })
 export class KeyboardSettingComponent implements OnInit {
-
+name: any;
   ngOnInit(){
-        const script = document.createElement('script');
-    script.src = 'https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js';
+     this.interceptBhashiniLanguage();
+    const script = document.createElement('script');
+    script.src =
+      'https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js';
     script.async = true;
     document.body.appendChild(script);
 
+    window.addEventListener('bhashiniLanguageChanged', (event: any) => {
+      console.log('FINAL SELECTED:', event.detail);
+    });
+  }
+
+    private isLanguageLocked = false;
+  interceptBhashiniLanguage() {
+    const originalFetch = window.fetch.bind(window);
+
+    window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+      if (init?.body) {
+        try {
+          const body =
+            typeof init.body === 'string'
+              ? JSON.parse(init.body)
+              : null;
+
+          if (body?.targetLanguage && !this.isLanguageLocked) {
+            const code = body.targetLanguage;
+
+            const langMap: any = {
+              en: 'English',
+              as: 'Assamese (অসমীয়া)',
+              bn: 'Bengali (বাংলা)',
+              brx: 'Bodo (बड़ो)',
+              doi: 'Dogri (डोगरी)',
+              gom: 'Goan Konkani (गोवा कोंकणी)',
+              gu: 'Gujarati (ગુજરાતી)',
+              hi: 'Hindi (हिन्दी)',
+              kn: 'Kannada (ಕನ್ನಡ)',
+              ks: 'Kashmiri (कश्मीरी)',
+              mai: 'Maithili (मैथिली)',
+              ml: 'Malayalam (മലയാളം)',
+              mni: 'Manipuri (মণিপুরী)',
+              mr: 'Marathi (मराठी)',
+              ne: 'Nepali (नेपाली)',
+              or: 'Odia (ଓଡ଼ିଆ)',
+              pa: 'Punjabi (ਪੰਜਾਬੀ)',
+              sa: 'Sanskrit (संस्कृत)',
+              sat: 'Santali (संताली)',
+              sd: 'Sindhi (سنڌي)',
+              ta: 'Tamil (தமிழ்)',
+              te: 'Telugu (తెలుగు)',
+              ur: 'Urdu (اردو)'
+            };
+
+            this.name = langMap[code] || code;
+            console.log('Language Code:', code);
+            console.log('Language Name:', this.name);
+
+            window.dispatchEvent(
+              new CustomEvent('bhashiniLanguageChanged', {
+                detail: { code, name: this.name }
+              })
+            );
+          }
+        } catch {
+
+        }
+      }
+
+      return originalFetch(input, init);
+    };
   }
 
   skipToMain() {

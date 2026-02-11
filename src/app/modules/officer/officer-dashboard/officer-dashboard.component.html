@@ -2,8 +2,30 @@
   <h4>Admin Dashboard</h4>
 </div> -->
 <section class="dashboard-container">
-  <div class="row g-3 mt-4 dord">
-    <h5 class="text-center">DoRD Grievance Dashboard</h5>
+  <div class="row" >
+    <div class="col-md-12">
+      <h5 class="text-center" style="background: #d8edff;
+    padding: 8px 20px;
+    font-size: 21px;
+    color: #1c5dab;
+    border-radius: 7px;
+    text-align: left !important;">DoRD Grievance Dashboard</h5>
+    </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4" *ngIf="userType === 1">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Select Program Division PD Type</mat-label>
+        <mat-select formControlName="user" (selectionChange)="selectedScheme($event)">
+          <mat-option value="0">All</mat-option>
+          <mat-option *ngFor="let scheme of getschemeList" [value]="scheme.schemeCode">
+            {{ scheme.schemeName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row g-3 mt-2 dord">
+    
     <div class="col">
       <div class="card-box" (click)="goToGrievanceList('T')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -52,7 +74,7 @@
 
 <section class="dashboard-container">
   <div class="row g-3 mt-5 Pending-dord">
-    <h5 class="text-center">Pending Grievance</h5>
+    <h6 class="text-left" style="font-size: 20px;">Pending Grievance</h6>
     <div class="col-6 col-lg-2">
       <div class="card-box" (click)="goToGrievanceList('PENDING_1_WEEK')" style="cursor: pointer;">
         <div class="d-flex justify-content-between align-items-center mb-2">

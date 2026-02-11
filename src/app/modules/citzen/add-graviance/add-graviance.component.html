@@ -6,6 +6,11 @@
             <div class="row" style="padding: 0px 10px;">
                 <h3 class="main-title">Grievance Registration</h3>
             </div>
+              <nav class="mat-breadcrumb">
+                <a mat-button routerLink="/layout/citizen/dashboard">Dashboard</a>
+                <mat-icon>chevron_right</mat-icon>
+                <span class="current">Add graviance</span>
+                </nav>
             <section class="form-card">
                 <h6 class="title-label">Applicant Details</h6>
                 <form [formGroup]="grievanceForm" novalidate>

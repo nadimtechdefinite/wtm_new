@@ -6,13 +6,16 @@ import { Router, RouterModule } from '@angular/router';
 import { masterService } from '../../../services/master.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
+import { MatLabel } from "@angular/material/form-field";
+import { MATERIAL_MODULES } from '../../../shared/material/material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
 @Component({
   selector: 'app-officer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule,],
+  imports: [CommonModule, RouterModule, MatLabel, ...MATERIAL_MODULES, FormsModule, ReactiveFormsModule],
   templateUrl: './officer-dashboard.component.html',
   styleUrl: './officer-dashboard.component.scss'
 })
@@ -108,9 +111,10 @@ export class OfficerDashboardComponent {
   ];
 
   goToGrievanceList(status: string) {
+    debugger
     this.router.navigate(
       ['layout/admin/admin-grievance-list'],
-      { queryParams: { status } }
+      { queryParams: { status, schemeCode: this.schemeCode } }
     );
   }
 
@@ -124,6 +128,7 @@ export class OfficerDashboardComponent {
       this.loginName = this.parsedUserInfo.loginName
       console.log(this.userType, "this.userType");
       this.adminSummary();
+      this.schemeMaster();
     }
   }
   ngAfterViewInit(): void {
@@ -196,7 +201,7 @@ export class OfficerDashboardComponent {
   }
 
   adminSummary() {
-    const role = this.schemeCode
+    const role = this.schemeCode 
     this.masterService.adminSummaryDetails(role).subscribe({
       next: (response: any) => {
         if (response?.messageCode === 1 && this.parsedUserInfo?.isExpire === false) {
@@ -215,5 +220,29 @@ export class OfficerDashboardComponent {
     });
   }
 
+getschemeList:any;
+// selectedSchemeCode:any;
+    schemeMaster() {
+    this.masterService.schemeMaster().subscribe({
+      next: (response: any) => {
+        if (response?.messageCode === 1 && response?.data?.length) {
+          this.getschemeList = response.data;
+          console.log(this.getschemeList, 'this.masterdata');
 
+        } else {
+          console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
+        }
+      },
+      error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading scheme list')
+    });
+  }
+
+  selectedschemeCode:any
+    selectedScheme(event: any) {
+      debugger
+    this.schemeCode = event?.value
+    this.selectedschemeCode = event?.value
+
+  this.adminSummary();
+  }
 }

@@ -68,50 +68,50 @@ export class AuthService {
     return this.getUser()?.roles || [];
   }
 
-  // isTokenExpired(): boolean {
-  //   const token = this.getToken();
-  //   if (!token) return true;
-
-  //   const payload = JSON.parse(atob(token.split('.')[1]));
-  //   const expiry = payload.exp * 1000;
-  //   return Date.now() > expiry;
-  // }
-
   isTokenExpired(): boolean {
     const token = this.getToken();
-    if (!token) {
-      this.openSessionExpiredDialog();
-      return true;
-    }
+    if (!token) return true;
 
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const expiry = payload.exp * 1000;
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiry = payload.exp * 1000;
+    return Date.now() > expiry;
+  }
 
-      if (Date.now() > expiry) {
-        this.openSessionExpiredDialog();
-        return true;
-      }
-      return false;
-    } catch {
-      this.openSessionExpiredDialog();
-      return true;
-    }
-  }
-  openSessionExpiredDialog() {
-    if (this.dialogOpen) return;
-    this.dialogOpen = true;
-    this.dialog
-      .open(SessionExpiredDialogComponent, {
-        disableClose: true,
-        width: '400px'
-      })
-      .afterClosed()
-      .subscribe(() => {
-        this.dialogOpen = false;
-        this.router.navigate(['/login']);
-      });
-  }
+  // isTokenExpired(): boolean {
+  //   const token = this.getToken();
+  //   if (!token) {
+  //     this.openSessionExpiredDialog();
+  //     return true;
+  //   }
+
+  //   try {
+  //     const payload = JSON.parse(atob(token.split('.')[1]));
+  //     const expiry = payload.exp * 1000;
+
+  //     if (Date.now() > expiry) {
+  //       this.openSessionExpiredDialog();
+  //       return true;
+  //     }
+  //     return false;
+  //   } catch {
+  //     this.openSessionExpiredDialog();
+  //     return true;
+  //   }
+  // }
+  // openSessionExpiredDialog() {
+  //   if (this.dialogOpen) return;
+  //   this.dialogOpen = true;
+  //   this.dialog
+  //     .open(SessionExpiredDialogComponent, {
+  //       disableClose: true,
+  //       width: '400px'
+  //     })
+  //     .afterClosed()
+  //     .subscribe(() => {
+  //       this.dialogOpen = false;
+  //       this.router.navigate(['/login']);
+  //     });
+  // }
 
 
   logout() {

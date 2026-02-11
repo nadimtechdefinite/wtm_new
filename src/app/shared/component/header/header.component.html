@@ -15,6 +15,12 @@
             <ul class="nav justify-content-lg-end justify-content-center gap-3">
                 <li class="nav-item skip-main" style="z-index: 9999;">
                     <div class="bhashini-plugin-container"></div>
+
+                        <!-- <span class="dont-translate language-badge">  {{ name ? name : 'English' }}</span> -->
+                        <span class="language-badge dont-translate">
+                    <!-- <span class="icon">अ<br>A</span> -->
+                    <span class="text">{{ name ? name : 'English' }}</span>
+                    </span>
                 </li>
                 <!-- <li class="nav-item skip-main">
                     <a class="nav-link p-0 skip-btn" role="link" title="Skip to main content" href="javascript:void(0)"
@@ -95,7 +101,7 @@
         <div id="mainNav" class="collapse navbar-collapse " [class.open]="isNavOpen">
             <ul class="navbar-nav ms-auto align-items-lg-center">
                 <li class="nav-item"><a class="nav-link active" [routerLink]="['/']">Home</a></li>
-                <li class="nav-item"><a class="nav-link" [routerLink]="['/graviance-register']">Citizen Registration</a>
+                <li class="nav-item"><a class="nav-link" [routerLink]="['/graviance-register']">User Registration</a>
                 </li>
                 <!-- <li class="nav-item"><a class="nav-link" href="#">Status of Grievance</a></li> -->
             </ul>

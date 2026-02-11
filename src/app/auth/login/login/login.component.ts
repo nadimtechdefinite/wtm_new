@@ -63,7 +63,7 @@ export class LoginComponent implements OnInit {
   ];
   users = [
     { value: 'Admin', viewValue: 'Admin' },
-    { value: 'MoRD', viewValue: 'MoRD' },
+    { value: 'MoRD', viewValue: 'HMoRD' },
   ];
   mobileVerified: any;
   otpdata: any;
