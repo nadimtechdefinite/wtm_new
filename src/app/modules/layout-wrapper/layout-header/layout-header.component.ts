@@ -7,14 +7,14 @@ import { filter } from 'rxjs';
 import { SidebarToggleService } from '../../../services/sidebar-toggle.service';
 import { NgZone } from '@angular/core';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltip } from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDivider } from "@angular/material/divider";
 import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'app-layout-header',
   standalone: true,
-  imports: [RouterModule, MatTooltip, MatMenuModule, CommonModule, MatDivider],
+  imports: [RouterModule, MatTooltipModule, MatMenuModule, CommonModule],
   templateUrl: './layout-header.component.html',
   styleUrl: './layout-header.component.scss'
 })

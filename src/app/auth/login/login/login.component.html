@@ -2,23 +2,17 @@
     <div class="container-fluid">
         <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 my-5">
             <div class="col mx-auto">
-                <div class="card login-card shadow-lg rounded-4 mb-2">
+                <div class="card login-card shadow-lg rounded-4 mb-2" style="border-color: #dbeefe;">
                     <div class="card-body rounded-4">
-                        <div class="text-center">
+                        <div class="text-center webline-box">
                             <h5 class="webline">{{signInTitle}}</h5>
                         </div>
                         <div class="login-separater text-center mb-2 lh-1">
                             <h6 class="fs-6 mb-0 text-muted">Write To Rural Development Minister</h6>
                             <h6 class="fs-6 mb-0 text-muted" *ngIf="isCitizen">
-                                <small class="fs-6">A Grievance Redressal System For Citizens</small>
+                                <small class="fs-6">A Grievance Redressal System For Users</small>
                             </h6>
                         </div>
-                        <!-- <mat-radio-group [value]="selectedRole" (change)="toggleForm($event.value) "
-                            class="d-flex justify-content-center gap-3 mb-3">
-                            <mat-radio-button *ngFor="let r of roles" [value]="r.value">{{ r.viewValue
-                                }}</mat-radio-button>
-                        </mat-radio-group> -->
-
                         <mat-radio-group
                         [value]="selectedRole"
                         (change)="toggleForm($event.value)"
@@ -50,7 +44,7 @@
 
                       
                         <!-- Citizen Form -->
-                        <form *ngIf="isCitizen" [formGroup]="citizenForm">
+                        <form *ngIf="isCitizen" [formGroup]="citizenForm" style="padding: 25px;">
                             <mat-form-field appearance="outline" class="w-100 mb-1">
                                 <mat-label>Mobile Number</mat-label>
                                 <input matInput placeholder="Enter Mobile No" formControlName="mobile" appNumberOnly maxlength="10" minlength="10" (keyup)="onMobileKeyUp()" />
@@ -69,13 +63,7 @@
                                     <div id="image"
                                         class="captcha-box d-flex align-items-center justify-content-center">
                                     </div>
-<!--                                     
-                                    <div class="captcha-refresh-button">
-                                        <button mat-icon-button (click)="reload()">
-                                            <mat-icon>refresh</mat-icon>
-                                        </button>
-                                    </div> -->
-
+                                    
                         <div class="captcha-refresh-button d-flex">
                                 <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
                                     <i class="bi bi-volume-up-fill"></i>
@@ -110,7 +98,7 @@
                         
 
                         <!-- Admin Form -->
-                        <form *ngIf="!isCitizen && isAdmin" [formGroup]="adminForm">
+                        <form *ngIf="!isCitizen && isAdmin" [formGroup]="adminForm" style="padding: 25px;">
                             <mat-form-field appearance="outline" class="w-100 mb-1">
                                 <mat-label>Select User Type</mat-label>
                                 <mat-select formControlName="user">
@@ -170,7 +158,7 @@
                         
 
                      <!-- PD Form -->
-                        <form *ngIf="!isCitizen && !isAdmin && !isState" [formGroup]="pdForm">
+                        <form *ngIf="!isCitizen && !isAdmin && !isState" [formGroup]="pdForm" style="padding: 25px;">
                             <mat-form-field appearance="outline" class="w-100 mb-3">
                                 <mat-label>Select PD Type</mat-label>
                                 <mat-select formControlName="user" (selectionChange)="selectedScheme($event)">

@@ -1,11 +1,11 @@
 <ng-container>
     <main class="py-3">
         <div class="container">
-            <section class="form-card">
+            <section class="form-card p-0">
                 <h6 class="title-heading">User Registration</h6>
-                <p class="title-label">Applicant Details</p>
 
-                <form [formGroup]="grievanceForm" novalidate>
+                <form [formGroup]="grievanceForm" novalidate class="" style="padding: 15px 30px 0px;">
+                    <p class="title-label">Applicant Details</p>
                     <div class="row g-3 mb-3">
 
                         <!-- Name -->
@@ -199,7 +199,7 @@
 
                     </div>
                 </form>
-                <div class="text-center mt-3 d-flex gap-2 justify-content-center align-items-center">
+                <div class="text-center mt-3 d-flex gap-2 justify-content-center align-items-center pb-4">
                     <button mat-raised-button color="primary" class="btn-glow btn-blue" type="submit"
                         (click)="GetverifyCaptcha()">
                         Submit

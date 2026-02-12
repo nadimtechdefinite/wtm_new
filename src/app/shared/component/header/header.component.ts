@@ -16,17 +16,10 @@ export class HeaderComponent implements OnInit {
   constructor(private eRef: ElementRef) { }
 
   ngOnInit() {
-    /** -----------------------------
-     *  BHASHINI TRANSLATION PLUGIN
-     * ----------------------------- */
-    // const script = document.createElement('script');
-    // script.src = 'https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js';
-    // script.async = true;
-    // document.body.appendChild(script);
     this.interceptBhashiniLanguage();
     const script = document.createElement('script');
     script.src =
-      'https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js';
+      'https://translation-plugin.bhashini.co.in/v3/website_translation_utility.js' ;
     script.async = true;
     document.body.appendChild(script);
 

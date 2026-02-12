@@ -53,17 +53,17 @@ export class LoginComponent implements OnInit {
   messageResp: any
   baseUrlMobileExist: string = 'isMobileExists'
   mobileInput$ = new Subject<string>();
-  signInTitle: string = 'Citizen Sign In';
+  signInTitle: string = 'User Sign In';
   selectedState: any;
   roles = [
-    { value: 'citizen', viewValue: 'Citizen' },
+    { value: 'citizen', viewValue: 'User' },
     { value: 'admin', viewValue: 'Admin' },
     { value: 'pd', viewValue: 'PD' },
     // { value: 'state', viewValue: 'State' },
   ];
   users = [
     { value: 'Admin', viewValue: 'Admin' },
-    { value: 'MoRD', viewValue: 'HMoRD' },
+    { value: 'HMoRD', viewValue: 'HMoRD' },
   ];
   mobileVerified: any;
   otpdata: any;
@@ -238,7 +238,7 @@ export class LoginComponent implements OnInit {
     this.isCitizen = role === 'citizen';
     this.isAdmin = role === 'admin';
     this.isState = role === 'state';
-    this.signInTitle = role === 'citizen' ? 'Citizen Sign in' : role === 'admin' ? 'Admin Sign in' : role === 'pd' ? 'PD Sign in' : 'State Sign in';
+    this.signInTitle = role === 'citizen' ? 'User Sign in' : role === 'admin' ? 'Admin Sign in' : role === 'pd' ? 'PD Sign in' : 'State Sign in';
     // this.signInTitle = role === 'citizen' ? 'Citizen Sign In' : role === 'admin' ? 'Admin Sign In' : 'State Sign In';
     this.isSubmitted = false;
     this.isSubmittedadmin = false;

@@ -18,6 +18,11 @@ export const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'home-new',
+        loadComponent: () =>
+          import('./core/components/home-new/home.component').then(m => m.HomeNewComponent)
+      },
+      {
         path: 'home',
         loadComponent: () =>
           import('./core/components/home/home.component').then(m => m.HomeComponent)
