@@ -403,7 +403,7 @@ export class AddGravianceComponent implements OnInit {
           );
 
           this.grievanceForm.patchValue({
-            ministry: 1   // backend logic ke liye
+            ministry: 1   
           });
           console.log(this.ministry, "ministry");
         } else {

@@ -2,11 +2,12 @@ import { AfterViewInit, Component, ElementRef, HostListener } from '@angular/cor
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SortlinkDialogComponent } from '../sortlink-dialog/sortlink-dialog.component';
 import { A11yModule } from "@angular/cdk/a11y";
+import { RouterModule } from '@angular/router';
 declare var $: any;
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [MatDialogModule, A11yModule],
+  imports: [MatDialogModule, A11yModule, RouterModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss'
 })
