@@ -24,6 +24,7 @@ export class LayoutHeaderComponent {
   parsedUserInfo: any;
   name: any;
   getUsername: any;
+  fullName: any;
   constructor(private router: Router,
     private citizenStore: CitizenStoreService,
     private ngZone: NgZone,
@@ -50,7 +51,12 @@ export class LayoutHeaderComponent {
     if (userInfo) {
       this.parsedUserInfo = JSON.parse(userInfo);
       if (this.parsedUserInfo.userType === 1 || this.parsedUserInfo.userType === 2) {
-        this.displayName = this.parsedUserInfo.loginName;
+        this.displayName = this.parsedUserInfo.userName;
+        // this.fullName = this.parsedUserInfo.loginName;
+        
+      }
+      else if (this.parsedUserInfo.citizenName) {
+        this.displayName = this.parsedUserInfo.citizenName;
       }
       else if (this.parsedUserInfo.citizenName) {
         this.displayName = this.parsedUserInfo.citizenName;

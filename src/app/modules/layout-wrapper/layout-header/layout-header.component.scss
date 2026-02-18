@@ -271,3 +271,58 @@
 .logout-item i {
   color: #125ab1;
 }
+/* ── Mat Menu Panel ── */
+::ng-deep .mat-mdc-menu-panel {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10), 0 1.5px 6px rgba(0,0,0,0.07) !important;
+  border: 1px solid #e5e7eb !important;
+  padding: 6px !important;
+  min-width: 200px !important;
+  background: #ffffff !important;
+  overflow: hidden !important;
+}
+
+/* ── Menu Items ── */
+::ng-deep .mat-mdc-menu-panel .logout-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  border-radius: 8px !important;
+  font-family: 'Segoe UI', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  transition: background 0.15s, color 0.15s !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* ── Change Password hover ── */
+::ng-deep .mat-mdc-menu-panel .logout-item:first-child:hover {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+::ng-deep .mat-mdc-menu-panel .logout-item:first-child:hover i {
+  color: #2563eb !important;
+}
+
+/* ── Log Out hover ── */
+::ng-deep .mat-mdc-menu-panel .logout-item:last-child:hover {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+::ng-deep .mat-mdc-menu-panel .logout-item:last-child:hover i {
+  color: #dc2626 !important;
+}
+
+/* ── Icons ── */
+::ng-deep .mat-mdc-menu-panel .logout-item i {
+  font-size: 16px !important;
+  color: #6b7280 !important;
+  transition: color 0.15s !important;
+  width: 18px !important;
+  text-align: center !important;
+}

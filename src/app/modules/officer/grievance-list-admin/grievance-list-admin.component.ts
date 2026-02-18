@@ -98,24 +98,6 @@ export class GrievanceListAdminComponent {
       this.loginName = this.parsedUserInfo.loginName
       console.log(this.userType, "this.userType");
     }
-    // this.route.queryParams.subscribe((params) => {
-    //   const status = params['status'];
-    //   const schemeCode = params['schemeCode'];
-    //   this.selectedStatus = status || null;
-    //   this.schemeCode = schemeCode || null;
-    //   if (
-    //     status === 'PENDING_1_WEEK' ||
-    //     status === 'PENDING_7_15_DAYS' ||
-    //     status === 'PENDING_15_30_DAYS' ||
-    //     status === 'PENDING_30_90_DAYS' ||
-    //     status === 'PENDING_MORE_THAN_90'
-    //   ) {
-    //     this.pendingCount();
-    //   } else {
-    //     this.getGrievanceDetailsForAdmin();
-    //   }
-    // });
-
 
     this.route.queryParams.subscribe((params) => {
       const status = params['status'];
@@ -186,7 +168,6 @@ export class GrievanceListAdminComponent {
       .subscribe({
         next: (res: any) => {
           if (res?.messageCode === 1 && Array.isArray(res.data)) {
-
             this.GrievanceContent = res.data.map((item: any, i: number) => ({
               ...item,
               SerialNo: i + 1

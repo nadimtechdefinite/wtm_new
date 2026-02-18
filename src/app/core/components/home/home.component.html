@@ -24,30 +24,22 @@
                 <div class="col-lg-5 ">
                     <section class="card p-1 shadow-sm">
                         <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div 
-                            class="carousel-item"
-                            *ngFor="let img of images; let i = index"
-                            [class.active]="i === 0">
-                            <img 
-                                [src]="'../assets/images/gallery/' + img"
-                                class="d-block w-100 rounded"
-                                [alt]="'Gallery image ' + (i + 1)"
-                                draggable="false">
+                            <div class="carousel-inner">
+                                <div class="carousel-item" *ngFor="let img of images; let i = index"
+                                    [class.active]="i === 0">
+                                    <img [src]="'../assets/images/gallery/' + img" class="d-block w-100 rounded"
+                                        [alt]="'Gallery image ' + (i + 1)" draggable="false" (click)="openZoom(i)"
+                                        matTooltip="Click to view full screen">
+                                </div>
                             </div>
-                        </div>
-                        <button class="carousel-control-prev"
-                                type="button"
-                                data-bs-target="#galleryCarousel"
+                            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel"
                                 data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                        </button>
-                        <button class="carousel-control-next"
-                                type="button"
-                                data-bs-target="#galleryCarousel"
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel"
                                 data-bs-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                        </button>
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
                         </div>
                     </section>
                 </div>
@@ -60,25 +52,18 @@
             </header>
 
             <div class="carousel-wrapper">
-                    <div class="carousel-track">
+                <div class="carousel-track">
 
-                        <a *ngFor="let scheme of duplicatedSchemes"
-                        [href]="scheme.url"
-                        class="card scheme-card"
+                    <a *ngFor="let scheme of duplicatedSchemes" [href]="scheme.url" class="card scheme-card"
                         target="_blank">
-
-                        <img [src]="'../assets/images/logo/' + scheme.logo"
-                            [alt]="scheme.name"
-                            draggable="false" />
-
+                        <img [src]="'../assets/images/logo/' + scheme.logo" [alt]="scheme.name" draggable="false" />
                         <div class="card-body d-none d-md-block">
                             {{ scheme.title }}
                         </div>
+                    </a>
 
-                        </a>
-
-                    </div>
-                    </div>
+                </div>
+            </div>
         </section>
 
         <section class="hero-card p-5 rounded-3">
@@ -271,3 +256,35 @@
         </section>
     </div>
 </main>
+
+<!-- ZOOM MODAL -->
+<div *ngIf="selectedIndex !== null" class="zoom-overlay">
+
+    <!-- Close Button -->
+    <button class="zoom-close" (click)="closeZoom()">×</button>
+
+    <!-- Carousel -->
+    <div id="zoomCarousel" class="carousel slide w-100 h-100">
+
+        <div class="carousel-inner h-100 d-flex align-items-center">
+
+            <div class="carousel-item" *ngFor="let img of images; let i = index" [class.active]="i === selectedIndex">
+
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <img [src]="'../assets/images/gallery/' + img" class="zoom-image">
+                </div>
+
+            </div>
+
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#zoomCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+
+        <button class="carousel-control-next" type="button" data-bs-target="#zoomCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+
+    </div>
+</div>

@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import {  Component, ElementRef, HostListener } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatAccordion, MatExpansionPanel, MatExpansionModule } from "@angular/material/expansion";
+import { MatTooltip } from "@angular/material/tooltip";
 declare var bootstrap: any;
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatAccordion, MatExpansionPanel, MatExpansionModule],
+  imports: [CommonModule, RouterModule, MatAccordion, MatExpansionPanel, MatExpansionModule, MatTooltip],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -99,6 +100,15 @@ constructor(private eRef:ElementRef){}
       url: 'https://disha.gov.in/disha/'
     }
   ];
+
+selectedIndex: number | null = null;
+openZoom(index: number) {
+  this.selectedIndex = index;
+}
+
+closeZoom() {
+  this.selectedIndex = null;
+}
 
   // Infinite scroll ke liye duplicate array
   get duplicatedSchemes() {
