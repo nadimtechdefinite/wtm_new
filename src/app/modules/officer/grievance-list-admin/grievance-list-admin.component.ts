@@ -18,6 +18,8 @@ import autoTable from 'jspdf-autotable';
 import { NOTO_SANS } from '../../../../assets/fonts/noto-sans.base64';
 import { NOTO_SANS_TAMIL } from '../../../../assets/fonts/NotoSansTamil-Regular.base64';
 import { GUJARATI } from '../../../../assets/fonts/noto-sans.gujarati.base64';
+import { LoaderService } from '../../../services/loader.service';
+import { delay, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-grievance-list-admin',
@@ -79,6 +81,7 @@ export class GrievanceListAdminComponent {
     private mobileService: MobileService,
     private masterService: masterService,
     private errorHandler: ErrorHandlerService,
+    private loader: LoaderService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -123,48 +126,56 @@ export class GrievanceListAdminComponent {
     this.officeStatus();
   }
 
-  pendingCount() {
-    this.masterService
-      .pendingCountForAdmin(this.schemeCode, this.selectedStatus)
-      .subscribe((res: any) => {
-        if (res.messageCode === 1) {
-          this.GrievanceContent = res.data.map((item: any, i: any) => ({
-            ...item,
-            SerialNo: i + 1
-          }));
-          this.admindataSource = new MatTableDataSource(this.GrievanceContent);
-          this.admindataSource.paginator = this.paginator;
-        }
-        else {
-        }
-      });
-  }
-
-  // getGrievanceDetailsForAdmin() {
+  // pendingCount() {
+  //    this.loader.show();
   //   this.masterService
-  //     .getGrievanceDetailsForAdmin(this.schemeCode)
+  //     .pendingCountForAdmin(this.schemeCode, this.selectedStatus).pipe(finalize(() => { this.loader.hide(); }))
   //     .subscribe((res: any) => {
   //       if (res.messageCode === 1) {
   //         this.GrievanceContent = res.data.map((item: any, i: any) => ({
   //           ...item,
   //           SerialNo: i + 1
   //         }));
-  //         this.applyFilterq();
-  //         console.log('User List Citizen Details:', this.citzenDetails);
-  //         const tableData = this.selectedStatus ? this.filteredList : this.GrievanceContent;
-  //         this.admindataSource = new MatTableDataSource(tableData);
+  //         this.admindataSource = new MatTableDataSource(this.GrievanceContent);
   //         this.admindataSource.paginator = this.paginator;
   //       }
   //       else {
-
   //       }
   //     });
-
   // }
 
+ pendingCount() {
+  this.loader.show();
+
+  this.masterService
+    .pendingCountForAdmin(this.schemeCode, this.selectedStatus)
+    .pipe(
+      finalize(() => {
+        this.loader.hide();
+      })
+    )
+    .subscribe((res: any) => {
+      if (res.messageCode === 1) {
+        this.GrievanceContent = res.data.map((item: any, i: any) => ({
+          ...item,
+          SerialNo: i + 1
+        }));
+
+        this.admindataSource = new MatTableDataSource(this.GrievanceContent);
+        this.admindataSource.paginator = this.paginator;
+      }
+    });
+}
+
   getGrievanceDetailsForAdmin() {
+      this.loader.show();
     this.masterService
       .getGrievanceDetailsForAdmin(this.schemeCode)
+          .pipe(  
+      finalize(() => {
+        this.loader.hide();
+      })
+    )
       .subscribe({
         next: (res: any) => {
           if (res?.messageCode === 1 && Array.isArray(res.data)) {

@@ -68,7 +68,6 @@ export class SortlinkDialogComponent implements OnInit {
   }
   isSubmitted: boolean = false
   submitFeedback() {
-    debugger
   this.isSubmitted = true;
 
   // ❌ Form invalid
@@ -108,9 +107,7 @@ export class SortlinkDialogComponent implements OnInit {
         this.generateCaptcha();
         return;
       }
-
       // 🔐 Step 2: Login API
-      debugger
       const feedbackdata = this.feedbackForm.getRawValue();
       const feedbackPayload = {
       name: feedbackdata.name,

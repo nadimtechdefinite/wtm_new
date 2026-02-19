@@ -9,6 +9,7 @@ import { Observable, Subject } from 'rxjs';
 const getschemeMasterList = environment.apiUrl + "schemeMaster";
 const getStateMaster = environment.apiUrl + "stateMaster";
 const getDistritcListApi = environment.apiUrl + "districtsmaster";
+const getcategoryMaster = environment.apiUrl + "categoryMaster";
 const getBlockListApi = environment.apiUrl + "blocksmaster";
 const getpanchayatmaster = environment.apiUrl + "panchayatmaster"
 const getVillagemaster = environment.apiUrl + "villagemaster"
@@ -51,6 +52,9 @@ isLoggingIn = false;
 
   getDistritcList(stateCode: any) {
     return this.getApiWithoutToken(`${getDistritcListApi}/${stateCode}`);
+  }
+    getcategoryList(stateCode: any) {
+    return this.getApiWithoutToken(`${getcategoryMaster}/${stateCode}`);
   }
 
   getBlockList(stateCode: any, districtCode: any) {

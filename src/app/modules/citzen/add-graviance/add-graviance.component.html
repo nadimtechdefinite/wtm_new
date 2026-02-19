@@ -189,7 +189,7 @@
                     <div class="row g-3 mb-3">
 
                         <!-- Ministry -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Department</mat-label>
                                 <mat-select formControlName="ministry" (selectionChange)="selectedMinister($event)">
@@ -205,15 +205,30 @@
                         </div>
 
                         <!-- Scheme -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Scheme</mat-label>
-                                <mat-select formControlName="schemeCode">
+                                <mat-select formControlName="schemeCode" (selectionChange)="onSchameChange($event)">
                                     <mat-option value="">Select Scheme</mat-option>
                                     <mat-option *ngFor="let s of schemeList" [value]="s.schemeCode">{{ s.schemeName
                                         }}</mat-option>
                                 </mat-select>
                                 <mat-error *ngIf="(f['schemeCode'].touched || isSubmitted) && f['schemeCode'].invalid">
+                                    Scheme is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                          <!-- Scheme -->
+                        <div class="col-md-4">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Category</mat-label>
+                                <mat-select formControlName="catCode">
+                                    <mat-option value="">Select Category</mat-option>
+                                    <mat-option *ngFor="let cat of catListDetails" [value]="cat.id">{{ cat.name
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['catCode'].touched || isSubmitted) && f['catCode'].invalid">
                                     Scheme is required
                                 </mat-error>
                             </mat-form-field>
@@ -226,14 +241,22 @@
                                 <mat-label>Description of Grievance</mat-label>
                                 <textarea matInput rows="2" formControlName="Description"
                                     (input)="micActive ? null : onDescriptionInput($event)"></textarea>
-                                <mat-error
-                                    *ngIf="(f['Description'].touched || isSubmitted) && f['Description'].invalid">
-                                    <!-- Description is required (max 250 chars) -->
-                                    <small class="text-muted d-block text-end">
-                                        {{ grievanceForm.get('Description')?.value?.length || 5 }} / 1000
-                                    </small>
-                                </mat-error>
+                                <mat-error *ngIf="f['Description'].hasError('required') && (f['Description'].touched || isSubmitted)">
+                                    Description is required
+                                    </mat-error>
+
+                                    <mat-error *ngIf="f['Description'].hasError('minlength')">
+                                    Minimum 5 characters required
+                                    </mat-error>
+
+                                    <mat-error *ngIf="f['Description'].hasError('maxlength')">
+                                    Maximum 1000 characters allowed
+                                    </mat-error>
+
                             </mat-form-field>
+                            <small class="text-muted d-block text-end">
+                            {{ descriptionLength }} / 1000
+                            </small>
 
                             <a routerLink="/keyboard-setting" class="btn btn-primary" target="_blank"
                                 matTooltip="Click here to set native language">

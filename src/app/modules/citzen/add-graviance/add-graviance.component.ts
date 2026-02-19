@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { debounceTime, filter, Subject, switchMap } from 'rxjs';
 import { CommonService } from '../../../services/common.service';
-
 import { ErrorHandlerService } from '../../../shared/error-handler.service';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
@@ -108,6 +107,7 @@ export class AddGravianceComponent implements OnInit {
     { code: 'sa', label: 'Sanskrit (संस्कृत)' },
     { code: 'ur', label: 'Urdu (اردو)' }
   ];
+  schameCode: any;
 
   constructor(
     private service: CommonService,
@@ -133,14 +133,6 @@ export class AddGravianceComponent implements OnInit {
     this.getStateList();
     this.getSchemeList();
     this.getMinistry();
-    //  this.citizenDetails();
-    // this.mobileService.updateMobile$.subscribe(value => {
-    //   this.mobile = value;  // bind to variable
-    // });
-    // this.mobileService.updatelogindata$.subscribe(value => {
-    //   this.getcitizenId = value.data.citizenId;
-    //   this.mobileNo = value.data.mobileNo;  // bind to variable
-    // });
     this.userInfo = sessionStorage.getItem('userInfo');
     if (this.userInfo) {
       this.parsedUserInfo = JSON.parse(this.userInfo);
@@ -265,6 +257,7 @@ export class AddGravianceComponent implements OnInit {
       gender: ['', Validators.required],
       mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
       stateCode: ['', Validators.required],
+      catCode: [''],
       districtCode: ['', Validators.required],
       blockCode: ['', Validators.required],
       panchayatCode: ['', Validators.required],
@@ -273,8 +266,9 @@ export class AddGravianceComponent implements OnInit {
       address: [''],
       ministry: ['', Validators.required],
       schemeCode: ['', Validators.required],
+      //  Description: ['', [Validators.required, Validators.maxLength(1000)]]
       Description: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(1000)]],
-      Language: ['', Validators.required],
+      Language: ['en', Validators.required],
       captcha: ['', [
         Validators.required,
         Validators.minLength(1),
@@ -293,19 +287,6 @@ export class AddGravianceComponent implements OnInit {
     }
   }
 
-  // onLanguageChange(event: MatSelectChange) {
-  //   const selected = event.value;
-  //   this.grievanceForm.get('Language')?.setValue(selected);
-
-  //   // 🔁 reset ONLY description
-  //   this.grievanceForm.get('Description')?.reset();
-
-  //   this.grievanceForm.get('Language')?.setValue(selected);
-  //   this.selectedLanguage = selected;
-  //   if (this.recognition) {
-  //     this.recognition.lang = selected;
-  //   }
-  // }
   previousDescriptionLength = 0;
   onDescriptionInput(event: Event) {
     this.speechService.resetRecording();
@@ -403,7 +384,7 @@ export class AddGravianceComponent implements OnInit {
           );
 
           this.grievanceForm.patchValue({
-            ministry: 1   
+            ministry: 1
           });
           console.log(this.ministry, "ministry");
         } else {
@@ -433,6 +414,14 @@ export class AddGravianceComponent implements OnInit {
     [this.districtList, this.blockList, this.gpList, this.villageList] = [[], [], [], []];
     this.getDistrictList();
   }
+
+  onSchameChange(event: any) {
+    this.schameCode = event.value;
+    // this.grievanceForm.patchValue({ districtCode: '', blockCode: '', gpCode: '', villageCode: '' }, { emitEvent: false });
+    // [this.districtList, this.blockList, this.gpList, this.villageList] = [[], [], [], []];
+    this.getcategoryList();
+  }
+
 
   onDistrictChange(event: any) {
     this.districtCode = event.value;
@@ -476,7 +465,40 @@ export class AddGravianceComponent implements OnInit {
       error: (err: HttpErrorResponse) => this.errorHandler.handleHttpError(err, 'loading district list')
     });
   }
-  
+
+
+  catListDetails: any[] = [];
+  getcategoryList(): void {
+
+    if (!this.schameCode) {
+      this.catListDetails = [];
+      return;
+    }
+    this.masterService.getcategoryList(this.schameCode).subscribe({
+      next: (response: any) => {
+
+        if (response?.messageCode === 1) {
+          if (response?.data && response.data.length > 0) {
+            this.catListDetails = response.data;
+          } else {
+            this.catListDetails = [];
+            console.warn('Category Not Found for selected scheme');
+          }
+        } else {
+          this.catListDetails = [];
+          console.error('Failed to load category list:', response?.message || 'Unknown error');
+        }
+      },
+
+      error: (err: HttpErrorResponse) => {
+        this.loader.hide();
+        this.catListDetails = [];
+        this.errorHandler.handleHttpError(err, 'loading category list');
+      }
+    });
+  }
+
+
   getBlockList() {
     this.masterService.getBlockList(this.stateCode, this.districtCode).subscribe({
       next: (response: any) => {
@@ -580,6 +602,7 @@ export class AddGravianceComponent implements OnInit {
     const sessionId = sessionStorage.getItem('sessionId1');
     if (!sessionId) {
       this.toastr.error('Session expired. Please refresh captcha');
+      this.grievanceForm.get('captcha')?.reset();
       this.generateCaptcha();
       return;
     }
@@ -602,8 +625,10 @@ export class AddGravianceComponent implements OnInit {
         if (response.messageCode === 1) {
           this.onSubmit();
         } else {
+          this.grievanceForm.get('captcha')?.reset();
           this.toastr.error(response.message || 'Invalid captcha');
           this.captchaCode = '';
+          this.grievanceForm.get('captcha')?.reset();
           this.generateCaptcha();
         }
       },
@@ -615,11 +640,15 @@ export class AddGravianceComponent implements OnInit {
           'Captcha verification failed';
         this.toastr.error(message);
         this.captchaCode = '';
+        this.grievanceForm.get('captcha')?.reset();
         this.generateCaptcha();
       }
     });
   }
 
+  get descriptionLength(): number {
+    return this.grievanceForm.get('Description')?.value?.length || 0;
+  }
 
 
   isSubmitted = false;
@@ -643,6 +672,7 @@ export class AddGravianceComponent implements OnInit {
       ministryCode: this.grievanceForm.get('ministry')?.value,
       schemeCode: this.grievanceForm.get('schemeCode')?.value,
       description: this.grievanceForm.get('Description')?.value,
+      categoryCode: this.grievanceForm.get('catCode')?.value,
       createdBy: this.citzenDetails?.citizenId
     };
     const formData = new FormData();
@@ -672,6 +702,7 @@ export class AddGravianceComponent implements OnInit {
             this.isSubmitted = false;
             this.isComplaintSave = false;
             this.grievanceForm.reset();
+
             //   this.alertService.success(response?.message || 'Grievance saved successfully!');
             // setTimeout(() => {
             //   this.openPdfModal();
@@ -686,12 +717,14 @@ export class AddGravianceComponent implements OnInit {
             this.menuReload.triggerReload();
 
           } else {
+            this.grievanceForm.get('captcha')?.reset();
             this.alertService.warning(
               response?.message || 'Something went wrong, please try again.'
             );
           }
         },
         error: (err: HttpErrorResponse) => {
+          this.grievanceForm.get('captcha')?.reset();
           this.errorHandler.handleHttpError(err, 'Grievance not saved');
           this.toastr.error('Unable to save grievance. Please try again later.');
         }
