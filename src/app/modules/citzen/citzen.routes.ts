@@ -23,6 +23,12 @@ export const CITIZEN_ROUTES: Routes = [
         path: 'graviance-list',loadComponent: () =>import('../citzen/graviance-list/graviance-list.component').then(m => m.GravianceListComponent),
         canActivate: [AuthGuard],
         data: { title: 'Grievance List', role: ['0'] }
+      },
+
+      {
+        path: 'citizen-feedback',loadComponent: () =>import('../citzen/citizen-feedback/citizen-feedback.component').then(m => m.CitizenFeedbackComponent),
+        canActivate: [AuthGuard],
+        data: { title: 'Grievance List', role: ['0'] }
       }
     ]
   }

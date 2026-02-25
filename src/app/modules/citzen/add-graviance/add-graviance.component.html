@@ -9,7 +9,7 @@
               <nav class="mat-breadcrumb">
                 <a mat-button routerLink="/layout/citizen/dashboard">Dashboard</a>
                 <mat-icon>chevron_right</mat-icon>
-                <span class="current">Add Graviance</span>
+                <span class="current">Add Grievance</span>
                 </nav>
             <section class="form-card">
                 <h6 class="title-label">Applicant Details</h6>
@@ -189,7 +189,7 @@
                     <div class="row g-3 mb-3">
 
                         <!-- Ministry -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Department</mat-label>
                                 <mat-select formControlName="ministry" (selectionChange)="selectedMinister($event)">
@@ -205,15 +205,30 @@
                         </div>
 
                         <!-- Scheme -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Scheme</mat-label>
-                                <mat-select formControlName="schemeCode">
+                                <mat-select formControlName="schemeCode" (selectionChange)="onSchameChange($event)">
                                     <mat-option value="">Select Scheme</mat-option>
                                     <mat-option *ngFor="let s of schemeList" [value]="s.schemeCode">{{ s.schemeName
                                         }}</mat-option>
                                 </mat-select>
                                 <mat-error *ngIf="(f['schemeCode'].touched || isSubmitted) && f['schemeCode'].invalid">
+                                    Scheme is required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                          <!-- Scheme -->
+                        <div class="col-md-4">
+                            <mat-form-field appearance="outline" class="w-100">
+                                <mat-label>Category</mat-label>
+                                <mat-select formControlName="catCode">
+                                    <mat-option value="">Select Category</mat-option>
+                                    <mat-option *ngFor="let cat of catListDetails" [value]="cat.id">{{ cat.name
+                                        }}</mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="(f['catCode'].touched || isSubmitted) && f['catCode'].invalid">
                                     Scheme is required
                                 </mat-error>
                             </mat-form-field>
@@ -226,14 +241,22 @@
                                 <mat-label>Description of Grievance</mat-label>
                                 <textarea matInput rows="2" formControlName="Description"
                                     (input)="micActive ? null : onDescriptionInput($event)"></textarea>
-                                <mat-error
-                                    *ngIf="(f['Description'].touched || isSubmitted) && f['Description'].invalid">
-                                    <!-- Description is required (max 250 chars) -->
-                                    <small class="text-muted d-block text-end">
-                                        {{ grievanceForm.get('Description')?.value?.length || 5 }} / 1000
-                                    </small>
-                                </mat-error>
+                                <mat-error *ngIf="f['Description'].hasError('required') && (f['Description'].touched || isSubmitted)">
+                                    Description is required
+                                    </mat-error>
+
+                                    <mat-error *ngIf="f['Description'].hasError('minlength')">
+                                    Minimum 5 characters required
+                                    </mat-error>
+
+                                    <mat-error *ngIf="f['Description'].hasError('maxlength')">
+                                    Maximum 1000 characters allowed
+                                    </mat-error>
+
                             </mat-form-field>
+                            <small class="text-muted d-block text-end">
+                            {{ descriptionLength }} / 1000
+                            </small>
 
                             <a routerLink="/keyboard-setting" class="btn btn-primary" target="_blank"
                                 matTooltip="Click here to set native language">
@@ -306,13 +329,13 @@
 
 
 
-                        <div class="col-md-4 d-flex gap-2 captcha-area">
+                        <!-- <div class="col-md-4 d-flex gap-2 captcha-area">
                             <div id="image"
                                 class="captcha-box mat-elevation-z1 d-flex align-items-center justify-content-center">
                             </div>
                             <div class="captcha-refresh-button d-flex">
                                 <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
-                                    <i class="bi bi-volume-up-fill"></i>
+                                    <i classcapt="bi bi-volume-up-fill"></i>
                                 </a>
                                 <a mat-icon-button (click)="reload()">
                                     <mat-icon>refresh</mat-icon>
@@ -325,13 +348,13 @@
                                     Captcha is required
                                 </mat-error>
                             </mat-form-field>
-                        </div>
+                        </div> -->
 
                     </div>
                 </form>
                 <div class="text-center mt-3 d-flex gap-2 justify-content-center align-items-center">
                     <button mat-raised-button color="primary" class="btn-glow btn-blue" type="submit"
-                        (click)="GetverifyCaptcha()">
+                        (click)="onSubmit()">
                         Submit
                     </button>
                     <button mat-raised-button color="warn" class="btn-glow btn-red" type="reset" (click)="resetForm()">

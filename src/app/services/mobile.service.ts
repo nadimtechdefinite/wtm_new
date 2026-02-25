@@ -12,37 +12,35 @@ export class MobileService {
   updateMobile$ = this.mobile.asObservable();
   updatelogindata$ = this.logindata.asObservable();
 
-  constructor() {}
+  constructor() { }
 
   updateMobile(mobile: any) {
-    sessionStorage.setItem('mobile', mobile);   // save permanently
-    this.mobile.next(mobile);                 // update BehaviorSubject
+    sessionStorage.setItem('mobile', mobile);   
+    this.mobile.next(mobile);                 
   }
 
-  updatelogindata(loginData:any){
-     sessionStorage.setItem('loginData', JSON.stringify(loginData));  // save permanently
-    this.logindata.next(loginData);   
+  updatelogindata(loginData: any) {
+    sessionStorage.setItem('loginData', JSON.stringify(loginData)); 
+    this.logindata.next(loginData);
   }
 
   private getStoredMobile() {
-    return sessionStorage.getItem('mobile');     // load saved value
+    return sessionStorage.getItem('mobile');   
   }
 
-private getlogindata() {
-  const data = sessionStorage.getItem('loginData');
-
-  if (!data) {
-    return null;
+  private getlogindata() {
+    const data = sessionStorage.getItem('loginData');
+    if (!data) {
+      return null;
+    }
+    try {
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Invalid loginData in sessionStorage:', data);
+      sessionStorage.removeItem('loginData'); 
+      return null;
+    }
   }
 
-  try {
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Invalid loginData in sessionStorage:', data);
-    sessionStorage.removeItem('loginData'); // cleanup bad value
-    return null;
-  }
-}
 
-  
 }

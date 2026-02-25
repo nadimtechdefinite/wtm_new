@@ -11,11 +11,12 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { debounceTime, filter, of, Subject, switchMap } from 'rxjs';
+import { debounceTime, filter, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog.component';
 import { masterService } from '../../../services/master.service';
 import { NumberOnlyDirective } from '../../../shared/directives/numberonly.directive';
 import { error } from 'highcharts';
+import { MobileService } from '../../../services/mobile.service';
 
 declare var Sanscript: any;
 
@@ -75,6 +76,7 @@ export class GravianceRegisterComponent implements OnInit {
   getCaptchadata: any;
   captchaCode: any;
   captchaId:any;
+  private destroy$ = new Subject<void>();
   constructor(
     private service: CommonService,
     private fb: FormBuilder,
@@ -83,11 +85,26 @@ export class GravianceRegisterComponent implements OnInit {
     private ngZone: NgZone,
     private dialog: MatDialog,
     private masterService: masterService,
-    private router: Router) {
+    private router: Router,private mobileService:MobileService) {
   }
 
   ngOnInit() {
     this.createForm()
+        this.mobileService.updateMobile$.subscribe(mobile=>{
+      this.isMobileExist = mobile;
+      if(this.isMobileExist){
+        this.grievanceForm.patchValue({mobile:this.isMobileExist})
+      }
+     })
+
+         this.mobileService.updateMobile$
+           .pipe(takeUntil(this.destroy$))
+           .subscribe(mobile => {
+             this.isMobileExist = mobile;
+             if (this.isMobileExist) {
+               this.grievanceForm.patchValue({ mobile: this.isMobileExist });
+             }
+           });
     this.isComplaintSave = true;
     this.getStateMaster();
     if ('webkitSpeechRecognition' in window) {
@@ -175,13 +192,13 @@ export class GravianceRegisterComponent implements OnInit {
       blockCode: ['', Validators.required],
       gpCode: ['', Validators.required],
       villageCode: ['', Validators.required],
-      pinCode: ['', [Validators.required, Validators.pattern(/^[1-9][0-9]{5}$/)]],
+      pinCode: [''],
       address: [''],
-      captcha: ['', [
-    Validators.required,
-    Validators.minLength(1),
-    Validators.maxLength(6)
-  ]],
+  //     captcha: ['', [
+  //   Validators.required,
+  //   Validators.minLength(1),
+  //   Validators.maxLength(6)
+  // ]],
     });
   }
 
@@ -348,12 +365,15 @@ onSubmit() {
     next: (response: any) => {
       if (response?.messageCode === 1) {
         this.registerData = response.data;
+        const mobile = this.grievanceForm.get('mobile')?.value
+        this.mobileService.updateMobile(mobile)
         this.grievanceForm.reset();
         this.captchaCode = '';
         this.toastr.success(response?.message || 'Grievance saved successfully!');
         this.isSubmitted = false;
         this.openConfirmAfterRegister();
         this.generateCaptcha();
+         
       } else {
         this.toastr.warning(response?.message || 'Something went wrong');
       }
@@ -379,7 +399,7 @@ openConfirmAfterRegister() {
 
   dialogRef.afterClosed().subscribe(result => {
     if (result) {
-      // this.router.navigate(['/login']) 
+      this.router.navigate(['/login']) 
     } else {
       // NO clicked
       console.log('User closed dialog');
@@ -399,13 +419,6 @@ openConfirmAfterRegister() {
   }
 
 
-  ngOnDestroy(): void {
-    try { this.recognition?.stop(); } catch { }
-    if (this.recognition) {
-      try { this.recognition.stop(); } catch { }
-    }
-    this.micActive = false;
-  }
   openConfirm() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '350px',
@@ -521,6 +534,18 @@ openConfirmAfterRegister() {
 }
 
 
+
+
+  ngOnDestroy(): void {
+    try { this.recognition?.stop(); } catch { }
+    if (this.recognition) {
+      try { this.recognition.stop(); } catch { }
+    }
+    this.micActive = false;
+
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }
 
 

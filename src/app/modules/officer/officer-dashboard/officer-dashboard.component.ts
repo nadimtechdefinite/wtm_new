@@ -111,7 +111,6 @@ export class OfficerDashboardComponent {
   ];
 
   goToGrievanceList(status: string) {
-    debugger
     this.router.navigate(
       ['layout/admin/admin-grievance-list'],
       { queryParams: { status, schemeCode: this.schemeCode } }
@@ -239,10 +238,8 @@ getschemeList:any;
 
   selectedschemeCode:any
     selectedScheme(event: any) {
-      debugger
     this.schemeCode = event?.value
     this.selectedschemeCode = event?.value
-
   this.adminSummary();
   }
 }

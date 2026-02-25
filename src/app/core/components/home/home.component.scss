@@ -130,9 +130,28 @@
   font-size: 30px;
 }
 
+
+
 .glass-caption p {
   font-size: 0.95rem;
   opacity: 0.9;
+}
+
+@media (max-width: 500px) {
+  .glass-caption{
+    padding: 0px 12px;
+  }
+  .glass-caption h3 {
+ font-size: 14px;
+    line-height: 20px;
+}
+
+.glass-caption p {
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+.hero-card{padding: 20px !important; margin-top: 20px;}
 }
 
 .carousel-control-prev,

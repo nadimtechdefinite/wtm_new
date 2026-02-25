@@ -16,6 +16,8 @@ import { saveAs } from 'file-saver';
 import { transition } from '@angular/animations';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { LoaderService } from '../../../services/loader.service';
+import { delay, finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-graviance-list',
   standalone: true,
@@ -74,6 +76,7 @@ export class GravianceListComponent {
     private route: ActivatedRoute,
     private mobileService: MobileService,
     private masterService: masterService,
+    private loader: LoaderService,
     private errorHandler: ErrorHandlerService,) { }
 
   ngOnInit() {
@@ -106,9 +109,15 @@ export class GravianceListComponent {
   }
 
   getCitizenDetails() {
+     this.loader.show();
     if (this.UserCitizenId && this.UserMobile) {
       this.masterService
         .citizenDetails(this.UserCitizenId, this.UserMobile)
+          .pipe(  
+              finalize(() => {
+                this.loader.hide();
+              })
+            )
         .subscribe((res: any) => {
           if (res) {
             this.citzenDetails = res.data

@@ -9,12 +9,14 @@ import { Observable, Subject } from 'rxjs';
 const getschemeMasterList = environment.apiUrl + "schemeMaster";
 const getStateMaster = environment.apiUrl + "stateMaster";
 const getDistritcListApi = environment.apiUrl + "districtsmaster";
+const getcategoryMaster = environment.apiUrl + "categoryMaster";
 const getBlockListApi = environment.apiUrl + "blocksmaster";
 const getpanchayatmaster = environment.apiUrl + "panchayatmaster"
 const getVillagemaster = environment.apiUrl + "villagemaster"
 const grievanceregister = environment.apiUrl + "citizenregistration/register";
 const isMobileNoExist = environment.apiUrl + "citizenregistration/verifyMobile"
 const saveGrievance = environment.apiUrl + "citizen/saveGrievance";
+const getsaveRofeedback = environment.apiUrl + "citizen/saveRofeedback";
 const getCitizenDetails = environment.apiUrl + "citizenregistration/citizen-details";
 const ministryMaster = environment.apiUrl + "ministryMaster"; 
 const getcommentsaAttachments = environment.apiUrl + "comments-attachments";
@@ -52,6 +54,9 @@ isLoggingIn = false;
   getDistritcList(stateCode: any) {
     return this.getApiWithoutToken(`${getDistritcListApi}/${stateCode}`);
   }
+    getcategoryList(stateCode: any) {
+    return this.getApiWithoutToken(`${getcategoryMaster}/${stateCode}`);
+  }
 
   getBlockList(stateCode: any, districtCode: any) {
     return this.getApiWithoutToken(`${getBlockListApi}/${stateCode}/${districtCode}`);
@@ -76,6 +81,11 @@ isLoggingIn = false;
     saveGrievance(json: any) {
     return this.http.post(`${saveGrievance}`, json);
   }
+
+  saveRofeedback(json: any) {
+    return this.http.post(`${getsaveRofeedback}`, json);
+  }
+
 
    asrBhasini(json: any) {
     return this.http.post(`${getasr}`, json);
