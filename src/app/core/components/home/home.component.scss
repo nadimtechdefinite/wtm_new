@@ -139,7 +139,9 @@
 
 @media (max-width: 500px) {
   .glass-caption{
-    padding: 0px 12px;
+            padding: 6px 12px !important;
+        bottom: 3px;
+
   }
   .glass-caption h3 {
  font-size: 14px;
