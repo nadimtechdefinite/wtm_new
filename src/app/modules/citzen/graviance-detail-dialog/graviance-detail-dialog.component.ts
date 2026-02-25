@@ -187,6 +187,7 @@ export class GravianceDetailDialogComponent {
     });
   }
 
+
 printDialog() {
   const printContents = document.getElementById('print-section')?.innerHTML;
   if (!printContents) return;
@@ -260,4 +261,5 @@ printDialog() {
     printWindow!.close();
   }, 500);
 }
+
 }

@@ -156,9 +156,6 @@
                                 <mat-label>Pin Code</mat-label>
                                 <input matInput placeholder="Enter Pin Code" (input)="onPinInput()" appNumberOnly maxlength="6" formControlName="pinCode"
                                     autocomplete="off">
-                                <mat-error *ngIf="(f['pinCode'].touched || isSubmitted) && f['pinCode'].invalid">
-                                    Name is required
-                                </mat-error>
                             </mat-form-field>
                         </div>
 
@@ -174,7 +171,7 @@
                     </div>
                     <div class="row g-3 mb-3 align-items-center">
 
-                        <div class="col-md-4 d-flex gap-2 captcha-area">
+                        <!-- <div class="col-md-4 d-flex gap-2 captcha-area">
                             <div id="image"
                                 class="captcha-box mat-elevation-z1 d-flex align-items-center justify-content-center">
 
@@ -195,13 +192,13 @@
                                     Captcha is required
                                 </mat-error>
                             </mat-form-field>
-                        </div>
+                        </div> -->
 
                     </div>
                 </form>
                 <div class="text-center mt-3 d-flex gap-2 justify-content-center align-items-center pb-4">
                     <button mat-raised-button color="primary" class="btn-glow btn-blue" type="submit"
-                        (click)="GetverifyCaptcha()">
+                        (click)="onSubmit()">
                         Submit
                     </button>
                     <button mat-raised-button class="btn-glow btn-red" type="reset" (click)="resetForm()">

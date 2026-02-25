@@ -28,7 +28,7 @@ export class SortlinkDialogComponent implements OnInit {
   captcha: any;
   captchaCode: any;
   captchaImageSrc :any
-    mobileInput$ = new Subject<string>();
+  mobileInput$ = new Subject<string>();
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { type: string; title: string },
     private fb: FormBuilder,

@@ -172,7 +172,13 @@
                 matTooltip="View File">
                 <i class="bi bi-download pdfIcon"></i>
               </a>
+              <!-- <button style="background-color: #0d5db940;" mat-icon-button color="primary"
+                                        type="button" aria-label="Preview file" (click)="previewSelectedFile(element.fileName)"
+                                        matTooltip="Close">
+                                        <mat-icon>visibility</mat-icon>
+                                    </button> -->
             </ng-container>
+    
 
             <!-- Else part -->
             <ng-template #noPdf>
@@ -337,3 +343,10 @@
   </div>
 
 </mat-dialog-content>
+
+<ng-template #previewDialog let-data>
+  <h2 mat-dialog-title>File Preview</h2>
+  <mat-dialog-content>
+    <iframe [src]="data.url" width="100%" height="500px"></iframe>
+  </mat-dialog-content>
+</ng-template>

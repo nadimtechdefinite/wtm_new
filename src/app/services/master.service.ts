@@ -16,6 +16,7 @@ const getVillagemaster = environment.apiUrl + "villagemaster"
 const grievanceregister = environment.apiUrl + "citizenregistration/register";
 const isMobileNoExist = environment.apiUrl + "citizenregistration/verifyMobile"
 const saveGrievance = environment.apiUrl + "citizen/saveGrievance";
+const getsaveRofeedback = environment.apiUrl + "citizen/saveRofeedback";
 const getCitizenDetails = environment.apiUrl + "citizenregistration/citizen-details";
 const ministryMaster = environment.apiUrl + "ministryMaster"; 
 const getcommentsaAttachments = environment.apiUrl + "comments-attachments";
@@ -80,6 +81,11 @@ isLoggingIn = false;
     saveGrievance(json: any) {
     return this.http.post(`${saveGrievance}`, json);
   }
+
+  saveRofeedback(json: any) {
+    return this.http.post(`${getsaveRofeedback}`, json);
+  }
+
 
    asrBhasini(json: any) {
     return this.http.post(`${getasr}`, json);

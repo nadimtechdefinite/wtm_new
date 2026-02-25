@@ -48,6 +48,7 @@ export class LayoutSidebarComponent implements OnInit {
     { label: 'Dashboard', routerLink: '/layout/citizen/dashboard', icon: 'fas fa-home', color: '#ff5722' },    
     { label: 'Register Grievance ', routerLink: '/layout/citizen/add-graviance', icon: 'fas fa-clipboard-list', color: '#3f51b5' },   // Orange
     { label: 'Grievance List', routerLink: '/layout/citizen/graviance-list', icon: 'fas fa-list', color: '#3f51b5' },
+    { label: 'Feedback', routerLink: '/layout/citizen/citizen-feedback', icon: 'fa-solid fa-comment', color: '#3f51b5' },
     {label: 'Logout',icon: 'fa fa-sign-out-alt',color: '#f44336',isLogout: true}
   ];
 

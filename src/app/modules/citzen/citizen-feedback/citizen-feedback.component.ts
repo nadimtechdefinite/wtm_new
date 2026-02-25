@@ -21,17 +21,17 @@ import { NumberOnlyDirective } from '../../../shared/directives/numberonly.direc
 import { LoaderService } from '../../../services/loader.service';
 import { AlertService } from '../../../services/alert.service';
 import { SpeechService } from '../../../services/speetch.service';
-
-
 declare var Sanscript: any;
+
+
 @Component({
-  selector: 'app-add-graviance',
+  selector: 'app-citizen-feedback',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, ...MATERIAL_MODULES, NumberOnlyDirective, RouterModule,],
-  templateUrl: './add-graviance.component.html',
-  styleUrl: './add-graviance.component.scss'
+  templateUrl: './citizen-feedback.component.html',
+  styleUrl: './citizen-feedback.component.scss'
 })
-export class AddGravianceComponent implements OnInit {
+export class CitizenFeedbackComponent {
   @ViewChild('saveAsPdf', { static: false }) saveAsPdf?: ElementRef;
   @ViewChild('pdfDialog') pdfDialog!: TemplateRef<any>;
   @ViewChild('pdfCard') pdfCard!: ElementRef;
@@ -133,6 +133,7 @@ export class AddGravianceComponent implements OnInit {
     this.getStateList();
     this.getSchemeList();
     this.getMinistry();
+
     this.userInfo = sessionStorage.getItem('userInfo');
     if (this.userInfo) {
       this.parsedUserInfo = JSON.parse(this.userInfo);
@@ -142,70 +143,16 @@ export class AddGravianceComponent implements OnInit {
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
+      console.log(this.UserMobile, "this.UserMobile");
+
+      this.getCitizenDetails();
+      this.getcategoryList();
     }
     // if(this.UserCitizenId && this.UserMobile) {
     //    this.getCitizenDetails();
     // }
 
-    this.grievanceForm.get('mobile')?.setValue(this.UserMobile)
-    if (this.UserMobile != null) {
-      this.masterService.citizenDetails(this.UserCitizenId, this.UserMobile).subscribe((res: any) => {
-        if (res) {
-          this.citzenDetails = res.data
-          this.userName = res.data.name
-          const data = this.citzenDetails
-          this.grievanceForm.patchValue(data)
-          const disableFields = ['name', 'fatherHusbandName', 'gender', 'mobile'];
-          disableFields.forEach(field => {
-            const control = this.grievanceForm.get(field);
-            const value = control?.value;
-
-            if (value && value !== 'undefined') {
-              control?.disable();
-            } else {
-              control?.enable();
-              control?.setValue('');
-            }
-          });
-
-          this.stateCode = data.stateCode;
-          this.getDistrictList();
-          this.districtCode = data.districtCode;
-          this.getBlockList();
-          this.blockCode = data.blockCode;
-          this.getGpList();
-          this.gpCode = data.panchayatCode;
-          this.getVillageList();
-        }
-      })
-    }
-    if ('webkitSpeechRecognition' in window) {
-      this.recognition = new (window as any).webkitSpeechRecognition();
-      this.recognition.continuous = true;
-      this.recognition.lang = 'en-US';
-      this.recognition.interimResults = true;
-      this.recognition.onresult = (event: any) => {
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-        }
-        this.Description = transcript; // Update the Description model with the speech text
-      };
-      this.recognition.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
-      };
-    } else {
-      console.error('Speech Recognition API is not supported in this browser.');
-    }
-
-    this.isalreadyExist = sessionStorage.getItem('isalreadyExist');
-    this.initSpeech();
-
-    this.generateUUID().then((sessionId) => {
-      this.sessionId = sessionId;
-      this.generateCaptcha();
-    });
+  
 
     this.mobileInput$
       .pipe(
@@ -228,6 +175,28 @@ export class AddGravianceComponent implements OnInit {
       });
 
 
+  }
+
+grievanceList:any
+  getCitizenDetails() {
+    if (this.UserCitizenId && this.UserMobile) {
+      this.masterService
+        .citizenDetails(this.UserCitizenId, this.UserMobile)
+        .subscribe((res: any) => {
+          if (res) {
+            this.citzenDetails = res.data
+                    // ✅ Mobile Patch
+        this.grievanceForm.patchValue({
+          mobile: this.citzenDetails.mobileNo
+        });
+
+        // ✅ Disable mobile field
+        this.grievanceForm.get('mobile')?.disable();
+       
+            console.log('User List Citizen Details:', this.citzenDetails);
+          }
+        });
+    }
   }
 
   async generateUUID() { // Public Domain/MIT
@@ -253,22 +222,20 @@ export class AddGravianceComponent implements OnInit {
   createForm() {
     this.grievanceForm = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
-      fatherHusbandName: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+      // fatherHusbandName: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
       gender: ['', Validators.required],
       mobile: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-      stateCode: ['', Validators.required],
+      // stateCode: ['', Validators.required],
       catCode: [''],
-      districtCode: ['', Validators.required],
-      blockCode: ['', Validators.required],
-      panchayatCode: ['', Validators.required],
-      villageCode: [''],
-      pinCode: ['', [Validators.required, Validators.pattern(/^[1-9][0-9]{5}$/)]],
-      address: [''],
-      ministry: ['', Validators.required],
-      schemeCode: ['', Validators.required],
-      //  Description: ['', [Validators.required, Validators.maxLength(1000)]]
+      // districtCode: ['', Validators.required],
+      // blockCode: ['', Validators.required],
+      // panchayatCode: ['', Validators.required],
+      // villageCode: [''],
+      // pinCode: ['', [Validators.required, Validators.pattern(/^[1-9][0-9]{5}$/)]],
+      // address: [''],
+      // ministry: ['', Validators.required],
+      // schemeCode: ['', Validators.required],
       Description: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(1000)]],
-      Language: ['en', Validators.required],
       // captcha: ['', [
       //   Validators.required,
       //   Validators.minLength(1),
@@ -470,11 +437,12 @@ export class AddGravianceComponent implements OnInit {
   catListDetails: any[] = [];
   getcategoryList(): void {
 
-    if (!this.schameCode) {
-      this.catListDetails = [];
-      return;
-    }
-    this.masterService.getcategoryList(this.schameCode).subscribe({
+    // if (!this.schameCode) {
+    //   this.catListDetails = [];
+    //   return;
+    // }
+    const schameCode = 6;
+    this.masterService.getcategoryList(schameCode).subscribe({
       next: (response: any) => {
 
         if (response?.messageCode === 1) {
@@ -650,8 +618,8 @@ export class AddGravianceComponent implements OnInit {
     return this.grievanceForm.get('Description')?.value?.length || 0;
   }
 
-
   isSubmitted = false;
+  feedbackDetails:any;
   onSubmit() {
 
     this.isSubmitted = true;
@@ -662,18 +630,18 @@ export class AddGravianceComponent implements OnInit {
     this.loader.show();
     this.grievanceForm.enable();
     const payload = {
-      citizenId: this.citzenDetails?.citizenId,
-      stateCode: this.grievanceForm.get('stateCode')?.value,
-      districtCode: this.grievanceForm.get('districtCode')?.value,
-      blockCode: this.grievanceForm.get('blockCode')?.value,
-      panchayatCode: this.grievanceForm.get('panchayatCode')?.value || '',
-      villageCode: this.grievanceForm.get('villageCode')?.value,
-      pinCode: this.grievanceForm.get('pinCode')?.value,
-      ministryCode: this.grievanceForm.get('ministry')?.value,
-      schemeCode: this.grievanceForm.get('schemeCode')?.value,
-      description: this.grievanceForm.get('Description')?.value,
+      // citizenId: this.citzenDetails?.citizenId,
+      roadName: "NH-44",
+      stateCode: this.citzenDetails.stateCode,
+      districtCode: this.citzenDetails.districtCode,
+      blockCode: this.citzenDetails.blockCode,
+      panchayatCode: this.citzenDetails.panchayatCode,
+      villageCode: this.citzenDetails.villageCode,
+      name: this.grievanceForm.get('name')?.value,
+      gender: this.grievanceForm.get('gender')?.value,
+      mobileNo: this.grievanceForm.get('mobile')?.value,
+      feedbackDetails: this.grievanceForm.get('Description')?.value,
       categoryCode: this.grievanceForm.get('catCode')?.value,
-      createdBy: this.citzenDetails?.citizenId
     };
     const formData = new FormData();
     formData.append(
@@ -683,41 +651,21 @@ export class AddGravianceComponent implements OnInit {
     if (this.attachement1) {
       formData.append('file', this.attachement1);
     }
-    this.masterService.saveGrievance(formData).pipe(finalize(() => { this.loader.hide(); }))
+    this.masterService.saveRofeedback(formData).pipe(finalize(() => { this.loader.hide(); }))
       .subscribe({
         next: (response: any) => {
           if (response?.messageCode === 1) {
-
-            this.grievanceDetails = response.data;
-            this.generatedComplaintNo = response.data.grievanceNumber;
-            this.generatedComplaintId = response.data.grievanceId;
-
-            const schemeCode = this.grievanceForm.get('schemeCode')?.value;
-            const selectedScheme = this.schemeList.find(
-              item => item.schemeCode === schemeCode
-            );
-            if (selectedScheme) {
-              this.schemeName = selectedScheme.schemeName;
-            }
-            this.isSubmitted = false;
-            this.isComplaintSave = false;
-            this.grievanceForm.reset();
-
-            //   this.alertService.success(response?.message || 'Grievance saved successfully!');
-            // setTimeout(() => {
-            //   this.openPdfModal();
-            // }, 300);
-            this.alertService
-              .success(response?.message || 'Grievance saved successfully!')
-              .afterClosed()
-              .subscribe(() => {
-                // ✅ OK click ke baad hi chalega
-                this.openPdfModal();
+            this.feedbackDetails = response.data;
+            this.alertService.success('feedback Submit successfully!')
+              const mobileValue = this.grievanceForm.get('mobile')?.value;
+              this.grievanceForm.reset();
+              this.grievanceForm.patchValue({
+                mobile: mobileValue
               });
-            this.menuReload.triggerReload();
-
+              this.grievanceForm.get('mobile')?.disable();
+                  this.fileName = null;
+                  this.attachement1 = null;
           } else {
-            this.grievanceForm.get('captcha')?.reset();
             this.alertService.warning(
               response?.message || 'Something went wrong, please try again.'
             );
@@ -734,18 +682,17 @@ export class AddGravianceComponent implements OnInit {
 
   resetForm() {
     this.isSubmitted = false;
-    const name = this.grievanceForm.get('name')?.value;
-    const fatherName = this.grievanceForm.get('fatherHusbandName')?.value;
-    const gender = this.grievanceForm.get('gender')?.value;
     const mobile = this.grievanceForm.get('mobile')?.value;
-
     this.grievanceForm.reset({
-      name: name,
-      fatherName: fatherName,
-      gender: gender,
-      mobile: mobile
+      mobile: mobile,
+
     });
     // this.grievanceForm.reset();
+    this.grievanceForm.get('name')?.reset();
+    this.grievanceForm.get('gender')?.reset();
+    this.grievanceForm.get('catCode')?.reset();
+     this.fileName = null;
+                  this.attachement1 = null;
     this.grievanceForm.updateValueAndValidity()
   }
   dialogRef: any;
