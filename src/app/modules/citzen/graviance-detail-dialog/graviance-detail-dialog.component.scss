@@ -333,3 +333,27 @@
     word-wrap: break-word;
     white-space: normal;
 }
+
+@media (max-width: 500px) {
+  .message-bubble {
+    width: 100%;
+  }
+
+  .dialog-layout {
+    padding: 14px;
+  }
+
+  .citizen-card h5 {
+    font-size: 14px;
+  }
+
+  .status {
+    padding: 2px 5px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 0px;
+  }
+  .citizen-card .card-header{padding: 10px 5px;}
+  .dialog-title{font-size: 20px !important;}
+}

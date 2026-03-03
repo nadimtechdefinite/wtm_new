@@ -22,7 +22,7 @@ export class AppComponent {
   constructor(private router: Router,
   private masterService: masterService) {
 
-this.router.events
+  this.router.events
   .pipe(filter(event => event instanceof NavigationEnd))
   .subscribe((event: any) => {
 

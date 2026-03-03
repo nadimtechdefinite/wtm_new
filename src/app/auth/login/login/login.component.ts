@@ -710,6 +710,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.adminForm.reset({ role: 'admin' });
     this.isSubmittedadmin = false;
   }
+
+    resetFormPD() {
+    this.pdForm.reset({ role: 'pd' });
+    this.isSubmittedPd = false;
+  }
+
   checkMobileNoExist() {
 
   }

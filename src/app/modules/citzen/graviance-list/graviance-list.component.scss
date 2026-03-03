@@ -85,3 +85,9 @@
 ::ng-deep .mat-mdc-text-field-wrapper {
   background-color: #ffffff;
 }
+
+
+
+@media (max-width: 500px) {
+  .register-complaint{margin-bottom: 10px;}
+}

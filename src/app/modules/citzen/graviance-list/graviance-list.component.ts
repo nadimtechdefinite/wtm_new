@@ -18,6 +18,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { LoaderService } from '../../../services/loader.service';
 import { delay, finalize } from 'rxjs/operators';
+import { BreakpointObserver } from '@angular/cdk/layout';
 @Component({
   selector: 'app-graviance-list',
   standalone: true,
@@ -77,7 +78,8 @@ export class GravianceListComponent {
     private mobileService: MobileService,
     private masterService: masterService,
     private loader: LoaderService,
-    private errorHandler: ErrorHandlerService,) { }
+    private errorHandler: ErrorHandlerService,
+   private breakpointObserver: BreakpointObserver) { }
 
   ngOnInit() {
     this.mobileService.updatelogindata$.subscribe(value => {
@@ -247,9 +249,11 @@ export class GravianceListComponent {
   }
 
   openViewDialog(row: any, citizenDetails: any) {
+    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
     const dialogRef = this.dialog.open(GravianceDetailDialogComponent, {
-      width: '65%',
-      maxWidth: '90vw',
+      width: isMobile ? '90%' : '65%',
+       maxWidth: isMobile ? '100vw' : '90vw',
+    height: isMobile ? '90vh' : '',
       data: {
         grievance: row,
         citizen: citizenDetails
