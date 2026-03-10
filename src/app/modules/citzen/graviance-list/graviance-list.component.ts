@@ -96,7 +96,6 @@ export class GravianceListComponent {
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
     }
     if(this.UserCitizenId && this.UserMobile) {
        this.getCitizenDetails();
@@ -305,7 +304,7 @@ export class GravianceListComponent {
     const topMargin = 20;
     // 🔹 Title
     doc.setFontSize(14);
-    doc.text('Write To Rural Development Minister', 110, 13);
+    doc.text('Department of Rural Development – A Grievance Redressal Portal', 110, 13);
     doc.setFontSize(12);
     doc.text('Grievance List', 14, topMargin);
 

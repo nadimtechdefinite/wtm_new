@@ -180,10 +180,15 @@
                     <td mat-cell *matCellDef="let element">
                         <!-- If file exists -->
                         <ng-container *ngIf="element.fileName && element.fileName !== 'No File Attached'; else noPdf">
-                            <a href="javascript:void(0)" (click)="openAttachment(element.fileName)" download
+                            <!-- <a href="javascript:void(0)" (click)="openAttachment(element.fileName)" download
                                 title="{{ element.fileName }}" matTooltip="View File">
                                 <i class="bi bi-download pdfIcon"></i>
-                            </a>
+                            </a> -->
+                            <button style="background-color: #0d5db940;" mat-icon-button color="primary"
+                                    type="button" aria-label="Preview file" (click)="openAttachment(element.fileName)"
+                                    matTooltip="Download">
+                                    <i class="bi bi-cloud-download-fill"></i>
+                                </button>
                         </ng-container>
 
                         <!-- Else part -->
@@ -237,9 +242,15 @@
                                     <p class="mb-1">{{ item.comments }}</p>
                                     <!-- File -->
                                     <a *ngIf="item.fileName !== 'No File Attached'" href="javascript:void(0)" matTooltip="view file">
-                                        <div class="pdfIcon" (click)="openAttachment(item.fileName)">
+                                        <!-- <div class="pdfIcon" (click)="openAttachment(item.fileName)">
                                             <i class="bi bi-download"></i>
-                                        </div>
+                                        </div> -->
+                                        <button style="background-color: #0d5db940;" mat-icon-button color="primary"
+                                    type="button" aria-label="Preview file" (click)="openAttachment(item.fileName)"
+                                    matTooltip="Download">
+                                    <!-- <mat-icon>visibility</mat-icon> -->
+                                    <i class="bi bi-cloud-download-fill"></i>
+                                </button>
                                     </a>
                                 </div>
 
@@ -341,8 +352,9 @@
                                 </button>
                                 <button style="background-color: #0d5db940;" mat-icon-button color="primary"
                                     type="button" aria-label="Preview file" (click)="previewSelectedFile()"
-                                    matTooltip="Preview">
-                                    <mat-icon>visibility</mat-icon>
+                                    matTooltip="Download">
+                                    <!-- <mat-icon>visibility</mat-icon> -->
+                                    <i class="bi bi-cloud-download-fill"></i>
                                 </button>
                             </ng-container>
                         </div>

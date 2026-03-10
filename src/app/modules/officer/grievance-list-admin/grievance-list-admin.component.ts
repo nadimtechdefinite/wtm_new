@@ -101,7 +101,6 @@ export class GrievanceListAdminComponent {
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.getschemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
     }
 
     this.route.queryParams.subscribe((params) => {
@@ -343,7 +342,6 @@ export class GrievanceListAdminComponent {
     this.masterService.getOfficerStatusDetail(role).subscribe({
       next: (response: any) => {
         if (response?.messageCode === 1) {
-          console.log(response.data, "response");
           this.officeStatusDetails = response.data
 
         } else {
@@ -380,7 +378,7 @@ export class GrievanceListAdminComponent {
     const topMargin = 20;
     // 🔹 Title
     doc.setFontSize(14);
-    doc.text('Write To Rural Development Minister', 110, 13);
+    doc.text('Department of Rural Development', 110, 13);
     doc.setFontSize(12);
     doc.text('Admin/PD Grievance List', 14, topMargin);
 

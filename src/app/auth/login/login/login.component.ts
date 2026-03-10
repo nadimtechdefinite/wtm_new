@@ -76,6 +76,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   captchaId: any;
   isMobileExist: any
   private destroy$ = new Subject<void>();
+generatedOtpId: string = '';
   constructor(
     private service: CommonService,
     private fb: FormBuilder,
@@ -128,22 +129,22 @@ export class LoginComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.pattern(/^[6-9]\d{9}$/)
       ]],
-      // captcha: ['', [
-      //   Validators.required,
-      //   Validators.minLength(1),
-      //   Validators.maxLength(6)
-      // ]]
+      captcha: ['', [
+        Validators.required,
+        Validators.minLength(1),
+        Validators.maxLength(6)
+      ]]
     });
   }
   adminForms() {
     this.adminForm = this.fb.group({
       user: ['', Validators.required],
       password: ['', Validators.required],
-      // captcha: ['', [
-      //   Validators.required,
-      //   Validators.minLength(1),
-      //   Validators.maxLength(6)
-      // ]]
+      captcha: ['', [
+        Validators.required,
+        Validators.minLength(1),
+        Validators.maxLength(6)
+      ]]
     });
   }
 
@@ -151,11 +152,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.stateForm = this.fb.group({
       user: ['', Validators.required],
       password: ['', Validators.required],
-      // captcha: ['', [
-      //   Validators.required,
-      //   Validators.minLength(1),
-      //   Validators.maxLength(6)
-      // ]]
+      captcha: ['', [
+        Validators.required,
+        Validators.minLength(1),
+        Validators.maxLength(6)
+      ]]
     });
   }
 
@@ -163,11 +164,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.pdForm = this.fb.group({
       user: ['', Validators.required],
       password: ['', Validators.required],
-      // captcha: ['', [
-      //   Validators.required,
-      //   Validators.minLength(1),
-      //   Validators.maxLength(6)
-      // ]]
+      captcha: ['', [
+        Validators.required,
+        Validators.minLength(1),
+        Validators.maxLength(6)
+      ]]
     });
   }
 
@@ -200,7 +201,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   generateCaptcha() {
     this.masterService.generateCaptcha().subscribe((response: any) => {
-      console.log(response, "response captcha");
       this.getCaptchadata = response.data
       this.captcha = this.getCaptchadata.captcha
       this.captchaCode = this.getCaptchadata.captchaCode
@@ -226,19 +226,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (!this.captchaCode) {
       return;
     }
-
     // Stop previous speech (important)
     window.speechSynthesis.cancel();
-
     const utterance = new SpeechSynthesisUtterance(
       this.captchaCode.split('').join(' ')
     );
-
     utterance.lang = 'en-IN';
     utterance.rate = 0.6;
     utterance.pitch = 1;
     utterance.volume = 1;
-
     window.speechSynthesis.speak(utterance);
   }
 
@@ -261,7 +257,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   GetverifyCaptcha(templateRef: TemplateRef<any>) {
     this.isSubmitted = true;
-
+    this.otpValue = '';
     if (this.citizenForm.invalid) {
       this.citizenForm.markAllAsTouched();
       this.toastr.error('Please fill all required fields');
@@ -291,6 +287,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if (response.messageCode === 1) {
           const token = response.data.token;
+        if (response.messageCode !== 1 || !response.data?.token) {
+          this.toastr.error(response.message || 'Invalid Captcha');
+          return;
+        }
+        // ✅ Decode token
+        const decoded:any = jwtDecode<UserContext>(token);
+          sessionStorage.setItem('userInfo', JSON.stringify(decoded));
+        if (decoded.captchaId !== this.captchaId) {
+          this.toastr.error('Captcha session mismatch');
+          return;
+        }
           const payloadData = JSON.parse(atob(token.split('.')[1]));
           const isVerified = payloadData.isVerified;
           const captchaId = payloadData.captchaId;
@@ -338,6 +345,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.otpdata = response;
           this.getcooldownPeriod = response.data.cooldownPeriod;
           this.otpNumber = response.data.otp;
+          this.generatedOtpId = response.data.otpId;  
           this.startCooldown(this.getcooldownPeriod);
           console.log(this.otpdata, 'otpdata');
 
@@ -389,6 +397,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.toastr.success("OTP resent successfully");
           // Reset cooldown
           this.startCooldown(response.data.cooldownPeriod);
+          this.otpValue = '';
         } else {
           this.toastr.error(response.errorMsg || "Failed to resend OTP");
         }
@@ -423,26 +432,25 @@ export class LoginComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('accessToken', token);
 
         // ✅ Decode token
-        const decoded = jwtDecode<UserContext>(token);
-        sessionStorage.setItem('userInfo', JSON.stringify(decoded));
-
-        // ✅ Audit log
+        const decoded:any = jwtDecode<UserContext>(token);
+          sessionStorage.setItem('userInfo', JSON.stringify(decoded));
+        if (decoded.otpId !== this.generatedOtpId) {
+          this.toastr.error('OTP session mismatch');
+          return;
+        }
         this.masterService.isLoggingIn = true;
         this.masterService.saveAuditLog('LOGIN', '/layout/citizen')
           .subscribe({
             complete: () => (this.masterService.isLoggingIn = false)
           });
 
-        // ✅ Update services
         const mobile = this.citizenForm.get('mobile')?.value;
         this.mobileService.updateMobile(mobile);
         this.mobileService.updatelogindata(response);
 
-        // ✅ UI cleanup
         this.otpValue = '';
         this.dialog.closeAll();
 
-        // ✅ Navigate once
         this.router.navigate(['/layout/citizen']);
 
         this.toastr.success('Login successful');
@@ -463,247 +471,270 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isSubmitted = false;
   }
 
-  // onSubmitAdmin() {
-  //   this.isSubmittedadmin = true;
-  //   if (this.adminForm.invalid) {
-  //     this.adminForm.markAllAsTouched();
-  //     this.toastr.error("Admin Form Is Invalid");
-  //     return;
-  //   }
-  //   const enteredCaptcha = this.adminForm.get('captcha')?.value;
-  //   if (!enteredCaptcha || enteredCaptcha.trim() === '') {
-  //     this.toastr.error('Please enter captcha');
-  //     return;
-  //   }
-  //   const payload = {
-  //     captcha: enteredCaptcha,
-  //     captchaId: this.captchaId
-  //   }
-  //   this.masterService.verifyCaptcha(payload).subscribe({
-  //     next: (captchaRes: any) => {
-  //         const token = captchaRes.data.token;
-  //         const payloadData = JSON.parse(atob(token.split('.')[1]));
-  //         const isVerified = payloadData.isVerified;
-  //         const captchaId = payloadData.captchaId;
-  //         const exp = payloadData.exp;
-  //         const iat = payloadData.iat;
-  //       if (captchaRes.messageCode === 1 && isVerified === true) {
-  //       }
-  //       else if (captchaRes.messageCode === 1 && isVerified === false) {
-  //         this.toastr.error(captchaRes.message || 'Invalid Captcha');
-  //         this.pdForm.get('captcha')?.reset();
-  //         this.generateCaptcha();
-  //         return;
-  //       }
-  //       const logindata = this.adminForm.getRawValue();
-  //       const encryptedPassword = CryptoJS.SHA256(logindata.password.trim()).toString(CryptoJS.enc.Hex);
-  //       const postLoginForm = {
-  //         loginName: logindata.user,
-  //         password: encryptedPassword
-  //       };
-
-  //       this.officer.loginFormCreate(postLoginForm).subscribe({
-  //         next: (response: any) => {
-  //           if (response.messageCode === 1 && response.data) {
-  //             const token = response.data.token;
-  //             sessionStorage.setItem('accessToken', token);
-  //             const decodedToken: any = jwtDecode(token);
-  //             const decoded: UserContext = jwtDecode<UserContext>(token);
-  //             // sessionStorage.setItem('userContext',JSON.stringify(decoded));
-  //             sessionStorage.setItem('userInfo', JSON.stringify(decoded));
-  //             this.masterService.isLoggingIn = true;
-  //             this.masterService
-  //               .saveAuditLog('LOGIN', '/layout/admin/dashboard')
-  //               .subscribe({
-  //                 complete: () => (this.masterService.isLoggingIn = false)
-  //               });
-  //             this.router.navigate(['/layout/admin']);
-  //             if (decodedToken.isExpire === true) {
-  //               this.auth.openForceChangePasswordDialog();
-  //             }
-  //           } else {
-  //             this.toastr.error(response.message || 'Login failed');
-  //           }
-  //         },
-  //         error: () => {
-  //           this.toastr.error('Login API error');
-  //         }
-  //       });
-  //     },
-  //     error: (err) => {
-  //       const msg = err?.error?.message || 'Invalid Captcha';
-  //       this.toastr.error(msg);
-  //       this.adminForm.get('captcha')?.reset();
-  //       this.generateCaptcha();
-  //     }
-  //   });
-  // }
-
-  processLogin() {
+  onSubmitAdmin() {
     this.isSubmittedadmin = true;
     if (this.adminForm.invalid) {
       this.adminForm.markAllAsTouched();
-      this.toastr.error("Please select user type and enter password.");
+      this.toastr.error("Admin Form Is Invalid");
       return;
     }
-    const logindata = this.adminForm.getRawValue();
-
-    const encryptedPassword = CryptoJS
-      .SHA256(logindata.password.trim())
-      .toString(CryptoJS.enc.Hex);
-
-    const postLoginForm = {
-      loginName: logindata.user,
-      password: encryptedPassword
-    };
-
-    this.officer.loginFormCreate(postLoginForm).subscribe({
-      next: (response: any) => {
-
-        if (response.messageCode === 1 && response.data) {
-
-          const token = response.data.token;
-          sessionStorage.setItem('accessToken', token);
-
-          const decoded: UserContext = jwtDecode<UserContext>(token);
+    const enteredCaptcha = this.adminForm.get('captcha')?.value;
+    if (!enteredCaptcha || enteredCaptcha.trim() === '') {
+      this.toastr.error('Please enter captcha');
+      return;
+    }
+    const payload = {
+      captcha: enteredCaptcha,
+      captchaId: this.captchaId
+    }
+    this.masterService.verifyCaptcha(payload).subscribe({
+      next: (captchaRes: any) => {
+          const token = captchaRes.data.token;
+        // ✅ Decode token
+        const decoded:any = jwtDecode<UserContext>(token);
           sessionStorage.setItem('userInfo', JSON.stringify(decoded));
-
-          this.router.navigate(['/layout/admin']);
-
-        } else {
-          this.toastr.error(response.message || 'Login failed');
+        if (decoded.captchaId !== this.captchaId) {
+          this.toastr.error('Captcha session mismatch');
+          return;
         }
+          const payloadData = JSON.parse(atob(token.split('.')[1]));
+          const isVerified = payloadData.isVerified;
+          const captchaId = payloadData.captchaId;
+          const exp = payloadData.exp;
+          const iat = payloadData.iat;
+        if (captchaRes.messageCode === 1 && isVerified === true) {
+        }
+        else if (captchaRes.messageCode === 1 && isVerified === false) {
+          this.toastr.error(captchaRes.message || 'Invalid Captcha');
+          this.pdForm.get('captcha')?.reset();
+          this.generateCaptcha();
+          return;
+        }
+        const logindata = this.adminForm.getRawValue();
+        const encryptedPassword = CryptoJS.SHA256(logindata.password.trim()).toString(CryptoJS.enc.Hex);
+        const postLoginForm = {
+          loginName: logindata.user,
+          password: encryptedPassword
+        };
+
+        this.officer.loginFormCreate(postLoginForm).subscribe({
+          next: (response: any) => {
+            if (response.messageCode === 1 && response.data) {
+              const token = response.data.token;
+              sessionStorage.setItem('accessToken', token);
+              const decodedToken: any = jwtDecode(token);
+              const decoded: UserContext = jwtDecode<UserContext>(token);
+              // sessionStorage.setItem('userContext',JSON.stringify(decoded));
+              sessionStorage.setItem('userInfo', JSON.stringify(decoded));
+              this.masterService.isLoggingIn = true;
+              this.masterService
+                .saveAuditLog('LOGIN', '/layout/admin/dashboard')
+                .subscribe({
+                  complete: () => (this.masterService.isLoggingIn = false)
+                });
+              this.router.navigate(['/layout/admin']);
+              if (decodedToken.isExpire === true) {
+                this.auth.openForceChangePasswordDialog();
+              }
+            } else {
+              this.toastr.error(response.message || 'Login failed');
+            }
+          },
+        error: (err) => {
+        const msg = err?.error?.message || 'Invalid password';
+        this.toastr.error(msg);
+        this.adminForm.get('captcha')?.reset();
+        this.generateCaptcha();
+      }
+        });
       },
-      error: () => {
-        this.toastr.error('Login API error');
+      error: (err) => {
+        const msg = err?.error?.message || 'Invalid Captcha';
+        this.toastr.error(msg);
+        this.adminForm.get('captcha')?.reset();
+        this.generateCaptcha();
       }
     });
   }
 
-  // onSubmitPD() {
-  //   this.isSubmittedPd = true;
-
-  //   if (this.pdForm.invalid) {
-  //     this.pdForm.markAllAsTouched();
-  //     this.toastr.error("PD Form Is Invalid");
+  // processLogin() {
+  //   this.isSubmittedadmin = true;
+  //   if (this.adminForm.invalid) {
+  //     this.adminForm.markAllAsTouched();
+  //     this.toastr.error("Please select user type and enter password.");
   //     return;
   //   }
-  //   const enteredCaptcha = this.pdForm.get('captcha')?.value;
+  //   const logindata = this.adminForm.getRawValue();
 
-  //   if (!enteredCaptcha || enteredCaptcha.trim() === '') {
-  //     this.toastr.error('Please enter captcha');
-  //     return;
-  //   }
-  //   const sessionId = sessionStorage.getItem('sessionId1');
-  //   if (!sessionId) {
-  //     this.toastr.error('Session expired. Please refresh captcha');
-  //     this.generateCaptcha();
-  //     return;
-  //   }
+  //   const encryptedPassword = CryptoJS
+  //     .SHA256(logindata.password.trim())
+  //     .toString(CryptoJS.enc.Hex);
 
-  //   const payload = {
-  //     captcha: enteredCaptcha,
-  //     captchaId: this.captchaId
-  //   }
+  //   const postLoginForm = {
+  //     loginName: logindata.user,
+  //     password: encryptedPassword
+  //   };
 
-  //   this.masterService.verifyCaptcha(payload).subscribe({
-  //     next: (captchaRes: any) => {
-  //        const token = captchaRes.data.token;
-  //         const payloadData = JSON.parse(atob(token.split('.')[1]));
-  //         const isVerified = payloadData.isVerified;
-  //         const captchaId = payloadData.captchaId;
-  //         const exp = payloadData.exp;
-  //         const iat = payloadData.iat;
-  //       if (captchaRes.messageCode === 1 && isVerified === true) {
+  //   this.officer.loginFormCreate(postLoginForm).subscribe({
+  //     next: (response: any) => {
+
+  //       if (response.messageCode === 1 && response.data) {
+
+  //         const token = response.data.token;
+  //         sessionStorage.setItem('accessToken', token);
+
+  //         const decoded: UserContext = jwtDecode<UserContext>(token);
+  //         sessionStorage.setItem('userInfo', JSON.stringify(decoded));
+
+  //         this.router.navigate(['/layout/admin']);
+
+  //       } else {
+  //         this.toastr.error(response.message || 'Login failed');
   //       }
-  //       else if (captchaRes.messageCode === 1 && isVerified === false) {
-  //         this.toastr.error(captchaRes.message || 'Invalid Captcha');
-  //         this.pdForm.get('captcha')?.reset();
-  //         this.generateCaptcha();
-  //         return;
-  //       }
-
-  //       const logindata = this.pdForm.getRawValue();
-  //       const encryptedPassword = CryptoJS.SHA256(logindata.password.trim()).toString(CryptoJS.enc.Hex);
-  //       const postLoginForm = {
-  //         loginName: this.pdForm.get('user')?.value,
-  //         password: encryptedPassword
-  //       };
-
-  //       console.log("Login payload:", JSON.stringify(postLoginForm));
-
-  //       this.officer.loginFormCreate(postLoginForm).subscribe({
-  //         next: (response: any) => {
-  //           if (response.messageCode === 1) {
-  //             const token = response.data.token;
-  //             sessionStorage.setItem('accessToken', token);
-  //             const decoded: UserContext = jwtDecode<UserContext>(token);
-  //             const decodedToken: any = jwtDecode(token);
-  //             // sessionStorage.setItem('userContext',JSON.stringify(decoded));
-  //             sessionStorage.setItem('userInfo', JSON.stringify(decoded));
-  //             this.masterService.isLoggingIn = true;
-  //             this.masterService
-  //               .saveAuditLog('LOGIN', '/layout/admin/dashboard')
-  //               .subscribe({
-  //                 complete: () => {
-  //                   this.masterService.isLoggingIn = false;
-  //                 }
-  //               });
-  //             this.router.navigate(['/layout/admin']);
-  //             if (decodedToken.isExpire === true) {
-  //               this.auth.openForceChangePasswordDialog();
-  //             }
-  //           } else {
-  //             this.toastr.error(response.message || 'Login failed');
-  //           }
-  //         },
-  //         error: () => {
-  //           this.toastr.error('Login API error');
-  //         }
-  //       });
   //     },
-
-  //     error: (err) => {
-  //       const msg = err?.error?.message || 'Invalid Captcha';
-  //       this.toastr.error(msg);
-  //       this.pdForm.get('captcha')?.reset();
-  //       this.generateCaptcha();
+  //     error: () => {
+  //       this.toastr.error('Login API error');
   //     }
   //   });
   // }
-  processPdLogin() {
+
+
+
+
+  onSubmitPD() {
     this.isSubmittedPd = true;
+
     if (this.pdForm.invalid) {
       this.pdForm.markAllAsTouched();
-      this.toastr.error("Please select PD type and enter password.");
+      this.toastr.error("PD Form Is Invalid");
       return;
     }
-    const logindata = this.pdForm.getRawValue();
-    const encryptedPassword = CryptoJS
-      .SHA256(logindata.password.trim())
-      .toString(CryptoJS.enc.Hex);
-    const postLoginForm = {
-      loginName: this.pdForm.get('user')?.value,
-      password: encryptedPassword
-    };
-    console.log("Login payload:", JSON.stringify(postLoginForm));
-    this.officer.loginFormCreate(postLoginForm).subscribe({
-      next: (response: any) => {
-        if (response.messageCode === 1 && response.data) {
-          const token = response.data.token;
-          sessionStorage.setItem('accessToken', token);
-          const decoded: UserContext = jwtDecode<UserContext>(token);
+    const enteredCaptcha = this.pdForm.get('captcha')?.value;
+
+    if (!enteredCaptcha || enteredCaptcha.trim() === '') {
+      this.toastr.error('Please enter captcha');
+      return;
+    }
+    const sessionId = sessionStorage.getItem('sessionId1');
+    if (!sessionId) {
+      this.toastr.error('Session expired. Please refresh captcha');
+      this.generateCaptcha();
+      return;
+    }
+
+    const payload = {
+      captcha: enteredCaptcha,
+      captchaId: this.captchaId
+    }
+
+    this.masterService.verifyCaptcha(payload).subscribe({
+      next: (captchaRes: any) => {
+         const token = captchaRes.data.token;        
+         // ✅ Decode token
+        const decoded:any = jwtDecode<UserContext>(token);
           sessionStorage.setItem('userInfo', JSON.stringify(decoded));
-          this.router.navigate(['/layout/admin']);
-        } else {
-          this.toastr.error(response.message || 'Login failed');
+        if (decoded.captchaId !== this.captchaId) {
+          this.toastr.error('Captcha session mismatch');
+          return;
         }
+          const payloadData = JSON.parse(atob(token.split('.')[1]));
+          const isVerified = payloadData.isVerified;
+          const captchaId = payloadData.captchaId;
+          const exp = payloadData.exp;
+          const iat = payloadData.iat;
+        if (captchaRes.messageCode === 1 && isVerified === true) {
+        }
+        else if (captchaRes.messageCode === 1 && isVerified === false) {
+          this.toastr.error(captchaRes.message || 'Invalid Captcha');
+          this.pdForm.get('captcha')?.reset();
+          this.generateCaptcha();
+          return;
+        }
+
+        const logindata = this.pdForm.getRawValue();
+        const encryptedPassword = CryptoJS.SHA256(logindata.password.trim()).toString(CryptoJS.enc.Hex);
+        const postLoginForm = {
+          loginName: this.pdForm.get('user')?.value,
+          password: encryptedPassword
+        };
+
+        console.log("Login payload:", JSON.stringify(postLoginForm));
+
+        this.officer.loginFormCreate(postLoginForm).subscribe({
+          next: (response: any) => {
+            if (response.messageCode === 1) {
+              const token = response.data.token;
+              sessionStorage.setItem('accessToken', token);
+              const decoded: UserContext = jwtDecode<UserContext>(token);
+              const decodedToken: any = jwtDecode(token);
+              // sessionStorage.setItem('userContext',JSON.stringify(decoded));
+              sessionStorage.setItem('userInfo', JSON.stringify(decoded));
+              this.masterService.isLoggingIn = true;
+              this.masterService
+                .saveAuditLog('LOGIN', '/layout/admin/dashboard')
+                .subscribe({
+                  complete: () => {
+                    this.masterService.isLoggingIn = false;
+                  }
+                });
+              this.router.navigate(['/layout/admin']);
+              if (decodedToken.isExpire === true) {
+                this.auth.openForceChangePasswordDialog();
+              }
+            } else {
+              this.toastr.error(response.message || 'Login failed');
+            }
+          },
+        error: (err) => {
+        const msg = err?.error?.message || 'Invalid Password';
+        this.toastr.error(msg);
+        this.pdForm.get('captcha')?.reset();
+        this.generateCaptcha();
+      }
+        });
       },
-      error: () => {
-        this.toastr.error('Login API error');
+
+      error: (err) => {
+        const msg = err?.error?.message || 'Invalid Captcha';
+        this.toastr.error(msg);
+        this.pdForm.get('captcha')?.reset();
+        this.generateCaptcha();
       }
     });
   }
+  // processPdLogin() {
+  //   this.isSubmittedPd = true;
+  //   if (this.pdForm.invalid) {
+  //     this.pdForm.markAllAsTouched();
+  //     this.toastr.error("Please select PD type and enter password.");
+  //     return;
+  //   }
+  //   const logindata = this.pdForm.getRawValue();
+  //   const encryptedPassword = CryptoJS
+  //     .SHA256(logindata.password.trim())
+  //     .toString(CryptoJS.enc.Hex);
+  //   const postLoginForm = {
+  //     loginName: this.pdForm.get('user')?.value,
+  //     password: encryptedPassword
+  //   };
+  //   console.log("Login payload:", JSON.stringify(postLoginForm));
+  //   this.officer.loginFormCreate(postLoginForm).subscribe({
+  //     next: (response: any) => {
+  //       if (response.messageCode === 1 && response.data) {
+  //         const token = response.data.token;
+  //         sessionStorage.setItem('accessToken', token);
+  //         const decoded: UserContext = jwtDecode<UserContext>(token);
+  //         sessionStorage.setItem('userInfo', JSON.stringify(decoded));
+  //         this.router.navigate(['/layout/admin']);
+  //       } else {
+  //         this.toastr.error(response.message || 'Login failed');
+  //       }
+  //     },
+  //     error: () => {
+  //       this.toastr.error('Login API error');
+  //     }
+  //   });
+  // }
 
 
   resetFormAdmin() {
@@ -754,7 +785,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if (response?.messageCode === 1 && response?.data?.length) {
           this.masterStateData = response.data;
-          console.log(this.masterStateData, 'this.masterdata');
 
         } else {
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
@@ -775,7 +805,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if (response?.messageCode === 1 && response?.data?.length) {
           this.getschemeList = response.data;
-          console.log(this.getschemeList, 'this.masterdata');
 
         } else {
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');

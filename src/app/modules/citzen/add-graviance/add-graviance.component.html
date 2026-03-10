@@ -317,25 +317,23 @@
                                         <mat-icon>close</mat-icon>
                                     </button>
                                     <button style="background-color: #0d5db940;" mat-icon-button color="primary"
-                                        type="button" aria-label="Preview file" (click)="previewSelectedFile()"
-                                        matTooltip="Close">
-                                        <mat-icon>visibility</mat-icon>
+                                        type="button" aria-label="Download " (click)="previewSelectedFile()"
+                                        matTooltip="Download">
+                                        <i class="bi bi-cloud-download-fill"></i>
                                     </button>
                                 </ng-container>
                             </div>
 
                             <mat-hint>Only JPEG / PNG / PDF files allowed (Max 10MB).</mat-hint>
                         </div>
-
-
-
-                        <!-- <div class="col-md-4 d-flex gap-2 captcha-area">
+                        <div class="col-md-4 d-flex gap-2 captcha-area">
                             <div id="image"
                                 class="captcha-box mat-elevation-z1 d-flex align-items-center justify-content-center">
                             </div>
                             <div class="captcha-refresh-button d-flex">
                                 <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
-                                    <i classcapt="bi bi-volume-up-fill"></i>
+                                    <mat-icon>volume_up</mat-icon>
+
                                 </a>
                                 <a mat-icon-button (click)="reload()">
                                     <mat-icon>refresh</mat-icon>
@@ -348,13 +346,13 @@
                                     Captcha is required
                                 </mat-error>
                             </mat-form-field>
-                        </div> -->
+                        </div>
 
                     </div>
                 </form>
                 <div class="text-center mt-3 d-flex gap-2 justify-content-center align-items-center">
                     <button mat-raised-button color="primary" class="btn-glow btn-blue" type="submit"
-                        (click)="onSubmit()">
+                        (click)="GetverifyCaptcha()">
                         Submit
                     </button>
                     <button mat-raised-button color="warn" class="btn-glow btn-red" type="reset" (click)="resetForm()">
@@ -373,8 +371,8 @@
             <img src="assets/images/logo_wtm.png" style="    width: 43px;
     margin: 20px;" alt="emblem" class="logo-img me-3" />
             <div class="text-start">
-                <div class="fw-bold fs-5 text-primary">Write To Rural Development Minister</div>
-                <div class="fw-semibold fs-6 text-secondary">A Grievance Redressel System For Users</div>
+                <div class="fw-bold fs-5 text-primary">Department of Rural Development</div>
+                <div class="fw-semibold fs-6 text-secondary">A Grievance Redressal Portal For Users</div>
             </div>
         </div>
 

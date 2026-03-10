@@ -16,7 +16,7 @@
     <div class="col-md-4" *ngIf="userType === 1">
       <mat-form-field appearance="outline" class="w-100">
         <mat-label>Select Program Division PD Type</mat-label>
-        <mat-select formControlName="user" (selectionChange)="selectedScheme($event)">
+        <mat-select (selectionChange)="selectedScheme($event)">
           <mat-option value="0">All</mat-option>
           <mat-option *ngFor="let scheme of getschemeList" [value]="scheme.schemeCode">
             {{ scheme.schemeName}}</mat-option>

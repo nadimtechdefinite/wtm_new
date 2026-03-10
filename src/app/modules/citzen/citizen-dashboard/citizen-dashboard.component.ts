@@ -99,7 +99,6 @@ export class CitizenDashboardComponent implements OnInit, AfterViewInit {
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
     }
     if(this.UserCitizenId && this.UserMobile) {
        this.getCitizenDetails();

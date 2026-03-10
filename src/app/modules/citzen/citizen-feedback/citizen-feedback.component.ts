@@ -302,7 +302,6 @@ grievanceList:any
   captchaCode: any;
   generateCaptcha() {
     this.masterService.generateCaptcha().subscribe((response: any) => {
-      console.log(response, "response captcha");
       this.getCaptchadata = response.data;
       this.captcha = this.getCaptchadata.captcha;
       this.captchaCode = this.getCaptchadata.captchaCode;
@@ -550,15 +549,28 @@ grievanceList:any
     this.attachement1 = null;
   }
 
-  previewSelectedFile() {
-    if (!this.attachement1) return;
-    const fileURL = URL.createObjectURL(this.attachement1);
-    window.open(fileURL, '_blank');
+  // previewSelectedFile() {
+  //   if (!this.attachement1) return;
+  //   const fileURL = URL.createObjectURL(this.attachement1);
+  //   window.open(fileURL, '_blank');
 
-    setTimeout(() => {
-      URL.revokeObjectURL(fileURL);
-    }, 1000);
-  }
+  //   setTimeout(() => {
+  //     URL.revokeObjectURL(fileURL);
+  //   }, 1000);
+  // }
+
+  previewSelectedFile() {
+  if (!this.attachement1) return;
+
+  const fileURL = URL.createObjectURL(this.attachement1);
+
+  const link = document.createElement('a');
+  link.href = fileURL;
+  link.download = this.attachement1.name; // file ka original naam
+  link.click();
+
+  URL.revokeObjectURL(fileURL);
+}
 
 
   GetverifyCaptcha() {

@@ -125,7 +125,6 @@ export class OfficerDashboardComponent {
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode;
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
       this.adminSummary();
       this.schemeMaster();
     }
@@ -226,7 +225,6 @@ getschemeList:any;
       next: (response: any) => {
         if (response?.messageCode === 1 && response?.data?.length) {
           this.getschemeList = response.data;
-          console.log(this.getschemeList, 'this.masterdata');
 
         } else {
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');

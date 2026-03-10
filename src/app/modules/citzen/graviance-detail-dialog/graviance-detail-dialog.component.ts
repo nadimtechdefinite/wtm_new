@@ -197,7 +197,7 @@ printDialog() {
   printWindow!.document.write(`
     <html>
       <head>
-        <title>Write To Rural Development Minister</title>
+        <title>Department of Rural Development – A Grievance Redressal Portal</title>
 
         <!-- Bootstrap (optional but recommended) -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">

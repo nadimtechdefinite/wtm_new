@@ -80,7 +80,6 @@ export class ProgramDivisonDialogComponent {
       this.userType = this.parsedUserInfo.userType;
       this.userName = this.parsedUserInfo.userName;
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
     }
 
     this.officeStatus();
@@ -279,22 +278,35 @@ openAttachment(fileName: string): void {
     this.attachement1 = null;
   }
 
-previewSelectedFile() {
-  if (!this.attachement1) return;
-  const fileURL = URL.createObjectURL(this.attachement1);
-  window.open(fileURL, '_blank');
+// previewSelectedFile() {
+//   if (!this.attachement1) return;
+//   const fileURL = URL.createObjectURL(this.attachement1);
+//   window.open(fileURL, '_blank');
 
-  setTimeout(() => {
-    URL.revokeObjectURL(fileURL);
-  }, 1000);
+//   setTimeout(() => {
+//     URL.revokeObjectURL(fileURL);
+//   }, 1000);
+// }
+
+  previewSelectedFile() {
+  if (!this.attachement1) return;
+
+  const fileURL = URL.createObjectURL(this.attachement1);
+
+  const link = document.createElement('a');
+  link.href = fileURL;
+  link.download = this.attachement1.name; // file ka original naam
+  link.click();
+
+  URL.revokeObjectURL(fileURL);
 }
+
   ////new api for state login////
   schemeMaster() {
     this.masterService.schemeMaster().subscribe({
       next: (response: any) => {
         if (response?.messageCode === 1 && response?.data?.length) {
           this.getschemeList = response.data;
-          console.log(this.getschemeList, 'this.masterdata');
 
         } else {
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
@@ -356,7 +368,7 @@ printDialog() {
   printWindow!.document.write(`
     <html>
       <head>
-        <title>Write To Rural Development Minister</title>
+        <title>Department of Rural Development – A Grievance Redressal Portal</title>
 
         <!-- Bootstrap (optional but recommended) -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
