@@ -62,14 +62,10 @@ export class LayoutSidebarComponent implements OnInit {
   menu: MenuItem[] = [];
   userRole: string = 'citizen' 
   ngOnInit(): void {
-       const userInfo = sessionStorage.getItem('userInfo');
-       console.log(userInfo, "userInfo");
-       
+       const userInfo = sessionStorage.getItem('userInfo');       
       if (userInfo) {
         this.parsedUserInfo = JSON.parse(userInfo);
-        this.userType = Number(this.parsedUserInfo.userType);
-        console.log(this.parsedUserInfo, "this.userType");
-        
+        this.userType = Number(this.parsedUserInfo.userType);        
       }
     if (this.userType === 1 || this.userType === 2) {
         this.menu = this.adminLinks;

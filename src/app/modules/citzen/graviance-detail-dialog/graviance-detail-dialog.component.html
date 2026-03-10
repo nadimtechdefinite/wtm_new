@@ -168,15 +168,17 @@
           <td mat-cell *matCellDef="let element">
             <!-- If file exists -->
             <ng-container *ngIf="element.fileName && element.fileName !== 'No File Attached'; else noPdf">
-              <a href="javascript:void(0)" title="{{ element.fileName }}" (click)="openAttachment(element.fileName)"
+              <!-- <a href="javascript:void(0)" title="{{ element.fileName }}" (click)="openAttachment(element.fileName)"
                 matTooltip="View File">
                 <i class="bi bi-download pdfIcon"></i>
-              </a>
-              <!-- <button style="background-color: #0d5db940;" mat-icon-button color="primary"
-                                        type="button" aria-label="Preview file" (click)="previewSelectedFile(element.fileName)"
-                                        matTooltip="Close">
-                                        <mat-icon>visibility</mat-icon>
-                                    </button> -->
+              </a> -->
+              <button style="background-color: #0d5db940;" mat-icon-button color="primary"
+                                    type="button" aria-label="Preview file" (click)="openAttachment(element.fileName)"
+                                    matTooltip="Download">
+                                    <!-- <mat-icon>visibility</mat-icon> -->
+                                    <i class="bi bi-cloud-download-fill"></i>
+                                </button>
+ 
             </ng-container>
     
 
@@ -205,36 +207,30 @@
             <!-- Officer Message -->
             <div class="chat-message left">
               <div class="bubble officer">
-
+                <div class="sender-name">
                 <div class="usename">
                   <strong>{{ item.officerAction?.commentedBy }}</strong>
-
-                  <span class="status" [ngClass]="{
-                  'completed': item.officerAction?.status === 'C',
-                  'pending': item.officerAction?.status === 'U'
-                }">
-                    {{
-                    item.officerAction?.status === 'U'
-                    ? 'Under-Process'
-                    : item.officerAction?.status === 'C'
-                    ? 'Complete'
-                    : item.officerAction?.status
-                    }}
+                  <span class="status" [ngClass]="{'completed': item.officerAction?.status === 'C','pending': item.officerAction?.status === 'U'}">
+                    {{item.officerAction?.status === 'U'? 'Under-Process': item.officerAction?.status === 'C'? 'Complete': item.officerAction?.status}}
                   </span>
                 </div>
+               
 
-                <p>{{ item.officerAction?.comments }}</p>
+                <div class="message-footer">
                 <small>
                   {{ item.officerAction?.commentedOn | date:'dd MMM yyyy, hh:mm a' }}
                 </small>
-                <div class="file"
-                  *ngIf="item.officerAction.fileName && item.officerAction.fileName !== 'No File Attached'">
+                </div>
+                </div>
 
-
-                  <a href="javascript:void(0)" title="{{ item.officerAction.fileName }}"
-                    (click)="openAttachment(item.officerAction.fileName)" matTooltip="View File">
-                    <i class="bi bi-download pdfIcon"></i>
-                  </a>
+                <div class="comment-area">
+                  <p>{{ item.officerAction?.comments }}</p>
+                <div class="file" *ngIf="item.officerAction.fileName && item.officerAction.fileName !== 'No File Attached'">
+                  <button style="background-color: #0d5db940;" mat-icon-button color="primary" type="button" aria-label="Preview file"
+                    (click)="openAttachment(item.officerAction.fileName)" matTooltip="Download">
+                    <i class="bi bi-cloud-download-fill"></i>
+                  </button>
+                </div>
                 </div>
 
               </div>
@@ -243,14 +239,13 @@
             <!-- Citizen Message -->
             <div class="chat-message right" *ngIf="item?.citizenFeedback?.comments">
               <div class="bubble citizen">
-
+              <div class="sender-name">
                 <div class="usename">
                   <strong>{{ citizendetails?.name }}</strong>
-
                   <span class="status" [ngClass]="{
                   'completed': item.citizenFeedback?.status === 'S',
                   'pending': item.citizenFeedback?.status === 'US'
-                }">
+                   }">
                     {{
                     item.citizenFeedback?.status === 'S'
                     ? 'Satisfied'
@@ -260,8 +255,14 @@
                     }}
                   </span>
                 </div>
+               
+                <div class="message-footer">
+                  <small>{{item.citizenFeedback?.feddbackSubmittedOn | date:'dd MMM yyyy, hh:mm a'}}</small>
+                </div>
+                </div>
+                <div class="comment-area">
                 <p>{{ item.citizenFeedback?.comments }}</p>
-                <small>{{item.citizenFeedback?.feddbackSubmittedOn | date:'dd MMM yyyy, hh:mm a'}}</small>
+                </div>
               </div>
             </div>
 

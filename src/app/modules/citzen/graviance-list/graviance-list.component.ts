@@ -18,6 +18,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { LoaderService } from '../../../services/loader.service';
 import { delay, finalize } from 'rxjs/operators';
+import { BreakpointObserver } from '@angular/cdk/layout';
 @Component({
   selector: 'app-graviance-list',
   standalone: true,
@@ -77,7 +78,8 @@ export class GravianceListComponent {
     private mobileService: MobileService,
     private masterService: masterService,
     private loader: LoaderService,
-    private errorHandler: ErrorHandlerService,) { }
+    private errorHandler: ErrorHandlerService,
+   private breakpointObserver: BreakpointObserver) { }
 
   ngOnInit() {
     this.mobileService.updatelogindata$.subscribe(value => {
@@ -94,7 +96,6 @@ export class GravianceListComponent {
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
     }
     if(this.UserCitizenId && this.UserMobile) {
        this.getCitizenDetails();
@@ -247,9 +248,11 @@ export class GravianceListComponent {
   }
 
   openViewDialog(row: any, citizenDetails: any) {
+    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
     const dialogRef = this.dialog.open(GravianceDetailDialogComponent, {
-      width: '65%',
-      maxWidth: '90vw',
+      width: isMobile ? '90%' : '65%',
+       maxWidth: isMobile ? '100vw' : '90vw',
+    height: isMobile ? '90vh' : '',
       data: {
         grievance: row,
         citizen: citizenDetails
@@ -301,7 +304,7 @@ export class GravianceListComponent {
     const topMargin = 20;
     // 🔹 Title
     doc.setFontSize(14);
-    doc.text('Write To Rural Development Minister', 110, 13);
+    doc.text('Department of Rural Development – A Grievance Redressal Portal', 110, 13);
     doc.setFontSize(12);
     doc.text('Grievance List', 14, topMargin);
 

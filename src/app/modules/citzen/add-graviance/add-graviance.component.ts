@@ -142,7 +142,6 @@ export class AddGravianceComponent implements OnInit {
       this.userType = this.parsedUserInfo.userType;
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
     }
     // if(this.UserCitizenId && this.UserMobile) {
     //    this.getCitizenDetails();
@@ -269,10 +268,10 @@ export class AddGravianceComponent implements OnInit {
       //  Description: ['', [Validators.required, Validators.maxLength(1000)]]
       Description: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(1000)]],
       Language: ['en', Validators.required],
-      // captcha: ['', [
-      //   Validators.required,
-      //   Validators.minLength(1),
-      //   Validators.maxLength(6)]],
+      captcha: ['', [
+        Validators.required,
+        Validators.minLength(1),
+        Validators.maxLength(6)]],
       attachMent1: []
     });
   }
@@ -335,7 +334,6 @@ export class AddGravianceComponent implements OnInit {
   captchaCode: any;
   generateCaptcha() {
     this.masterService.generateCaptcha().subscribe((response: any) => {
-      console.log(response, "response captcha");
       this.getCaptchadata = response.data;
       this.captcha = this.getCaptchadata.captcha;
       this.captchaCode = this.getCaptchadata.captchaCode;
@@ -371,6 +369,7 @@ export class AddGravianceComponent implements OnInit {
 
     window.speechSynthesis.speak(utterance);
   }
+  
   selectedMinister(event: any) {
     const valuename = event.value
   }
@@ -582,15 +581,28 @@ export class AddGravianceComponent implements OnInit {
     this.attachement1 = null;
   }
 
-  previewSelectedFile() {
-    if (!this.attachement1) return;
-    const fileURL = URL.createObjectURL(this.attachement1);
-    window.open(fileURL, '_blank');
+  // previewSelectedFile() {
+  //   if (!this.attachement1) return;
+  //   const fileURL = URL.createObjectURL(this.attachement1);
+  //   window.open(fileURL, '_blank');
 
-    setTimeout(() => {
-      URL.revokeObjectURL(fileURL);
-    }, 1000);
-  }
+  //   setTimeout(() => {
+  //     URL.revokeObjectURL(fileURL);
+  //   }, 1000);
+  // }
+
+  previewSelectedFile() {
+  if (!this.attachement1) return;
+
+  const fileURL = URL.createObjectURL(this.attachement1);
+
+  const link = document.createElement('a');
+  link.href = fileURL;
+  link.download = this.attachement1.name; // file ka original naam
+  link.click();
+
+  URL.revokeObjectURL(fileURL);
+}
 
 
   GetverifyCaptcha() {
@@ -622,24 +634,28 @@ export class AddGravianceComponent implements OnInit {
 
     this.masterService.verifyCaptcha(payload).subscribe({
       next: (response: any) => {
-        if (response.messageCode === 1) {
+        if (response.messageCode !== 1) {
+          this.toastr.error(response.message || 'Invalid captcha');
+          return;
+        }
+        if (response && response.messageCode === 1) {
           this.onSubmit();
         } else {
-          this.grievanceForm.get('captcha')?.reset();
-          this.toastr.error(response.message || 'Invalid captcha');
-          this.captchaCode = '';
-          this.grievanceForm.get('captcha')?.reset();
+          const errorMsg = response?.message 
+            ? response.message 
+            : 'Invalid captcha';
+
+          this.toastr.error(errorMsg);
+
+          this.grievanceForm.get('captcha')?.reset(); // clear input
           this.generateCaptcha();
         }
       },
       error: (err) => {
-        console.log('Full error:', err);
-        const message =
-          err?.error?.message ||   // backend message
-          err?.message ||          // angular message
-          'Captcha verification failed';
-        this.toastr.error(message);
-        this.captchaCode = '';
+        const msg =
+          err?.error?.message ||
+          'Invalid Captcha';
+        this.toastr.error(msg);
         this.grievanceForm.get('captcha')?.reset();
         this.generateCaptcha();
       }
@@ -649,7 +665,6 @@ export class AddGravianceComponent implements OnInit {
   get descriptionLength(): number {
     return this.grievanceForm.get('Description')?.value?.length || 0;
   }
-
 
   isSubmitted = false;
   onSubmit() {

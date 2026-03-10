@@ -54,7 +54,6 @@ export class AuthGuard implements CanActivate, CanMatch {
       return false;
     }
 
-    console.log('✅ Guard Passed');
     return true;
   }
 

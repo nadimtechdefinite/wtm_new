@@ -20,6 +20,7 @@ import { NOTO_SANS_TAMIL } from '../../../../assets/fonts/NotoSansTamil-Regular.
 import { GUJARATI } from '../../../../assets/fonts/noto-sans.gujarati.base64';
 import { LoaderService } from '../../../services/loader.service';
 import { delay, finalize } from 'rxjs/operators';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-grievance-list-admin',
@@ -82,6 +83,7 @@ export class GrievanceListAdminComponent {
     private masterService: masterService,
     private errorHandler: ErrorHandlerService,
     private loader: LoaderService,
+    private breakpointObserver: BreakpointObserver,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -99,7 +101,6 @@ export class GrievanceListAdminComponent {
       this.schemeCode = this.parsedUserInfo.schemeCode
       this.getschemeCode = this.parsedUserInfo.schemeCode
       this.loginName = this.parsedUserInfo.loginName
-      console.log(this.userType, "this.userType");
     }
 
     this.route.queryParams.subscribe((params) => {
@@ -301,10 +302,14 @@ export class GrievanceListAdminComponent {
 
 
   openViewDialogAdmin(row: any, citizenDetails: any) {
+    const isMobile = this.breakpointObserver.isMatched('(max-width: 768px)');
     const dialogRef = this.dialog.open(ProgramDivisonDialogComponent, {
-      width: '65vw',
-      maxWidth: '90vw',
-      maxHeight: '90vh',
+      // width: '65vw',
+      // maxWidth: '90vw',
+      // maxHeight: '90vh',
+       width: isMobile ? '90%' : '65%',
+       maxWidth: isMobile ? '100vw' : '90vw',
+    height: isMobile ? '90vh' : '',
       panelClass: 'custom-dialog', // 🔥 MUST
       disableClose: true,
       data: {
@@ -337,7 +342,6 @@ export class GrievanceListAdminComponent {
     this.masterService.getOfficerStatusDetail(role).subscribe({
       next: (response: any) => {
         if (response?.messageCode === 1) {
-          console.log(response.data, "response");
           this.officeStatusDetails = response.data
 
         } else {
@@ -374,7 +378,7 @@ export class GrievanceListAdminComponent {
     const topMargin = 20;
     // 🔹 Title
     doc.setFontSize(14);
-    doc.text('Write To Rural Development Minister', 110, 13);
+    doc.text('Department of Rural Development', 110, 13);
     doc.setFontSize(12);
     doc.text('Admin/PD Grievance List', 14, topMargin);
 

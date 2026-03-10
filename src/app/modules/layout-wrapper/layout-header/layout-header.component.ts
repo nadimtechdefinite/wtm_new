@@ -70,7 +70,6 @@ export class LayoutHeaderComponent {
     document.body.appendChild(script);
 
     window.addEventListener('bhashiniLanguageChanged', (event: any) => {
-      console.log('FINAL SELECTED:', event.detail);
     });
   }
 
@@ -117,9 +116,6 @@ export class LayoutHeaderComponent {
             };
 
             this.name = langMap[code] || code;
-            console.log('Language Code:', code);
-            console.log('Language Name:', this.name);
-
             window.dispatchEvent(
               new CustomEvent('bhashiniLanguageChanged', {
                 detail: { code, name: this.name }

@@ -194,11 +194,11 @@ export class GravianceRegisterComponent implements OnInit {
       villageCode: ['', Validators.required],
       pinCode: [''],
       address: [''],
-  //     captcha: ['', [
-  //   Validators.required,
-  //   Validators.minLength(1),
-  //   Validators.maxLength(6)
-  // ]],
+      captcha: ['', [
+    Validators.required,
+    Validators.minLength(1),
+    Validators.maxLength(6)
+  ]],
     });
   }
 
@@ -212,7 +212,7 @@ export class GravianceRegisterComponent implements OnInit {
   }
   generateCaptcha() {
     this.masterService.generateCaptcha().subscribe((response: any) => {
-      console.log(response, "response captcha");
+
       this.getCaptchadata = response.data
       this.captcha = this.getCaptchadata.captcha
       this.captchaCode = this.getCaptchadata.captchaCode
@@ -445,8 +445,6 @@ openConfirmAfterRegister() {
       next: (response: any) => {
         if (response?.messageCode === 1 && response?.data?.length) {
           this.masterdata = response.data;
-          console.log(this.masterdata, 'this.masterdata');
-
         } else {
           console.error('Failed to load scheme list:', response?.errorMsg || 'Unknown error');
         }

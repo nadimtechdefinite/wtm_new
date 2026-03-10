@@ -4,10 +4,12 @@ import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatAccordion, MatExpansionPanel, MatExpansionModule } from "@angular/material/expansion";
 import { MatTooltip } from "@angular/material/tooltip";
 declare var bootstrap: any;
+import { AccessibilityPanelComponent } from "../../../shared/accessibility-panel";
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatAccordion, MatExpansionPanel, MatExpansionModule, MatTooltip],
+  imports: [CommonModule, RouterModule, MatAccordion, MatExpansionPanel, MatExpansionModule, MatTooltip, AccessibilityPanelComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

@@ -25,7 +25,7 @@
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Father/Husband Name</mat-label>
                                 <input matInput placeholder="Enter Father/Husband Name" maxlength="100"
-                                    formControlName="fatherHus">
+                                    formControlName="fatherHus" autocomplete="off">
                                 <mat-error *ngIf="(f['fatherHus'].touched || isSubmitted) && f['fatherHus'].invalid">
                                     Father/Husband Name is required
                                 </mat-error>
@@ -52,7 +52,7 @@
                         <div class="col-md-3">
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Mobile No.</mat-label>
-                                <input matInput placeholder="Enter Mobile No." maxlength="10" minlength="10"
+                                <input matInput placeholder="Enter Mobile No." maxlength="10" minlength="10" autocomplete="off"
                                     formControlName="mobile" appNumberOnly  (keyup)="onMobileKeyUp()">
                                 <mat-error *ngIf="(f['mobile'].touched || isSubmitted) && f['mobile'].invalid">
                                     Enter valid 10-digit mobile number.
@@ -170,15 +170,14 @@
 
                     </div>
                     <div class="row g-3 mb-3 align-items-center">
-
-                        <!-- <div class="col-md-4 d-flex gap-2 captcha-area">
+                        <div class="col-md-4 d-flex gap-2 captcha-area">
                             <div id="image"
                                 class="captcha-box mat-elevation-z1 d-flex align-items-center justify-content-center">
 
                             </div>
                             <div class="captcha-refresh-button d-flex">
                                         <a type="button" class="" (click)="speakCaptcha()" title="Hear Captcha">
-                                         <i class="bi bi-volume-up-fill"></i>
+                                         <mat-icon>volume_up</mat-icon>
                                           </a>
                                         <a mat-icon-button (click)="reload()">
                                             <mat-icon>refresh</mat-icon>
@@ -192,8 +191,7 @@
                                     Captcha is required
                                 </mat-error>
                             </mat-form-field>
-                        </div> -->
-
+                        </div>
                     </div>
                 </form>
                 <div class="text-center mt-3 d-flex gap-2 justify-content-center align-items-center pb-4">

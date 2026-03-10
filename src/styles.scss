@@ -1061,3 +1061,11 @@ button.mat-icon-button:hover {
   font-weight: 600;
   color: #333;
 }
+
+.dark-contrast {
+  filter: contrast(1.4) brightness(0.85);
+}
+
+.invert-mode {
+  filter: invert(1) hue-rotate(180deg);
+}

@@ -57,6 +57,12 @@ export class ChangePasswordComponent implements OnInit {
     );
   }
 
+  isPasswordMatch(): boolean {
+    const newPass = this.changePassword.get('newpassword')?.value;
+    const confirmPass = this.changePassword.get('confirmpassword')?.value;
+    return newPass && confirmPass && newPass === confirmPass;
+  }
+
   passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
     const newPassCtrl = group.get('newpassword');
     const confirmPassCtrl = group.get('confirmpassword');
@@ -104,14 +110,16 @@ export class ChangePasswordComponent implements OnInit {
       this.changePassword.markAllAsTouched();
       return;
     }
-const encryptedPassword = CryptoJS.SHA256(this.changePassword.value.currentpassword.trim()).toString(CryptoJS.enc.Hex);
+    const encryptedPassword = CryptoJS.SHA256(this.changePassword.value.currentpassword.trim()).toString(CryptoJS.enc.Hex);
+    const encryptednewpassword = CryptoJS.SHA256(this.changePassword.value.newpassword.trim()).toString(CryptoJS.enc.Hex);
+    const encryptedconfirmpassword = CryptoJS.SHA256(this.changePassword.value.confirmpassword.trim()).toString(CryptoJS.enc.Hex);
     const payload = {
       loginName: JSON.parse(sessionStorage.getItem('userInfo') || '{}')?.loginName,
       currentPassword: encryptedPassword,
-      newPassword: this.changePassword.value.newpassword,
-      confirmPassword: this.changePassword.value.confirmpassword
+      newPassword: encryptednewpassword,
+      confirmPassword: encryptedconfirmpassword
     };
-
+return
     this.masterService.changePassword(payload).subscribe({
       next: (res: any) => {
         if (res.messageCode === 1) {

@@ -16,41 +16,31 @@
                 <br>
                 <form [formGroup]="grievanceForm" novalidate>
                     <div class="row g-3 mb-3 row-box">
-
                         <div class="col-md-3">
                             <div>
                                 <strong>Road Name</strong>
                                 <p class="feedback-value">R/F PR road to Dhaba K</p>
                             </div>
-                
                         </div>
-
                         <div class="col-md-3">
                              <div>
                                 <strong>State</strong>
                                 <p class="feedback-value">{{citzenDetails?.stateName}}</p>
                             </div>
-                        
                         </div>
-
                         <div class="col-md-3">
                             <div>
                                 <strong>District</strong>
                                 <p class="feedback-value">{{citzenDetails?.districtName}}</p>
                             </div>
-                         
                         </div>
-
                         <div class="col-md-3">
                               <div>
                                 <strong>Block</strong>
                                 <p class="feedback-value">{{citzenDetails?.blockName}}</p>
                             </div>
-            
                         </div>
-
                     </div>
-
                     <div class="row g-3 mb-3">
                         <!-- State -->
                         <div class="col-md-3">
@@ -63,7 +53,6 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-
                     <div class="col-md-3">
                             <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Gender</mat-label>
@@ -78,8 +67,6 @@
                                 </mat-error>
                             </mat-form-field>
                         </div>
-                        
-
                         <div class="col-md-3">
                              <mat-form-field appearance="outline" class="w-100">
                                 <mat-label>Category</mat-label>
@@ -212,8 +199,8 @@
                                     </button>
                                     <button style="background-color: #0d5db940;" mat-icon-button color="primary"
                                         type="button" aria-label="Preview file" (click)="previewSelectedFile()"
-                                        matTooltip="Close">
-                                        <mat-icon>visibility</mat-icon>
+                                        matTooltip="Download">
+                                        <i class="bi bi-cloud-download-fill"></i>
                                     </button>
                                 </ng-container>
                             </div>
@@ -268,8 +255,8 @@
             <img src="assets/images/logo_wtm.png" style="    width: 43px;
     margin: 20px;" alt="emblem" class="logo-img me-3" />
             <div class="text-start">
-                <div class="fw-bold fs-5 text-primary">Write To Rural Development Minister</div>
-                <div class="fw-semibold fs-6 text-secondary">A Grievance Redressel System For Users</div>
+                <div class="fw-bold fs-5 text-primary"> Department of Rural Development </div>
+                <div class="fw-semibold fs-6 text-secondary">A Grievance Redressal Portal For Users</div>
             </div>
         </div>
 
